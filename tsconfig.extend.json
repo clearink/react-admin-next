@@ -1,0 +1,11 @@
+{
+	"compilerOptions": {
+		"experimentalDecorators": true,
+		"downlevelIteration": true,
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["./src/*"]
+		},
+		"suppressImplicitAnyIndexErrors": true // 忽略 string 不能当索引
+	}
+}

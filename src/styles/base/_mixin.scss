@@ -1,0 +1,28 @@
+@mixin bg-cover {
+	background-position: center;
+	background-size: 100%;
+	background-repeat: no-repeat;
+}
+@mixin flex-center($direction: row) {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: $direction;
+}
+
+@mixin ellipsis {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+@mixin scrollbar($color, $width: 5px) {
+	&::-webkit-scrollbar {
+		width: $width;
+		background-color: rgba($color, $alpha: 0.1);
+	}
+	&::-webkit-scrollbar-thumb {
+		border-radius: 1rem;
+		background-color: $color;
+	}
+}

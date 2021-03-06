@@ -1,0 +1,12 @@
+import { useEffect } from "react";
+import { RouteItemConfig } from "@/@types/route";
+import useAppDispatch from "@/hooks/redux/use-app-dispatch";
+import { actions } from "@/store/reducers/menu";
+import { formatRoutesMenuData } from "./utils";
+
+export default function useSetMenu(routes?: RouteItemConfig[]) {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(actions.setMenu(formatRoutesMenuData(routes)));
+  }, [routes, dispatch]);
+}

@@ -1,0 +1,14 @@
+@import "@/styles/index";
+.auth_layout {
+  min-height: 100vh !important;
+  flex-direction: row;
+}
+.auth_content_wrap {
+  display: flex;
+  flex-direction: column !important;
+  min-width: 600px;
+}
+.auth_content {
+  flex: 1;
+  margin: 24px;
+}

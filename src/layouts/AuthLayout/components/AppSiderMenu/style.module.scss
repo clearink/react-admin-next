@@ -1,0 +1,75 @@
+@import "@/styles/index";
+$collapsed_width: 48px;
+$open_width: 200px;
+$layout_fade_duration: 0.3s;
+$title_height: 64px;
+
+.place_holder {
+  @include layout_fade;
+  display: none;
+  flex-basis: $open_width;
+  flex-shrink: 0;
+  max-width: $open_width;
+  min-height: 100vh;
+  &.fixed {
+    display: block;
+  }
+  &.collapsed {
+    flex-basis: $collapsed_width;
+    max-width: $collapsed_width;
+  }
+}
+
+.sider_menu {
+  transition-property: max-width, min-width, width;
+  transition-timing-function: ease-in-out;
+  transition-duration: $layout_fade_duration;
+  z-index: 11;
+  &.fixed {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+  }
+
+  &.collapsed {
+    .title {
+      display: none !important;
+    }
+    .logo {
+      display: block !important;
+    }
+  }
+  .logo_title {
+    display: flex;
+    height: $title_height;
+    overflow: hidden;
+    color: white;
+    @include flex-center;
+    .logo {
+      display: none;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+      white-space: nowrap;
+      display: block;
+    }
+  }
+
+  .menu {
+    flex: 1;
+    overflow: hidden auto;
+    border-right: 0 !important;
+    @include scrollbar($primary_color);
+  }
+}
+
+:global {
+  .ant-layout-sider-children {
+    @include flex-center(column);
+  }
+  .ant-menu-inline-collapsed {
+    width: $collapsed_width !important;
+  }
+}

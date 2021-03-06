@@ -1,0 +1,7 @@
+$base_spacing: 8px;
+
+// 动画配置
+@mixin layout_fade {
+  transition: all 0.3s ease-in-out;
+  @content;
+}

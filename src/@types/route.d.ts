@@ -1,22 +1,20 @@
 import { ComponentType, ReactNode } from "react";
-import { RouteChildrenProps } from "react-router-dom";
 
-export interface PageBaseProps extends RouteChildrenProps {
+// 页面最基本的 props
+export interface PageBaseProps {
   routes?: RouteItemConfig[];
-  children: ReactNode;
+  children?: ReactNode;
 }
 
+// router config 项
 export interface RouteItemConfig {
-  path?: string;
+  path: string;
   component?: ComponentType<PageBaseProps>;
   redirect?: string;
-  wrap?: ComponentType<any>;
   icon?: string;
   routes?: RouteItemConfig[];
   title?: string;
-  key?: string;
   hide?: boolean;
   /* 在菜单中隐藏子菜单 */
   hideChildren?: boolean;
-  [key: string]: any;
 }

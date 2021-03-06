@@ -1,6 +1,6 @@
-import React, { Fragment, useEffect, useMemo } from "react";
+import React, { Fragment, useMemo } from "react";
 import { Menu } from "antd";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import IconFont from "@/components/IconFont";
 import { MenuItemProps } from "@/@types/menu";
 import { isArray } from "@/utils/ValidateType";
@@ -56,7 +56,8 @@ function renderMenu(config: MenuItemProps[]): React.ReactNode {
           key={item.path}
           icon={item?.icon && <IconFont type={item.icon} />}
         >
-          {item.path && <Link to={item.path}>{item.title}</Link>}
+          {/* 去除最后面的斜杠 */}
+          <Link to={item.path.replace(/\/$/g, "")}>{item.title}</Link>
         </Item>
       );
     }

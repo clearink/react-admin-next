@@ -6,8 +6,9 @@ import withDefaultProps from "@/hocs/withDefaultProps";
 import useAppDispatch from "@/hooks/redux/use-app-dispatch";
 import { actions } from "@/store/reducers/menu";
 import useRenderMenu from "./useRenderMenu";
-import useMenuOpenKey from "./useMenuOpenKey";
+import useMenuSelectedKeys from "./useMenuSelectedKeys";
 import styles from "./style.module.scss";
+import { BulbFilled } from "@ant-design/icons";
 
 export interface SiderMenuProps {
   fixed: boolean; // 是否固定
@@ -19,33 +20,29 @@ function AppSiderMenu(props: SiderMenuProps) {
 
   const { collapsed } = useTypedSelector((state) => state.menu);
 
-  const newOpenKeys = useMenuOpenKey(); // 菜单选中项
+  const selectedKeys = useMenuSelectedKeys(); // 菜单选中项
   const menuList = useRenderMenu(); // 菜单渲染结果
-
-  const [collapsedMenu, setCollapsedMenu] = useState(false); // 是否收起菜单
 
   const [openKeys, setOpenKeys] = useState<string[]>([]); // 当前打开的菜单
 
-  const [selectKeys, setSelectKeys] = useState<string[]>([]); // 当前选中的菜单
-
   // 切换路由时 重新设置 open keys
   useEffect(() => {
-    if (!collapsed) setOpenKeys(newOpenKeys);
+    if (!collapsed) setOpenKeys(selectedKeys);
     else setOpenKeys([]);
-    setSelectKeys(newOpenKeys);
-  }, [newOpenKeys, collapsed]);
+  }, [selectedKeys, collapsed]);
 
-  // 防止子菜单意外出现在别的位置 antd 4.9.3
-  // 和 collapsed 的更新不在同一个事件循环
-  useEffect(() => {
-    setCollapsedMenu(collapsed);
-  }, [collapsed]);
+  // // 防止子菜单意外出现在别的位置 antd 4.9.3
+  // // 和 collapsed 的更新不在同一个事件循环
+  // 注意 antd 4.13.0 已经不需要此操作
+  // const [collapsedMenu, setCollapsedMenu] = useState(false); // 是否收起菜单
+  // useEffect(() => {
+  //   setCollapsedMenu(collapsed);
+  // }, [collapsed]);
 
   const dispatch = useAppDispatch();
   const handleToggleMenu = (flag: boolean) => {
     dispatch(actions.setCollapsed(flag));
   };
-
   return (
     <>
       <div
@@ -57,7 +54,7 @@ function AppSiderMenu(props: SiderMenuProps) {
       <Layout.Sider
         collapsible
         collapsedWidth={COLLAPSED_WIDTH}
-        collapsed={collapsedMenu}
+        collapsed={collapsed}
         trigger={null}
         breakpoint="md"
         onBreakpoint={handleToggleMenu}
@@ -67,7 +64,7 @@ function AppSiderMenu(props: SiderMenuProps) {
         })}
       >
         <div className={styles.logo_title}>
-          <img alt="logo" className={styles.logo} />
+          <BulbFilled className={styles.logo} />
           {/* 收起时显示logo 展开时显示标题 */}
           <span className={styles.title}>后台管理</span>
         </div>
@@ -77,7 +74,7 @@ function AppSiderMenu(props: SiderMenuProps) {
           mode="inline"
           theme="dark"
           openKeys={openKeys}
-          selectedKeys={selectKeys}
+          selectedKeys={selectedKeys}
         >
           {menuList}
         </Menu>

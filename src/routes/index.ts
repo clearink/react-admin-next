@@ -50,6 +50,47 @@ const routes: RouteItemConfig[] = [
           },
         ],
       },
+      {
+        path: "/form",
+        icon: "icon-computer",
+        title: "表单管理",
+        component: withLazyLoad(lazy(() => import("@/layouts/BlankLayout"))),
+        routes: [
+          {
+            path: "/",
+            icon: "icon-heart",
+            title: "表单列表",
+            component: withLazyLoad(lazy(() => import("@/pages/Form"))),
+          },
+          {
+            path: "/add",
+            icon: "icon-lung",
+            title: "新增表单",
+            component: withLazyLoad(lazy(() => import("@/pages/Form/Add"))),
+          },
+          {
+            path: "/edit/:id",
+            icon: "icon-heart",
+            title: "编辑表单",
+            hide: true,
+            component: withLazyLoad(lazy(() => import("@/pages/Form/Edit"))),
+          },
+        ],
+      },
+      {
+        path: "/list",
+        title: "列表管理",
+        icon:'icon-heart',
+        component: withLazyLoad(lazy(() => import("@/layouts/BlankLayout"))),
+        routes: [
+          {
+            path: "/",
+            icon: "icon-computer",
+            title: "基础列表",
+            component: withLazyLoad(lazy(() => import("@/pages/List"))),
+          },
+        ],
+      },
     ],
   },
 ];

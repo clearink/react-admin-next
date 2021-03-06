@@ -1,7 +1,7 @@
 // 需要验证
 import { Outlet } from "react-router-dom";
 import { PageBaseProps } from "@/@types/route";
-import { Layout, Spin } from "antd";
+import { Layout } from "antd";
 import AppSiderMenu from "./components/AppSiderMenu";
 import useSetMenu from "./useSetMenu";
 import AppHeader from "./components/AppHeader";

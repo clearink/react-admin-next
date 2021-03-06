@@ -13,7 +13,10 @@ import { matchPath, useLocation } from "react-router-dom";
  * findOpen 函数根据 pathname 层级 递归 查找 openKeys
  *
  */
-function findMenuOpenKeys(config: MenuItemProps[], pathname: string): string[] {
+function findMenuSelectedKeys(
+  config: MenuItemProps[],
+  pathname: string
+): string[] {
   let openKeys: string[] = [];
   let keys: string[] = [];
   function find(config: MenuItemProps[], keys: string[]) {
@@ -30,8 +33,8 @@ function findMenuOpenKeys(config: MenuItemProps[], pathname: string): string[] {
   return Unique<string>(openKeys).filter((item) => item);
 }
 
-export default function useMenuOpenKey() {
+export default function useMenuSelectedKeys() {
   const { pathname } = useLocation();
   const { menu } = useTypedSelector((state) => state.menu);
-  return useMemo(() => findMenuOpenKeys(menu, pathname), [menu, pathname]);
+  return useMemo(() => findMenuSelectedKeys(menu, pathname), [menu, pathname]);
 }

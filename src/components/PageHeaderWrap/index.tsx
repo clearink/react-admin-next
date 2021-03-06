@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from "react";
+import React, { useCallback } from "react";
 import { PageHeader } from "antd";
 import { PageHeaderProps } from "antd/lib/page-header";
 import { Link } from "react-router-dom";

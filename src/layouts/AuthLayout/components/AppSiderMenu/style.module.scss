@@ -37,6 +37,7 @@ $title_height: 64px;
       display: none !important;
     }
     .logo {
+      font-size: 24px;
       display: block !important;
     }
   }
@@ -44,7 +45,7 @@ $title_height: 64px;
     display: flex;
     height: $title_height;
     overflow: hidden;
-    color: white;
+    color: $light_color_1;
     @include flex-center;
     .logo {
       display: none;
@@ -71,5 +72,9 @@ $title_height: 64px;
   }
   .ant-menu-inline-collapsed {
     width: $collapsed_width !important;
+  }
+  .ant-menu-item,
+  .ant-menu-submenu-title {
+    @apply flex items-center;
   }
 }

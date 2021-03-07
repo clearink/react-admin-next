@@ -2,19 +2,17 @@ import React from "react";
 import { Layout } from "antd";
 import classNames from "classnames";
 import { MenuFoldOutlined } from "@ant-design/icons";
-import withDefaultProps from "@/hocs/withDefaultProps";
 import useTypedSelector from "@/hooks/redux/use-typed-selector";
 import useAppDispatch from "@/hooks/redux/use-app-dispatch";
 import { actions } from "@/store/reducers/menu";
 import styles from "./style.module.scss";
 
-export interface AppHeaderProps {
-  fixed: boolean;
-}
 // 头部
-function AppHeader(props: AppHeaderProps) {
-  const { fixed } = props;
-  const { collapsed } = useTypedSelector((state) => state.menu);
+function AppHeader() {
+  const { collapsed, fixed } = useTypedSelector((state) => ({
+    collapsed: state.menu.collapsed,
+    fixed: state.layout.header_fixed,
+  }));
   const dispatch = useAppDispatch();
   const handleToggleMenu = () => {
     dispatch(actions.toggle());
@@ -38,4 +36,4 @@ function AppHeader(props: AppHeaderProps) {
     </>
   );
 }
-export default withDefaultProps(AppHeader, { fixed: true });
+export default React.memo(AppHeader);

@@ -22,7 +22,7 @@ $title_height: 64px;
 
 .sider_menu {
   transition-property: max-width, min-width, width;
-  transition-timing-function: ease-in-out;
+  transition-timing-function: cubic-bezier(0.645, 0.045, 0.355, 1);
   transition-duration: $layout_fade_duration;
   z-index: 11;
   &.fixed {
@@ -43,6 +43,7 @@ $title_height: 64px;
   }
   .logo_title {
     display: flex;
+    width: 100%;
     height: $title_height;
     overflow: hidden;
     color: $light_color_1;

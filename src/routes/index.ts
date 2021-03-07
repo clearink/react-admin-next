@@ -80,7 +80,7 @@ const routes: RouteItemConfig[] = [
       {
         path: "/list",
         title: "列表管理",
-        icon:'icon-heart',
+        icon: "icon-heart",
         component: withLazyLoad(lazy(() => import("@/layouts/BlankLayout"))),
         routes: [
           {

@@ -1,5 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 // layout 视图变化
+/* 
+目前有 
+1. 固定 menu
+2. 固定 menu
+
+未来添加
+1. app布局结构
+2. 主题颜色
+基本就是模仿antd pro
+ */
 const initialState = {
   header_fixed: true,
   menu_fixed: true,

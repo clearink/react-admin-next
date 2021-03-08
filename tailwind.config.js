@@ -9,7 +9,10 @@ function gridLayout(colNum = 24) {
 }
 
 module.exports = {
-  purge: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
+  purge: {
+    content: ["./src/**/*.tsx", "./src/**/*.scss", "./public/index.html"],
+    defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
+  },
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {

@@ -4,8 +4,8 @@ export default function useDeepMemo<T = any>(
   callback: () => T,
   deps: DependencyList
 ): T {
-  const preDeps = useRef<any>(null);
-  const preState = useRef<any>(null);
+  const preDeps = useRef(deps);
+  const preState = useRef(callback());
   if (dequal(preDeps.current, deps)) return preState.current;
   preState.current = callback();
   preDeps.current = deps;

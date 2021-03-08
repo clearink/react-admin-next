@@ -1,0 +1,5 @@
+@import "@/styles/index";
+.login_page_wrap {
+  @include flex-center(column);
+  height: 100vh;
+}

@@ -9,31 +9,31 @@ import styles from "./style.module.scss";
 
 // 头部
 function AppHeader() {
-  const { collapsed, fixed } = useTypedSelector((state) => ({
-    collapsed: state.menu.collapsed,
-    fixed: state.layout.header_fixed,
-  }));
-  const dispatch = useAppDispatch();
-  const handleToggleMenu = () => {
-    dispatch(actions.toggle());
-  };
-  return (
-    <>
-      <div
-        className={classNames(styles.place_holder, {
-          [styles.collapsed]: collapsed,
-          [styles.fixed]: fixed,
-        })}
-      ></div>
-      <Layout.Header
-        className={classNames(styles.app_header, {
-          [styles.collapsed]: collapsed,
-          [styles.fixed]: fixed,
-        })}
-      >
-        <MenuFoldOutlined className={styles.icon} onClick={handleToggleMenu} />
-      </Layout.Header>
-    </>
-  );
+	const { collapsed, fixed } = useTypedSelector((state) => ({
+		collapsed: state.menu.collapsed,
+		fixed: state.layout.header_fixed,
+	}));
+	const dispatch = useAppDispatch();
+	const handleToggleMenu = () => {
+		dispatch(actions.toggle());
+	};
+	return (
+		<>
+			<div
+				className={classNames(styles.place_holder, {
+					[styles.collapsed]: collapsed,
+					[styles.fixed]: fixed,
+				})}
+			></div>
+			<Layout.Header
+				className={classNames(styles.app_header, {
+					[styles.collapsed]: collapsed,
+					[styles.fixed]: fixed,
+				})}
+			>
+				<MenuFoldOutlined className={styles.icon} onClick={handleToggleMenu} />
+			</Layout.Header>
+		</>
+	);
 }
 export default React.memo(AppHeader);

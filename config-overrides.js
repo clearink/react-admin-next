@@ -36,9 +36,9 @@ module.exports = override(
   }),
   addPostcssPlugins([require("tailwindcss"), require("autoprefixer")]),
   (config) => {
-    config.plugins.push(new WebpackBar({ profile: true }));
-    // if (isProd) config.plugins.push(new AntdDayjsWebpackPlugin()) // 生产环境启用
     if (isAnalyze) config.plugins.push(new BundleAnalyzerPlugin()); // 打包分析
+    // if (isProd) config.plugins.push(new AntdDayjsWebpackPlugin()) // 生产环境启用
+    config.plugins.push(new WebpackBar({ profile: true }));
     return config;
   }
 );

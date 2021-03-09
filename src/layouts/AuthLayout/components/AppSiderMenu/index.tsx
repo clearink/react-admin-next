@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Menu, Layout } from "antd";
 import classNames from "classnames";
 import useTypedSelector from "@/hooks/redux/use-typed-selector";
-import withDefaultProps from "@/hocs/withDefaultProps";
 import useAppDispatch from "@/hooks/redux/use-app-dispatch";
 import { actions } from "@/store/reducers/menu";
 import useRenderMenu from "./useRenderMenu";
@@ -10,15 +9,12 @@ import useMenuSelectedKeys from "./useMenuSelectedKeys";
 import styles from "./style.module.scss";
 import { BulbFilled } from "@ant-design/icons";
 
-export interface SiderMenuProps {
-  fixed: boolean; // 是否固定
-}
-
 const COLLAPSED_WIDTH = 48; // 侧边栏收起宽度
-function AppSiderMenu(props: SiderMenuProps) {
-  const { fixed } = props;
-
-  const { collapsed } = useTypedSelector((state) => state.menu);
+function AppSiderMenu() {
+  const { collapsed, fixed } = useTypedSelector((state) => ({
+    collapsed: state.menu.collapsed,
+    fixed: state.layout.menu_fixed,
+  }));
 
   const selectedKeys = useMenuSelectedKeys(); // 菜单选中项
   const menuList = useRenderMenu(); // 菜单渲染结果
@@ -83,4 +79,4 @@ function AppSiderMenu(props: SiderMenuProps) {
   );
 }
 
-export default withDefaultProps(AppSiderMenu, { fixed: true });
+export default React.memo(AppSiderMenu);

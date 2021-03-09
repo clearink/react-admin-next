@@ -7,7 +7,7 @@ import { formatRoutesMenuData } from "./utils";
 export default function useSetMenu(routes?: RouteItemConfig[]) {
   const dispatch = useAppDispatch();
   useEffect(() => {
-    console.log('set menu');
+    if (process.env.NODE_ENV !== "production") console.log("set menu");
     dispatch(actions.setMenu(formatRoutesMenuData(routes)));
   }, [routes, dispatch]);
 }

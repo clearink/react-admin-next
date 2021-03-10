@@ -22,7 +22,7 @@
 		background-color: rgba($color, $alpha: 0.1);
 	}
 	&::-webkit-scrollbar-thumb {
-		border-radius: 1rem;
+		border-radius: 4px;
 		background-color: $color;
 	}
 }

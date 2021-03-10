@@ -18,7 +18,10 @@ $open_width: 200px;
 		cursor: pointer;
 		padding: ($header_height - $icon_height)/2;
 		color: rgba(black, 0.4);
-		transition: background-color 0.3s, color 0.3s;
+		transform: rotateY(0);
+		@include layout_fade {
+			transition-property: background-color, color, transform;
+		}
 		&:hover {
 			background-color: rgba($color: black, $alpha: 0.1);
 		}
@@ -26,12 +29,12 @@ $open_width: 200px;
 	&.collapsed {
 		left: $collapsed_width !important;
 		.icon {
-			transform: rotate(180deg);
+			transform: rotateY(180deg);
 		}
 	}
 	&.fixed {
 		position: fixed;
-    @include layout_fade;
+		@include layout_fade;
 		top: 0;
 		right: 0;
 		left: $open_width;

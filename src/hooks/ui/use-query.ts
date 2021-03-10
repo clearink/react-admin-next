@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-export default function useQuery(): Map<string, any> {
+export default function useQuery(): Map<string, string> {
   const { search } = window.location;
   return useMemo(() => {
     if (window.URLSearchParams) return new URLSearchParams(search) as any;

@@ -4,39 +4,48 @@ $collapsed_width: 48px;
 $open_width: 200px;
 
 .app_header {
-  @include layout_fade;
-  @apply shadow-sm;
-  z-index: 11;
-  background-color: white;
-  padding: 0 $base_spacing * 2 0 $base_spacing;
-  height: $header_height;
-  line-height: $header_height;
+	@include layout_fade;
+	@apply shadow-sm;
+	z-index: 11;
+	background-color: white;
+	padding: 0;
+	height: $header_height;
+	line-height: $header_height;
 
-  .icon {
-    font-size: 26px;
-    cursor: pointer;
-    padding: $base_spacing ;
-    color: rgba($primary_color, 0.6);
-  }
-  &.collapsed {
-    left: $collapsed_width !important;
-    .icon {
-      transform: rotate(-180deg);
-    }
-  }
-  &.fixed {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: $open_width;
-  }
+	.icon {
+		$icon_height: 26px;
+		font-size: $icon_height;
+		cursor: pointer;
+		padding: ($header_height - $icon_height)/2;
+		color: rgba(black, 0.4);
+		transform: rotateY(0);
+		@include layout_fade {
+			transition-property: background-color, color, transform;
+		}
+		&:hover {
+			background-color: rgba($color: black, $alpha: 0.1);
+		}
+	}
+	&.collapsed {
+		left: $collapsed_width !important;
+		.icon {
+			transform: rotateY(180deg);
+		}
+	}
+	&.fixed {
+		position: fixed;
+		@include layout_fade;
+		top: 0;
+		right: 0;
+		left: $open_width;
+	}
 }
 .place_holder {
-  display: none;
-  height: $header_height;
-  width: 100%;
-  @include layout_fade;
-  &.fixed {
-    display: block;
-  }
+	display: none;
+	height: $header_height;
+	width: 100%;
+	@include layout_fade;
+	&.fixed {
+		display: block;
+	}
 }

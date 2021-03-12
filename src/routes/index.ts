@@ -93,7 +93,7 @@ const routes: RouteItemConfig[] = [
             path: "/edit-table",
             icon: "icon-computer",
             title: "可编辑列表",
-            component: withLazyLoad(lazy(() => import("@/pages/List/EditTable"))),
+            component: withLazyLoad(lazy(() => import("@/pages/List/EditTale"))),
           },
         ],
       },

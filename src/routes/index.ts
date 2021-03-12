@@ -89,12 +89,6 @@ const routes: RouteItemConfig[] = [
 						title: "基础列表",
 						component: withLazyLoad(lazy(() => import("@/pages/List"))),
 					},
-					{
-						path: "/edit-able",
-						icon: "icon-computer",
-						title: "可编辑列表",
-						component: withLazyLoad(lazy(() => import("@/pages/List/EditTale"))),
-					},
 				],
 			},
 		],

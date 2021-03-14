@@ -15,11 +15,10 @@ export default function useFormatColumn<RecordType extends object = any>(
 		const formColumns: any[] = [];
 		for (let i = 0; i < columns.length; i++) {
 			const col = columns[i];
-
+			const { edit, title, dataIndex } = col;
 			const tableColProps = FilterValue(col, antdFormItemProps); // 表格的属性
 			const formItemProps = GetValue(col, antdFormItemProps, false); // 表单的属性
-			if (isValidElement(col.edit))
-				formColumns.push({ ...formItemProps, title: col.title, edit: col.edit, dataIndex: col.dataIndex, handleSave });
+			if (isValidElement(col.edit)) formColumns.push({ label: title, edit, name: dataIndex, ...formItemProps });
 			if (!col.hide) {
 				if (isValidElement(col.edit) && type === "cell") {
 					tableColumns.push({

@@ -26,7 +26,7 @@ interface EditableCellProps {
 	children: React.ReactNode;
 	edit?: JSX.Element;
 	formItemProps: FormItemProps;
-	dataIndex: string;
+	name: string;
 	className?: string;
 	record: any;
 	handleSave: (record: any) => void;
@@ -34,7 +34,7 @@ interface EditableCellProps {
 
 export function EditableCell(props: EditableCellProps) {
 	// console.log(" EditableCell", props);
-	const { children, edit, dataIndex, record, handleSave, formItemProps, ...rest } = props;
+	const { children, edit, name, record, handleSave, formItemProps, ...rest } = props;
 	const timeFormat = TimeFormatContext.useContainer();
 	const [editing, setEditing] = useState(false); // 是否处于编辑状态
 	const { form } = EditContainer.useContainer();
@@ -46,7 +46,7 @@ export function EditableCell(props: EditableCellProps) {
 	const toggleEdit = () => {
 		setEditing((p) => !p);
 		// 设置初始值
-		form.setFieldsValue({ [dataIndex]: record[dataIndex] });
+		form.setFieldsValue({ [name]: record[name] });
 	};
 
 	const handleSaveRecord = async () => {
@@ -74,15 +74,24 @@ export function EditableCell(props: EditableCellProps) {
 	let childNode = children;
 	// 采用 Tooltip 显示错误信息
 	if (edit && isValidElement<any>(edit)) {
-		const rules: Rule[] = formItemProps.rules ?? [{ required: true, message: `${dataIndex} 不能为空` }];
+		const rules: Rule[] = formItemProps.rules ?? [{ required: true, message: `${name} 不能为空` }];
 		if (editing)
+			// 将来使用 ProFormInput等组件时使用
+			// childNode = cloneElement(edit, {
+			// 	name,
+			// 	rules,
+			// 	onKeyDown: handleEnter,
+			// 	onBlur: handleBlur,
+			// 	ref: editRef,
+			// 	...formItemProps,
+			// });
 			childNode = (
-				<Form.Item name={dataIndex} {...formItemProps} rules={rules}>
+				<Form.Item name={name} {...formItemProps} rules={rules}>
 					{cloneElement(edit, {
 						...edit.props,
 						onKeyDown: handleEnter,
 						onBlur: handleBlur,
-						name: dataIndex,
+						name,
 						ref: editRef,
 					})}
 				</Form.Item>

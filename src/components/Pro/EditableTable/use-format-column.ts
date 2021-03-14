@@ -24,10 +24,10 @@ export default function useFormatColumn<RecordType extends object = any>(
 					tableColumns.push({
 						...tableColProps,
 						onCell: (record: RecordType) => ({
+							edit,
 							record,
-							edit: col.edit,
-							dataIndex: col.dataIndex,
 							handleSave,
+							name: dataIndex,
 							formItemProps,
 						}),
 					});

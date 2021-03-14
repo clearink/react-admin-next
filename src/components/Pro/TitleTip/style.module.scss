@@ -1,0 +1,15 @@
+@import "@/styles/index.scss";
+.title_tip{
+	display: flex;
+	align-items: center;
+}
+.title {
+	margin-right: 6px;
+	@include ellipsis;
+	position: relative;
+	display: inline-block;
+}
+.icon {
+	cursor: pointer;
+	font-size: 20px;
+}

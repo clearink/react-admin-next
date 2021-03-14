@@ -2,9 +2,13 @@ import { Form, FormInstance } from "antd";
 import createContainer from "@/utils/ContextUtils";
 import { useEffect, useState } from "react";
 
-function useEditContext(initForm: FormInstance) {
+interface EditContextProps {
+	form: FormInstance;
+}
+function useEditContext({ form: initForm }: EditContextProps) {
 	const [form] = Form.useForm(initForm);
-	return form;
+
+	return { form };
 }
 export const EditContainer = createContainer(useEditContext);
 

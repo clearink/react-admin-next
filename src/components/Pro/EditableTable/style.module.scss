@@ -1,3 +1,4 @@
+$error_color: #ff4d4f;
 .page_title {
 	margin: -24px;
 	margin-bottom: 24px;
@@ -29,7 +30,9 @@
 		}
 	}
 }
-
+.error_info {
+	color: $error_color;
+}
 // [data-theme="dark"] .editable-row:hover .editable-cell-value-wrap {
 // 	border: 1px solid #434343;
 // }

@@ -74,6 +74,12 @@ const routes: RouteItemConfig[] = [
 						title: "modal 表单",
 						component: withLazyLoad(lazy(() => import("@/pages/Form/Modal"))),
 					},
+					{
+						path: "/step",
+						icon: "icon-heart",
+						title: "分布表单",
+						component: withLazyLoad(lazy(() => import("@/pages/Form/Step"))),
+					},
 				],
 			},
 			{
@@ -95,6 +101,32 @@ const routes: RouteItemConfig[] = [
 						component: withLazyLoad(lazy(() => import("@/pages/Table/EditableTable"))),
 					},
 				],
+			},
+			{
+				path: "/list",
+				title: "列表管理",
+				icon: "icon-heart",
+				component: withLazyLoad(lazy(() => import("@/layouts/BlankLayout"))),
+				routes: [
+					{
+						path: "/",
+						title: "基础列表",
+						icon: "icon-heart",
+						component: withLazyLoad(lazy(() => import("@/pages/List"))),
+					},
+					{
+						path: "/virtual-list",
+						title: "虚拟列表",
+						icon: "icon-heart",
+						component: withLazyLoad(lazy(() => import("@/pages/List/VirtualList"))),
+					},
+				],
+			},
+			{
+				path: "/dash-board",
+				title: "控制台",
+				icon: "icon-computer",
+				component: withLazyLoad(lazy(() => import("@/pages/Dashboard"))),
 			},
 		],
 	},

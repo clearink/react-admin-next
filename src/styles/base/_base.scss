@@ -5,6 +5,9 @@
 :root {
 	font-size: 10px;
 }
+.ant-drawer-body-hide {
+	width: 100%;
+}
 .ant-drawer-body-effect {
 	touch-action: none;
 	width: calc(100% - 17px);

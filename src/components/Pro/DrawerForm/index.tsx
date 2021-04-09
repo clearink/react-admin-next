@@ -3,8 +3,8 @@ import React, {
 	forwardRef,
 	isValidElement,
 	Ref,
-	useEffect,
 	useImperativeHandle,
+	useLayoutEffect,
 	useMemo,
 	useState,
 } from "react";
@@ -42,11 +42,16 @@ function DrawerForm<Values = any>(props: DrawerFormProps<Values>, ref: Ref<Drawe
 	const [loading, setLoading] = useState(false);
 
 	useImperativeHandle(ref, () => ({ form, on, off, toggle }), [form, off, on, toggle]); // 暴露的方法
-	
-	useEffect(() => {
-		const body = document.querySelector("body")!;
-		if (visible) body.classList.add("ant-drawer-body-effect");
-		else body.classList.remove("ant-drawer-body-effect");
+
+	useLayoutEffect(() => {
+		const timer = setTimeout(() => {
+			const body = document.querySelector("body")!;
+			if (visible) body.classList.add("ant-drawer-body-effect");
+			else body.classList.remove("ant-drawer-body-effect");
+		}, 50);
+		return () => {
+			clearTimeout(timer);
+		};
 	}, [visible]);
 
 	const wrappedTrigger = useMemo(() => {

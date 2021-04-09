@@ -1,6 +1,15 @@
-import React, { cloneElement, forwardRef, isValidElement, Ref, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import React, {
+	cloneElement,
+	forwardRef,
+	isValidElement,
+	Ref,
+	useImperativeHandle,
+	useLayoutEffect,
+	useMemo,
+	useState,
+} from "react";
 import { createPortal } from "react-dom";
-import { Modal, FormProps, ModalProps, Form, Button, FormInstance } from "antd";
+import { Modal, FormProps, ModalProps, Form, FormInstance } from "antd";
 import { useSwitch } from "@/hooks/state/use-boolean";
 import TitleTip, { TitleTipProps } from "../TitleTip";
 import { FilterValue, GetValue } from "@/utils/Value";
@@ -32,11 +41,16 @@ function ModalForm<Values = any>(props: ModalFormProps<Values>, ref: Ref<ModalFo
 	const [loading, setLoading] = useState(false);
 
 	useImperativeHandle(ref, () => ({ form, on, off, toggle }), [form, off, on, toggle]); // 暴露的方法
-	
-	useEffect(() => {
-		const body = document.querySelector("body")!;
-		if (visible) body.classList.add("ant-modal-body-effect");
-		else body.classList.remove("ant-modal-body-effect");
+
+	useLayoutEffect(() => {
+		const timer = setTimeout(() => {
+			const body = document.querySelector("body")!;
+			if (visible) body.classList.add("ant-modal-body-effect");
+			else body.classList.remove("ant-modal-body-effect");
+		}, 50);
+		return () => {
+			clearTimeout(timer);
+		};
 	}, [visible]);
 
 	const wrappedTrigger = useMemo(() => {

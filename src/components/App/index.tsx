@@ -10,20 +10,20 @@ import store from "@/store";
 import useRenderRoutes from "./useRenderRoutes";
 import ErrorBoundary from "../ErrorBoundary";
 function App() {
-  const element = useRenderRoutes(routes);
-  return (
-    <ErrorBoundary>
-      <Provider store={store}>
-        <ConfigProvider locale={zhCN}>
-          <SWRConfig value={{ errorRetryCount: 1 }}>
-            <Router>
-              <Routes>{element}</Routes>
-            </Router>
-          </SWRConfig>
-        </ConfigProvider>
-      </Provider>
-    </ErrorBoundary>
-  );
+	const element = useRenderRoutes(routes);
+	return (
+		<ErrorBoundary>
+			<Provider store={store}>
+				<ConfigProvider locale={zhCN}>
+					<SWRConfig value={{ errorRetryCount: 1 }}>
+						<Router>
+							<Routes>{element}</Routes>
+						</Router>
+					</SWRConfig>
+				</ConfigProvider>
+			</Provider>
+		</ErrorBoundary>
+	);
 }
 
 export default App;

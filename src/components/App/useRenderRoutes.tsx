@@ -3,7 +3,7 @@ import { PageBaseProps, RouteItemConfig } from "@/@types/route";
 import withLazyLoad from "@/hocs/withLazyLoad";
 import { isArray } from "@/utils/ValidateType";
 import { Route, Navigate } from "react-router-dom";
-
+//TODO: 权限处理
 const ERROR_COMPONENT = {
   path: "*",
   // 给每个routes字段添加匹配失败的路由

@@ -52,6 +52,7 @@ export default function List() {
 			title: "action",
 			key: "action",
 			fixed: "right",
+			width: 200,
 			render: (value) => {
 				return (
 					<>
@@ -119,7 +120,6 @@ export default function List() {
 						setData(records as typeof data);
 					}}
 				/>
-				{/* <Table size='middle' columns={__columns} dataSource={data} scroll={{ x: 1400 }} /> */}
 			</main>
 		</div>
 	);

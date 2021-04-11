@@ -6,8 +6,9 @@ export function formatFormValue(values: any, timeFormat: string = "YYYY-MM-DD"):
 	const result = isArray(values) ? [] : {};
 	for (let key of Object.keys(values)) {
 		const item = values[key];
-		if (isObject(item) || isArray(item)) result[key] = formatFormValue(item, timeFormat);
-		else if (isMoment(item)) result[key] = item.format(timeFormat);
+		
+		if (isMoment(item)) result[key] = item.format(timeFormat);
+		else if (isObject(item) || isArray(item)) result[key] = formatFormValue(item, timeFormat);
 		else result[key] = item;
 	}
 	return result;

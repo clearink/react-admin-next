@@ -1,5 +1,5 @@
 import { forwardRef, Ref, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { FormItemProps, FormProps, Table } from "antd";
+import { FormItemProps, Table } from "antd";
 import { ColumnType, TableProps } from "antd/lib/table";
 import { EditableRow, EditableCell } from "./edit-row-cell";
 import useFormatColumn from "./use-format-column";
@@ -7,9 +7,9 @@ import styles from "./style.module.scss";
 import useRefCallback from "@/hooks/state/use-ref-callback";
 import ColumnForm, { ColumnFormProps, ColumnFormRef } from "./column-form";
 import withDefaultProps from "@/hocs/withDefaultProps";
-import { DrawerFormProps } from "../DrawerForm";
-import { ModalFormProps } from "../ModalForm";
-import { TimeFormatContext } from "../utils/context";
+import { TimeFormatContext } from "../../utils/context";
+import { DrawerFormProps } from "../../Form/DrawerForm/interface";
+import { ModalFormProps } from "../../Form/ModalForm/interface";
 
 // 可编辑表格
 export interface ColumnExtendProps extends FormItemProps {

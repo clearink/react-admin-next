@@ -5,8 +5,8 @@ import { EditContainer } from "./edit-table-container";
 import styles from "./style.module.scss";
 import classNames from "classnames";
 import { Rule } from "rc-field-form/lib/interface";
-import { formatFormValue } from "../utils/format-form-value";
-import { TimeFormatContext } from "../utils/context";
+import { formatFormValue } from "../../utils/format-form-value";
+import { TimeFormatContext } from "../../utils/context";
 
 interface EditableRowProps {
 	className?: string;

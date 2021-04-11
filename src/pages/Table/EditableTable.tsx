@@ -4,7 +4,7 @@ import PageHeaderWrap from "@/components/PageHeaderWrap";
 import { Button, DatePicker, Descriptions, Drawer, Input, Modal, Popconfirm, Select, Table } from "antd";
 
 import styles from "./style.module.scss";
-import EditableTable, { EditableTableProps, EditableTableRef } from "@/components/Pro/EditableTable";
+import EditableTable, { EditableTableProps, EditableTableRef } from "@/components/Pro/Table/EditableTable";
 
 const ProDatePicker = forwardRef((props: any, ref) => {
 	const { value: __value, name, ...rest } = props;

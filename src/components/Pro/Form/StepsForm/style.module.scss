@@ -1,0 +1,22 @@
+.steps_form {
+	width: 100%;
+	&__wrap {
+	}
+	&__steps_wrap {
+		margin-bottom: 30px;
+	}
+	&__form_wrap {
+		padding: 0 30px;
+	}
+	&__form {
+		display: none;
+		&--active {
+			display: block;
+		}
+	}
+	&__submitter_wrap {
+		:not(:last-child) {
+			margin-right: 4px;
+		}
+	}
+}

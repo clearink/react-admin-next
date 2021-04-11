@@ -1,9 +1,10 @@
-import withDefaultProps from "@/hocs/withDefaultProps"; 
+import withDefaultProps from "@/hocs/withDefaultProps";
 import { createElement, forwardRef, Ref } from "react";
-import DrawerForm, { DrawerFormProps, DrawerFormRef } from "../DrawerForm";
-import ModalForm from "../ModalForm";
-import { TitleTipProps } from "../TitleTip";
-import { TimeFormatContext } from "../utils/context";
+import DrawerForm from "../../Form/DrawerForm";
+import { DrawerFormProps, DrawerFormRef } from "../../Form/DrawerForm/interface";
+import ModalForm from "../../Form/ModalForm";
+import { TitleTipProps } from "../../TitleTip";
+import { TimeFormatContext } from "../../utils/context";
 import { renderColumnForm } from "./render-column-form";
 
 export interface ColumnFormProps {

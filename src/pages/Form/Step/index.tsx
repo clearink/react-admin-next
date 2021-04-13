@@ -7,7 +7,7 @@ export default function StepFormPage() {
 	return (
 		<div className='flex flex-col min-h-screen'>
 			<PageHeaderWrap title='steps Form' />
-			<main className='bg-white h-full flex-auto p-6'>
+			<main className='bg-white h-full flex-auto p-6 mt-10'>
 				<StepsForm
 					onFinish={async (values, info) => {
 						await sleep(1000);

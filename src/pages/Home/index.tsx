@@ -16,10 +16,10 @@ export default function Home(props: any) {
 					<li className='line-through text-gray-500 mb-4'>
 						<Link to='/form/drawer'>drawerForm</Link>
 					</li>
-					<li className='text-gray-500 mb-4'>
+					<li className='line-through text-gray-500 mb-4'>
 						<Link to='/form/step'>分布表单</Link>
 					</li>
-					<li className='text-gray-500 mb-4'>
+					<li className='line-through text-gray-500 mb-4'>
 						<Link to='/form'>基础Form</Link>
 					</li>
 					<li className='text-gray-500 mb-4'>

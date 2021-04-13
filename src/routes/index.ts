@@ -128,6 +128,12 @@ const routes: RouteItemConfig[] = [
 				icon: "icon-computer",
 				component: withLazyLoad(lazy(() => import("@/pages/Dashboard"))),
 			},
+			{
+				path: "/scroll-load",
+				title: "滚动加载",
+				icon: "icon-computer",
+				component: withLazyLoad(lazy(() => import("@/pages/Scroll"))),
+			},
 		],
 	},
 ];

@@ -1,6 +1,12 @@
 import createContainer from "@/utils/ContextUtils";
+import { ButtonProps } from "antd";
 
-function useStepForm(nextStep: () => void) {
-	return nextStep;
+interface UseStepFormProps {
+	loading: ButtonProps["loading"];
+	handlePreStep: () => void;
+	handleNextStep: () => void;
 }
-export default createContainer(useStepForm);
+function useStepForm(props: UseStepFormProps) {
+	return props;
+}
+export const StepFormContainer = createContainer(useStepForm);

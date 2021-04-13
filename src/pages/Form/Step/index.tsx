@@ -1,6 +1,6 @@
-import React from "react";
+import React, { cloneElement } from "react";
 import PageHeaderWrap from "@/components/PageHeaderWrap";
-import { Input, InputNumber, Result, Steps } from "antd";
+import { Input, InputNumber, Result } from "antd";
 import StepsForm from "@/components/Pro/Form/StepsForm";
 import { sleep } from "@/utils/Test";
 export default function StepFormPage() {
@@ -8,26 +8,25 @@ export default function StepFormPage() {
 		<div className='flex flex-col min-h-screen'>
 			<PageHeaderWrap title='steps Form' />
 			<main className='bg-white h-full flex-auto p-6'>
-				<StepsForm onFinish={console.log} withFormName>
-					<StepsForm.Step name='ss1' onFinish={() => true} isLast>
+				<StepsForm
+					onFinish={async (values, info) => {
+						await sleep(1000);
+						return true;
+					}}
+				>
+					<StepsForm.Step name='ss1'>
 						<StepsForm.Item name='name'>
 							<Input />
 						</StepsForm.Item>
 					</StepsForm.Step>
-					<StepsForm.Step
-						name='ss2'
-						onFinish={(v) => {
-							console.log("await ", v);
-							return true;
-						}}
-					>
+					<StepsForm.Step name='ss2'>
 						<StepsForm.Item name='age'>
 							<InputNumber />
 						</StepsForm.Item>
 					</StepsForm.Step>
-					{/* <StepsForm.Step name='ss3'>
+					<StepsForm.Step name='ss3' submitConfig={false}>
 						<Result status='success' />
-					</StepsForm.Step> */}
+					</StepsForm.Step>
 				</StepsForm>
 			</main>
 		</div>

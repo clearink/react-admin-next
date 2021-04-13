@@ -10,7 +10,7 @@ import { ReactElement } from "react";
 export interface SubmitterProps {
 	onSubmit?: () => void;
 	onReset?: () => void;
-	render?: (dom: ReactElement<ButtonProps>[], form: FormInstance, props: SubmitterProps) => JSX.Element;
+	render?: (dom: ReactElement<ButtonProps>[], form: FormInstance) => JSX.Element;
 }
 export default function Submitter(props: SubmitterProps) {
 	const { onReset, onSubmit, render } = props;
@@ -32,6 +32,6 @@ export default function Submitter(props: SubmitterProps) {
 			提交
 		</Button>,
 	];
-	if (render) return render(dom, form, props);
+	if (render) return render(dom, form);
 	return <Space size={4}>{dom}</Space>;
 }

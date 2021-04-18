@@ -68,9 +68,10 @@ function StepsForm(props: StepsFormProps) {
 				</Steps>
 			</div>
 			<Form.Provider onFormFinish={handleFinish}>
-				<StepFormContainer.Provider initialState={{ loading, handlePreStep, handleNextStep }}>
+				<StepFormContainer.Provider initialState={{ handlePreStep, handleNextStep }}>
 					<div className={styles.steps_form__form_wrap}>
-						{formChildren.map((child, index) => {
+						{formChildren.map((child: StepFormType, index) => {
+							const active = index === current;
 							return (
 								<div
 									key={child.key}
@@ -78,7 +79,7 @@ function StepsForm(props: StepsFormProps) {
 										[styles["steps_form__form--active"]]: index === current,
 									})}
 								>
-									{child}
+									{cloneElement(child, { loading: active ? loading : false })}
 								</div>
 							);
 						})}
@@ -86,7 +87,7 @@ function StepsForm(props: StepsFormProps) {
 				</StepFormContainer.Provider>
 			</Form.Provider>
 		</div>
-	);
+	); 
 }
 StepsForm.Step = StepForm;
 StepsForm.Item = Form.Item;

@@ -20,3 +20,8 @@ export function GetValue<T, K extends keyof T>(obj: T, keys: Array<K>, allowUnde
 	}
 	return result;
 }
+
+// lodash 的 wrap
+export function valueRange(value: number, min: number, max: number) {
+	return Math.min(Math.max(value, min), max);
+}

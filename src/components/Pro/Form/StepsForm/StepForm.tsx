@@ -5,13 +5,11 @@ import { StepFormProps } from "./interface";
 import { StepFormContainer } from "./step-form-container";
 
 function StepForm(props: StepFormProps) {
-	const { children, submitConfig: __submitConfig, isFirst, isLast, ...rest } = props;
-	const { loading, handleNextStep, handlePreStep } = StepFormContainer.useContainer();
-
+	const { children, renderSubmitter, loading, isFirst, isLast, ...rest } = props;
+	const { handleNextStep, handlePreStep } = StepFormContainer.useContainer();
 	const submitConfig = useMemo(() => {
-		if (__submitConfig === false) return false;
+		if (renderSubmitter === false) return false;
 		return {
-			...__submitConfig,
 			render: (_, form) => {
 				const dom = [
 					<Button key='pre' disabled={isFirst} onClick={handlePreStep}>
@@ -21,11 +19,11 @@ function StepForm(props: StepFormProps) {
 						{isLast ? "提交" : "下一步"}
 					</Button>,
 				];
-				if (__submitConfig?.render) return __submitConfig.render(dom, form, { handleNextStep, handlePreStep, loading });
+				if (renderSubmitter) return renderSubmitter(dom, form, { handleNextStep, handlePreStep, loading });
 				return <Space size={4}>{dom}</Space>;
 			},
 		} as ProFormProps["submitConfig"];
-	}, [__submitConfig, handleNextStep, handlePreStep, isFirst, isLast, loading]);
+	}, [renderSubmitter, handleNextStep, handlePreStep, isFirst, isLast, loading]);
 
 	return (
 		<ProForm {...rest} submitConfig={submitConfig}>
@@ -38,6 +36,7 @@ StepForm.StepForm = true;
 StepForm.defaultProps = {
 	isFirst: true,
 	isLast: false,
+	loading: false,
 };
 export default StepForm;
 /**

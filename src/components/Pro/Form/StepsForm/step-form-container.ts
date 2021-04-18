@@ -1,8 +1,6 @@
 import createContainer from "@/utils/ContextUtils";
-import { ButtonProps } from "antd";
 
 interface UseStepFormProps {
-	loading: ButtonProps["loading"];
 	handlePreStep: () => void;
 	handleNextStep: () => void;
 }

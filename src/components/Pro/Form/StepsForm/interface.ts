@@ -18,24 +18,20 @@ export interface StepsFormRef {
 	nextStep: () => void;
 	setCurrent: React.Dispatch<React.SetStateAction<number>>;
 }
-
-interface StepFormSubmitterProps {
-	onSubmit?: () => void;
-	onReset?: () => void;
-	render?: (
-		dom: ReactElement<ButtonProps>[],
-		form: FormInstance,
-		props: {
-			loading: ButtonProps["loading"];
-			handlePreStep: () => void;
-			handleNextStep: () => void;
-		}
-	) => JSX.Element;
-}
+type TRenderSubmitter = (
+	dom: ReactElement<ButtonProps>[],
+	form: FormInstance,
+	props: {
+		loading: ButtonProps["loading"];
+		handlePreStep: () => void;
+		handleNextStep: () => void;
+	}
+) => JSX.Element;
 export interface StepFormProps<Values = any> extends Omit<ProFormProps<Values>, "submitConfig"> {
 	name: string;
+	loading: ButtonProps["loading"];
 	stepProps?: StepProps;
-	submitConfig?: StepFormSubmitterProps | false;
+	renderSubmitter?: TRenderSubmitter | false;
 	isFirst: boolean;
 	isLast: boolean;
 }

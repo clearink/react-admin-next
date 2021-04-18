@@ -22,8 +22,8 @@ export default function Home(props: any) {
 					<li className='line-through text-gray-500 mb-4'>
 						<Link to='/form'>基础Form</Link>
 					</li>
-					<li className='text-gray-500 mb-4'>
-						<Link to='/form'>滚动加载</Link>
+					<li className='line-through text-gray-500 mb-4'>
+						<Link to='/scroll-load'>滚动加载</Link>
 					</li>
 					<li className='text-gray-500 mb-4'>
 						<Link to='/form'>虚拟列表</Link>

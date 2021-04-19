@@ -19,7 +19,7 @@ export function useDebounceCallback<Fn extends Function>(delay: number, fn: Fn) 
 }
 
 // 防抖 value
-export function useDebounceValue<Value = any>(delay = 100, value: Value) {
+export function useDebounceValue<Value = any>(delay: number, value: Value) {
 	// 不能使用 useRef 因为 useRef 视图不会自动变更
 	const [state, setState] = useState(value);
 	const callback = useDebounceCallback(delay, () => setState(value));
@@ -33,3 +33,7 @@ export function useDebounceState<S = undefined>(delay: number, initialState: S |
 	const throttledState = useDebounceValue(delay, state);
 	return [throttledState, setState] as const;
 }
+/**
+ * 这个hook尽量少用
+ * const [debounceState, setState] = useDebounceState(1000, false)
+ */

@@ -23,7 +23,7 @@ export function useThrottleCallback<Fn extends Function>(delay: number, fn: Fn) 
 
 // 节流 value
 // 可以用来实现 loading delay
-export function useThrottleValue<Value = any>(delay = 100, value: Value) {
+export function useThrottleValue<Value = any>(delay: number, value: Value) {
 	// 不能使用 useRef 因为 useRef 视图不会自动变更
 	const [state, setState] = useState(value);
 	const callback = useThrottleCallback(delay, () => setState(value));
@@ -38,3 +38,7 @@ export function useThrottleState<S = undefined>(delay: number, initialState: S |
 	const throttledState = useThrottleValue(delay, state);
 	return [throttledState, setState] as const;
 }
+/**
+ * 这个hook尽量少用
+ * const [throttleState, setState] = useThrottleState(1000, false)
+ */

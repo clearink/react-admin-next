@@ -10,19 +10,23 @@ export default function StepFormPage() {
 		<div className='flex flex-col min-h-screen'>
 			<PageHeaderWrap title='steps Form' />
 			<main className='bg-white h-full flex-auto p-6 mt-10'>
-				<Button onClick={toggle}>toggle</Button>
+				
 				<StepsForm
 					onFinish={async (values, info) => {
 						await sleep(1000);
 						return true;
 					}}
 				>
-					<StepsForm.Step name='ss1'>
+					<StepsForm.Step name='ss1' stepProps={{
+						title:'第一步'
+					}}>
 						<StepsForm.Item name='name'>
 							<Input />
 						</StepsForm.Item>
 					</StepsForm.Step>
-					<StepsForm.Step name='ss2'>
+					<StepsForm.Step name='ss2'stepProps={{
+						title:'第二步'
+					}}>
 						<StepsForm.Item name='age'>
 							<InputNumber />
 						</StepsForm.Item>

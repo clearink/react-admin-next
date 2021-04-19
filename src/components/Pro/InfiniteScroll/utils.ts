@@ -13,7 +13,7 @@ export function valueRange(value: number, min: number, max: number) {
 }
 
 export function isScrollBottom(element: HTMLElement | null, config: ScrollBottomConfig) {
-	const { useWindow, scrollThreshold = 0.9 } = config;
+	const { useWindow, scrollThreshold = 0.8 } = config;
 	const target = useWindow ? document.documentElement || document.body : element!;
-	return target.scrollTop + target.clientHeight >= target.scrollHeight * valueRange(scrollThreshold, 0, 1);
+	return target.scrollTop + target.clientHeight + scrollThreshold >= target.scrollHeight ;
 }

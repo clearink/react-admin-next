@@ -129,11 +129,27 @@ const routes: RouteItemConfig[] = [
 				component: withLazyLoad(lazy(() => import("@/pages/Dashboard"))),
 			},
 			{
-				path: "/scroll-load",
-				title: "滚动加载",
-				icon: "icon-computer",
-				component: withLazyLoad(lazy(() => import("@/pages/Scroll"))),
-			},
+				path: '/other',
+				title: '其他',
+				icon: 'icon-heart',
+				component: withLazyLoad(lazy(() => import('@/layouts/BlankLayout'))),
+				routes: [
+					{
+						path: "/scroll-load",
+						title: "滚动加载",
+						icon: "icon-computer",
+						component: withLazyLoad(lazy(() => import("@/pages/Scroll"))),
+					},
+					{
+						path: "/virtual-list",
+						title: "虚拟列表",
+						icon: "icon-computer",
+						component: withLazyLoad(lazy(() => import("@/pages/VirtualList"))),
+					},
+
+				]
+			}
+
 		],
 	},
 ];

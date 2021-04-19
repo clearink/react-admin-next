@@ -1,16 +1,16 @@
+import React, { useState } from "react";
 import PageHeaderWrap from "@/components/PageHeaderWrap";
+import InfiniteScroll from "@/components/Pro/InfiniteScroll";
 import { sleep } from "@/utils/Test";
-import { useState } from "react";
-import InfiniteScroll from "./InfiniteScroll";
 
 export default function ScrollLoadPage() {
 	const [len, setLen] = useState(60);
 	return (
-		<div className='min-h-screen flex flex-col'>
-			<PageHeaderWrap title='滚动加载组件' />
+		<div className='min-h-full flex flex-col'>
+			<PageHeaderWrap title='无限滚动' />
 			<main className='bg-white mt-10 p-6 flex-1'>
 				<InfiniteScroll
-					hasMore={true}
+					hasMore
 					height={400}
 					loadMore={async () => {
 						console.log('请求接口');

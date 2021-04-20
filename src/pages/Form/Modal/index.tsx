@@ -9,9 +9,9 @@ import { useToggle } from "@/hooks/state/use-boolean";
 export default function FormEdit(props: any) {
 	const [visible, toggle] = useToggle();
 	return (
-		<div className='flex flex-col min-h-screen'>
+		<div className='flex flex-col min-h-full'>
 			<PageHeaderWrap title='modal form' className={styles.page_header} />
-			<main className='bg-white h-full flex-auto p-6'>
+			<main className='bg-white flex-auto p-6'>
 				<Modal visible={visible} onCancel={toggle}>
 					<div>12332112</div>
 				</Modal>

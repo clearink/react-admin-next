@@ -25,7 +25,7 @@ export default function List() {
 			address: "London, Park Lane no. 0",
 		}))
 	);
-	const __columns: EditableTableProps["columns"] = [
+	const __columns: EditableTableProps['columns'] = [
 		{
 			title: "name",
 			dataIndex: "name",
@@ -85,7 +85,7 @@ export default function List() {
 				<Descriptions.Item label='ref属性'>{`add,edit,delete`}</Descriptions.Item>
 				<Descriptions.Item>增加,修改,删除</Descriptions.Item>
 			</Descriptions>
-			<main className='bg-white h-screen p-5'>
+			<main className='bg-white min-h-full p-5'>
 				<div className='pb-4 text-right'>
 					<Select
 						defaultValue='cell'

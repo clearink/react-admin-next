@@ -8,9 +8,9 @@ import { Button, DatePicker, Input } from "antd";
 
 export default function FormAdd(props: any) {
 	return (
-		<div className='flex flex-col min-h-screen'>
+		<div className='flex flex-col min-h-full'>
 			<PageHeaderWrap title='drawer form' className={styles.page_header} />
-			<main className='bg-white h-full flex-auto p-6'>
+			<main className='bg-white flex-auto p-6'>
 				<DrawerForm
           title={{title:'drawer form',tip:'drawer form'}}
 					onFinish={async (values: any) => {

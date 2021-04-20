@@ -26,7 +26,10 @@ export default function Home(props: any) {
 						<Link to='/other/scroll-load'>滚动加载</Link>
 					</li>
 					<li className='text-gray-500 mb-4'>
-						<Link to='/other/virtual-list'>虚拟列表</Link>
+						<Link to='/list/virtual-list'>虚拟列表</Link>
+					</li>
+					<li className='text-gray-500 mb-4'>
+						<Link to='/table/pro-table'>pro-table</Link>
 					</li>
 				</ul>
 			</div>

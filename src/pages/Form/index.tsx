@@ -7,9 +7,9 @@ import { sleep } from "@/utils/Test";
 
 export default function FormPage(props: any) {
 	return (
-		<div className='flex flex-col min-h-screen'>
+		<div className='flex flex-col min-h-full'>
 			<PageHeaderWrap title='基础Form' className={styles.page_header} />
-			<main className='bg-white h-full flex-auto p-6'>
+			<main className='bg-white flex-auto p-6'>
 				<ProForm
 					onChange={console.log}
 					onFinish={async (values: any) => {

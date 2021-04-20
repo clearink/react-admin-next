@@ -13,26 +13,20 @@ export default function ScrollLoadPage() {
 					hasMore
 					height={400}
 					loadMore={async () => {
-						console.log('请求接口');
-						await sleep(Math.random()*200);
+						console.log("请求接口");
+						await sleep(200);
 						setLen((p) => p + 10);
 						return true;
 					}}
 					loader={<div>loading....</div>}
 				>
-					{Array.from({ length: len }, (_, i, ...args) => {
+					{Array.from({ length: len }, (_, i) => {
 						return (
 							<div className='h-8' key={i}>
 								{i}
 							</div>
 						);
 					})}
-					<div
-						style={{
-							height: 1,
-							borderBottom: "1px solid red",
-						}}
-					></div>
 				</InfiniteScroll>
 			</main>
 		</div>

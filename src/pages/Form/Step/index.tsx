@@ -7,9 +7,9 @@ import { useToggle } from "@/hooks/state/use-boolean";
 export default function StepFormPage() {
 	const [visible, toggle] = useToggle();
 	return (
-		<div className='flex flex-col min-h-screen'>
+		<div className='flex flex-col min-h-full'>
 			<PageHeaderWrap title='steps Form' />
-			<main className='bg-white h-full flex-auto p-6 mt-10'>
+			<main className='bg-white flex-auto p-6 mt-10'>
 				
 				<StepsForm
 					onFinish={async (values, info) => {

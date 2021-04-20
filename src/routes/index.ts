@@ -100,6 +100,12 @@ const routes: RouteItemConfig[] = [
 						title: "可编辑表格",
 						component: withLazyLoad(lazy(() => import("@/pages/Table/EditableTable"))),
 					},
+					{
+						path: "/pro-table",
+						icon: "icon-computer",
+						title: "pro table",
+						component: withLazyLoad(lazy(() => import("@/pages/Table/ProTable"))),
+					},
 				],
 			},
 			{
@@ -139,12 +145,6 @@ const routes: RouteItemConfig[] = [
 						title: "滚动加载",
 						icon: "icon-computer",
 						component: withLazyLoad(lazy(() => import("@/pages/Scroll"))),
-					},
-					{
-						path: "/virtual-list",
-						title: "虚拟列表",
-						icon: "icon-computer",
-						component: withLazyLoad(lazy(() => import("@/pages/VirtualList"))),
 					},
 
 				]

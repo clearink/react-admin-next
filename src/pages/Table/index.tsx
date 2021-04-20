@@ -5,7 +5,6 @@ export default function BaseTable() {
 		<div>
 			<PageHeaderWrap title='基础表格' />
 
-			<main className='h-screen'></main>
 		</div>
 	);
 }

@@ -49,6 +49,7 @@ class ConstantToMapClass<V extends ConstantItem> {
 	}
 }
 
+
 /** 根据参数转换成map 获得正确的数据顺序与类型 */
 
 export default function ConstantToMap<Value extends ConstantItem>(
@@ -91,6 +92,28 @@ const a = ASSET_TYPE.toArray(([k, v]) => ({ value: k, label: v.name }));
 // list
 console.log("list,ASSET_TYPE.toArray(([k, v]) => ({ value: k, label: v.name }))", a.list[0].value);
 
+interface I_ASSET_DETAIL {
+	name: string,
+	color: string,
+	key: 'server' | 'endpoint' | 'net_endpoint' | 'safety_equipment'
+}
+const ASSET_DETAIL_TYPE = ConstantToMap<I_ASSET_DETAIL>(
+	0, { name: '服务器', color: '13', key: 'server' },
+	1, { name: '终端', color: '13', key: 'endpoint' },
+	2, { name: '网络设备', color: '13', key: 'net_endpoint' },
+	3, { name: '安全设备', color: '13', key: 'safety_equipment' },
+	4, { name: '2', color: '2', key: 'safety_equipment' }
+)
+	.extend({ default: 0, a: 213, c: '', d: [1, 2, 3, 4, 5] })
+	.toArray(([k, v]) => ({ name: k, value: v.color, t: v.key }));
+
+const v = (v: string) => `${v}_str`;
+enum A {
+	服务器,
+	'终端'
+}
+let c = A['0']
+console.log(ASSET_DETAIL_TYPE.list,)
 /**
  *
  * 需求

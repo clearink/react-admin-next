@@ -7,7 +7,7 @@ import zhCN from "antd/lib/locale/zh_CN";
 import "dayjs/locale/zh-cn";
 import routes from "@/routes";
 import store from "@/store";
-import useRenderRoutes from "./useRenderRoutes";
+import useRenderRoutes from "./hooks/use-render-routes";
 import ErrorBoundary from "../ErrorBoundary";
 function App() {
 	const element = useRenderRoutes(routes);

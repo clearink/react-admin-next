@@ -3,7 +3,7 @@ import { PageHeader } from "antd";
 import { PageHeaderProps } from "antd/lib/page-header";
 import { Link } from "react-router-dom";
 import withDefaultProps from "@/hocs/withDefaultProps";
-import useMatchBreadCrumb from "./useMatchBreadCrumb";
+import useMatchBreadCrumb from "./hooks/use-match-bread-crumb";
 
 interface IProps extends PageHeaderProps {
 	ghost: boolean;

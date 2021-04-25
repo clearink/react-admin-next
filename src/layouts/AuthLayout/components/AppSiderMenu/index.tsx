@@ -4,8 +4,8 @@ import classNames from "classnames";
 import useTypedSelector from "@/hooks/redux/use-typed-selector";
 import useAppDispatch from "@/hooks/redux/use-app-dispatch";
 import { actions } from "@/store/reducers/menu";
-import useRenderMenu from "./useRenderMenu";
-import useMenuSelectedKeys from "./useMenuSelectedKeys";
+import useRenderMenu from "./hooks/use-render-menu";
+import useMenuSelectedKeys from "./hooks/use-menu-selected-keys";
 import styles from "./style.module.scss";
 import { BulbFilled } from "@ant-design/icons";
 

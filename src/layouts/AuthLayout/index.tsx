@@ -3,10 +3,10 @@ import { Outlet } from "react-router-dom";
 import { PageBaseProps } from "@/@types/route";
 import { Layout } from "antd";
 import AppSiderMenu from "./components/AppSiderMenu";
-import useSetMenu from "./useSetMenu";
 import AppHeader from "./components/AppHeader";
 import AppFooter from "./components/AppFooter";
 import styles from "./style.module.scss";
+import useSetMenu from "./hooks/use-set-menu";
 
 export default function AuthLayout(props: PageBaseProps) {
   // 获取菜单数据 根据 routes json

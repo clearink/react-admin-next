@@ -1,6 +1,6 @@
 import React, { ReactElement, Ref } from "react";
 import { ButtonProps, FormInstance, StepProps, StepsProps } from "antd";
-import { ProFormProps } from "@/components/Pro/Form/ProForm";
+import { ProFormProps } from "../ProForm/interface";
 
 interface FormFinishInfo {
 	name: string;
@@ -30,6 +30,7 @@ type TRenderSubmitter = (
 export interface StepFormProps<Values = any> extends Omit<ProFormProps<Values>, "submitConfig"> {
 	name: string;
 	loading: ButtonProps["loading"];
+	/** 不在 StepForm中起作用 */
 	stepProps?: StepProps;
 	renderSubmitter?: TRenderSubmitter | false;
 	isFirst: boolean;

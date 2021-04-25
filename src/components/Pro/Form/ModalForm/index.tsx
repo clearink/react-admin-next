@@ -81,7 +81,7 @@ function ModalForm<Values = any>(props: ModalFormProps<Values>, ref: Ref<ModalFo
 					</Modal>
 				),
 			}}
-		></ProForm>
+		/>
 	);
 	return (
 		<>

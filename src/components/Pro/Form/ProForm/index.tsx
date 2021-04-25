@@ -1,16 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { ButtonProps, Form, FormProps } from "antd";
-import Submitter, { SubmitterProps } from "../Submitter";
+import React, { useState } from "react";
+import { ButtonProps, Form } from "antd";
+import Submitter from "../Submitter";
 import useRefCallback from "@/hooks/state/use-ref-callback";
 import { ProFormContainer } from "./pro-form-container";
 import useMountedRef from "@/hooks/state/use-mounted-ref";
 import { formatFormValue } from "@/components/Pro/utils/format-form-value";
+import { ProFormProps } from "./interface";
 
-export interface ProFormProps<Values = any> extends FormProps<Values> {
-	children?: React.ReactNode;
-	submitConfig?: SubmitterProps | false;
-	timeFormat?: string;
-}
 function ProForm<Values = any>(props: ProFormProps<Values>) {
 	const { children, form: __form, onFinish, submitConfig, timeFormat, ...rest } = props;
 	const [form] = Form.useForm(__form);

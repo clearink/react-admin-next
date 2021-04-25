@@ -33,5 +33,5 @@ export default function Submitter(props: SubmitterProps) {
 		</Button>,
 	];
 	if (render) return render(dom, form);
-	return <Space size={4}>{dom}</Space>;
+	return <Space size={8}>{dom}</Space>;
 }

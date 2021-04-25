@@ -5,14 +5,7 @@
 :root {
 	font-size: 10px;
 }
-.ant-drawer-body-hide {
-	width: 100%;
-}
-.ant-drawer-body-effect {
+.scroll-body-effect {
 	touch-action: none;
-	width: calc(100% - 17px);
 	overflow: hidden;
-}
-.ant-modal-body-effect {
-	@extend .ant-drawer-body-effect;
 }

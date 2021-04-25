@@ -4,11 +4,17 @@ import { useLayoutEffect } from "react";
 export default function useFixModalMask(visible: boolean) {
 	useLayoutEffect(() => {
 		// 打开时立即执行 关闭时延迟动画结束
-		const delay = visible ? 50 : 300;
+		const delay = visible ? 50 : 260;
 		const timer = setTimeout(() => {
-			const body = document.querySelector("body")!;
-			if (visible) body.classList.add("ant-drawer-body-effect");
-			else body.classList.remove("ant-drawer-body-effect");
+			const target = document.documentElement || document.body;
+			const fixWidth = target.scrollHeight > target.clientHeight ? 17 : 0;
+			if (visible) {
+				target.classList.add("scroll-body-effect");
+				target.style.width = `calc(100% - ${fixWidth}px)`;
+			} else {
+				target.classList.remove("scroll-body-effect");
+				target.style.width = '';
+			}
 		}, delay);
 		return () => {
 			clearTimeout(timer);

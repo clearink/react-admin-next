@@ -1,6 +1,6 @@
 import { DrawerProps, FormInstance } from "antd";
 import { TitleTipProps } from "../../TitleTip";
-import { ProFormProps } from "../ProForm";
+import { ProFormProps } from "../ProForm/interface";
 
 export interface DrawerFormProps<Values = any> extends DrawerProps, Omit<ProFormProps<Values>, "title"> {
 	title?: TitleTipProps["title"];

@@ -1,6 +1,6 @@
 import { FormInstance, ModalProps } from "antd";
 import { TitleTipProps } from "../../TitleTip";
-import { ProFormProps } from "../ProForm";
+import { ProFormProps } from "../ProForm/interface";
 
 export interface ModalFormProps<Values = any> extends ModalProps, Omit<ProFormProps<Values>, "title"> {
 	title?: TitleTipProps["title"];

@@ -1,16 +1,18 @@
-import GetConstant from "./utils";
+import GetConstant, { ConstantItem } from "./utils";
 
-// 根据业务的不同定义不同的 type
-interface I_ASSET_DETAIL {
-	name: string,
-	color: string,
-	status: number,
-	key: 'server' | 'endpoint' | 'net_endpoint' | 'safety_equipment'
+interface I_ASSET_DETAIL extends ConstantItem {
+	text: string;
+	status: number;
+	key: "server" | "net_endpoint" | "endpoint" | "safety_equipment";
+	a: number;
 }
-const A = GetConstant<I_ASSET_DETAIL>(
-	{ status: 1, name: '服务器', color: '13', key: 'server' }
-)
-	.extend({ default: 0, a: 213, c: '', d: [1, 2, 3, 4, 5] })
-	.toArray(([k, v]) => ({ name: k, value: v.color, t: v.key }));
 
-console.log(A.matchStatus(1))
+export const ASSET_CONST = GetConstant<I_ASSET_DETAIL>(
+	{ status: 1, text: "服务器1" },
+	{ status: 2, text: "服务器2", key: "net_endpoint" },
+	{ status: 3, text: "服务器3", key: "safety_equipment" },
+	{ status: 4, text: "服务器4", key: "server" }
+).setAll({ status: -1, text: "全部" });
+console.log(ASSET_CONST.list);
+console.log(ASSET_CONST.getFullList());
+// ASSET_CONST.list

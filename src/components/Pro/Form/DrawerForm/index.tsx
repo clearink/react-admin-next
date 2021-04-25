@@ -80,7 +80,7 @@ function DrawerForm<Values = any>(props: DrawerFormProps<Values>, ref: Ref<Drawe
 					</Drawer>
 				),
 			}}
-		></ProForm>
+		/>
 	);
 	return (
 		<>

@@ -80,6 +80,12 @@ const routes: RouteItemConfig[] = [
 						title: "分布表单",
 						component: withLazyLoad(lazy(() => import("@/pages/Form/Step"))),
 					},
+					{
+						path: "/filter",
+						icon: "icon-heart",
+						title: "筛选表单",
+						component: withLazyLoad(lazy(() => import("@/pages/Form/Filter"))),
+					},
 				],
 			},
 			{

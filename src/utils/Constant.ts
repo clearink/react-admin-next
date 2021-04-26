@@ -1,5 +1,3 @@
-import { isArray } from "./ValidateType";
-
 export interface ConstantItem {
 	status: any;
 	key?: string | number | symbol;
@@ -67,18 +65,3 @@ export default class Constant<V extends ConstantItem> {
 	}
 }
 
-/**
- *
- * 需求
- * 1. 根据 status 映射 text done
- * 2. 根据 key 匹配 status done
- * 3. 转换成list done
- */
-/**
- * 目标
- * 1. 期望只传入value的类型即可 key的类型可以省略 done
- *
- * 2. 能否结合 enum no
- *
- * 3. 能否简单的实现全部值 pending
- */

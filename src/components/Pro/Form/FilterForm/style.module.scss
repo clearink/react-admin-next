@@ -1,0 +1,50 @@
+@import "@/styles/index";
+$base_spacing: 8px;
+
+.filter_form {
+	display: flex;
+	flex-wrap: wrap;
+	background-color: white;
+	&.ghost {
+		background-color: transparent;
+	}
+
+	&__item {
+		padding: 0 10px;
+
+		&--hidden {
+			overflow: hidden;
+			max-height: 0 !important;
+			max-width: 0 !important;
+			padding: 0 !important;
+		}
+	}
+}
+.filter_form__submitter {
+	text-align: right;
+	padding: 0 10px;
+    margin-bottom: 24px;
+    white-space: nowrap;
+	&>:not(:last-child) {
+		margin-right: 8px;
+	}
+}
+
+.collapsed_trigger {
+	cursor: pointer;
+	color: $primary_color;
+	white-space: nowrap;
+	&:hover {
+		color: rgba($primary_color, 0.8);
+	}
+	&:active {
+		color: $primary_color;
+	}
+	.trigger_icon {
+		transition: transform 0.3s;
+		margin-left: 6px;
+		&.collapsed {
+			transform: rotate(-180deg);
+		}
+	}
+}

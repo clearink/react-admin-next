@@ -22,6 +22,8 @@ export function GetValue<T, K extends keyof T>(obj: T, keys: Array<K>, allowUnde
 }
 
 // lodash 的 wrap
-export function valueRange(value: number, min: number, max: number) {
+export function valueRange(value: number, _min: number, _max: number) {
+	const min = Math.min(_min, _max);
+	const max = Math.max(_min, _max);
 	return Math.min(Math.max(value, min), max);
 }

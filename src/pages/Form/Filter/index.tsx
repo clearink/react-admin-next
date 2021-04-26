@@ -7,7 +7,26 @@ export default function FilterFormPage() {
 		<div>
 			<PageHeaderWrap title='FilterForm' />
 			<main>
-				<FilterForm>
+				<FilterForm > 
+				
+					<Form.Item name='age'>
+						<Input />
+					</Form.Item>
+					<Form.Item name='age'>
+						<Input />
+					</Form.Item>
+					<Form.Item name='age'>
+						<Input />
+					</Form.Item>
+					<Form.Item name='age'>
+						<Input />
+					</Form.Item>
+					<Form.Item name='age'>
+						<Input />
+					</Form.Item>
+					<Form.Item name='age'>
+						<Input />
+					</Form.Item>
 					<Form.Item name='age'>
 						<Input />
 					</Form.Item>

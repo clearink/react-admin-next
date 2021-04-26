@@ -1,5 +1,5 @@
 import PageHeaderWrap from "@/components/PageHeaderWrap";
-import FilterForm from "@/components/Pro/Form/FilterForm";
+import { FilterForm } from "@/components/Pro/Form";
 import { Form, Input } from "antd";
 
 export default function FilterFormPage() {
@@ -7,33 +7,8 @@ export default function FilterFormPage() {
 		<div>
 			<PageHeaderWrap title='FilterForm' />
 			<main>
-				<FilterForm > 
-				
-					<Form.Item name='age'>
-						<Input />
-					</Form.Item>
-					<Form.Item name='age'>
-						<Input />
-					</Form.Item>
-					<Form.Item name='age'>
-						<Input />
-					</Form.Item>
-					<Form.Item name='age'>
-						<Input />
-					</Form.Item>
-					<Form.Item name='age'>
-						<Input />
-					</Form.Item>
-					<Form.Item name='age'>
-						<Input />
-					</Form.Item>
-					<Form.Item name='age'>
-						<Input />
-					</Form.Item>
-					<Form.Item name='age'>
-						<Input />
-					</Form.Item>
-					<Form.Item name='age'>
+				<FilterForm>
+					<Form.Item name='123'>
 						<Input />
 					</Form.Item>
 				</FilterForm>

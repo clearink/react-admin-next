@@ -20,15 +20,7 @@ export type ColSpan = {
 	span?: number;
 	size: number;
 }[];
-/**
- * 
-export interface QueryFilterProps extends BaseFormProps {
-	collapsed: boolean
-	defaultCollapsed?: boolean
-	onCollapse?: (collapsed: boolean) => void
-	layout?: "horizontal" | "horizontal"
-	ghost: boolean
-	className?: string
-	style?: CSSProperties
+
+export interface FilterFormRef {
+	setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
 }
- */

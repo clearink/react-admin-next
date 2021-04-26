@@ -11,8 +11,7 @@ $base_spacing: 8px;
 
 	&__item {
 		padding: 0 10px;
-
-		&--hidden {
+		&.hidden {
 			overflow: hidden;
 			max-height: 0 !important;
 			max-width: 0 !important;
@@ -23,9 +22,9 @@ $base_spacing: 8px;
 .filter_form__submitter {
 	text-align: right;
 	padding: 0 10px;
-    margin-bottom: 24px;
-    white-space: nowrap;
-	&>:not(:last-child) {
+	margin-bottom: 24px;
+	white-space: nowrap;
+	& > :not(:last-child) {
 		margin-right: 8px;
 	}
 }

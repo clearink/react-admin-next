@@ -1,17 +1,17 @@
-import React, { Children, useEffect, useMemo, useState } from "react";
-import { Col, Grid } from "antd";
+import React, { Children, forwardRef, Ref, useImperativeHandle, useMemo, useState } from "react";
+import { Col } from "antd";
 import { UpOutlined } from "@ant-design/icons";
 import classNames from "classnames";
 import useRefCallback from "@/hooks/state/use-ref-callback";
 import { valueRange } from "@/utils/Value";
 import ProForm from "../ProForm";
-import { FilterFormProps } from "./interface";
+import { FilterFormProps, FilterFormRef } from "./interface";
 import useBreakpoint from "./hooks/use-breakpoint";
 import { FULL_SCREEN_SPAN } from "./constant";
 import styles from "./style.module.scss";
 
 // 筛选布局 children 是 array
-export default function FilterForm(props: FilterFormProps) {
+function _FilterForm<Values = any>(props: FilterFormProps<Values>, ref: Ref<FilterFormRef>) {
 	const {
 		children: _children,
 		collapsed: _collapsed,
@@ -19,11 +19,12 @@ export default function FilterForm(props: FilterFormProps) {
 		ghost,
 		submitConfig: _submitConfig,
 		colSpan,
+		submitConfig,
 		...rest
 	} = props;
-	const [collapsed, setCollapsed] = useState(!!_collapsed);
 
-	// TODO: // 与外部保持一致 collapsed
+	const [collapsed, setCollapsed] = useState(!!_collapsed);
+	useImperativeHandle(ref, () => ({ setCollapsed }), []);
 
 	// 元素占比
 	const span = useBreakpoint(colSpan);
@@ -41,12 +42,12 @@ export default function FilterForm(props: FilterFormProps) {
 		if (collapsed) count = valueRange(count, 0, col - 1);
 		const otherSpan = (col - (count % col)) * span;
 		let max = Infinity;
-		if (collapsed && span) max = Math.max(~~(FULL_SCREEN_SPAN / span) - 1, 1);
+		if (collapsed && span) max = Math.max(col - 1, 1);
 		const children = Children.map(_children, (child, index) => (
 			<Col
 				span={span}
 				className={classNames(styles.filter_form__item, {
-					[styles["filter_form__item--hidden"]]: index >= max,
+					[styles.hidden]: index >= max,
 				})}
 			>
 				{child}
@@ -59,23 +60,34 @@ export default function FilterForm(props: FilterFormProps) {
 			{...rest}
 			className={classNames(rest.className, styles.filter_form)}
 			submitConfig={{
-				render: (dom) => (
-					<>
-						{children}
-						<Col span={otherSpan} className={styles.filter_form__submitter}>
-							{dom}
-							<span className={styles.collapsed_trigger} onClick={handleCollapsed}>
-								{collapsed ? "展开" : "收起"}
-								<UpOutlined
-									className={classNames(styles.trigger_icon, {
-										[styles.collapsed]: collapsed,
-									})}
-								/>
-							</span>
-						</Col>
-					</>
-				),
+				...submitConfig,
+				render: (dom, form) => {
+					let submitter: JSX.Element[] | JSX.Element | null = dom;
+					if (submitConfig === false) submitter = null;
+					else if (submitConfig?.render) submitter = submitConfig.render(dom, form);
+					return (
+						<>
+							{children}
+							<Col span={otherSpan} className={styles.filter_form__submitter}>
+								{submitter}
+								<span className={styles.collapsed_trigger} onClick={handleCollapsed}>
+									{collapsed ? "展开" : "收起"}
+									<UpOutlined
+										className={classNames(styles.trigger_icon, {
+											[styles.collapsed]: collapsed,
+										})}
+									/>
+								</span>
+							</Col>
+						</>
+					);
+				},
 			}}
 		/>
 	);
 }
+const FilterForm = forwardRef(_FilterForm);
+FilterForm.defaultProps = {
+	collapsed: true,
+};
+export default FilterForm;

@@ -38,7 +38,7 @@ export interface ProColumnType<RecordType = unknown> extends Omit<ColumnType<Rec
 	tooltip?: string;
 
 	/** search and read 都需要的属性 */
-	props: any;
+	props?: any;
 }
 
 export type ProColumnsType<RecordType = unknown> = Array<ProColumnType<RecordType> | ProColumnGroupType<RecordType>>;

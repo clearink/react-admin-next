@@ -14,12 +14,12 @@ export default function useBreakpoint(_mediaQuery = colSpan) {
 		const queryList = keys.map((media) => window.matchMedia(media));
 		function handleChange() {
 			const mediaStr = matchMedia(queryList);
-			if (mediaStr && mediaQuery[mediaStr]) setSpan(mediaQuery[mediaStr]);
+			if (mediaStr) setSpan(mediaQuery[mediaStr]);
 		}
-		queryList.forEach((query) => query.addEventListener("change", handleChange));
 
 		handleChange();
 
+		queryList.forEach((query) => query.addEventListener("change", handleChange));
 		return () => {
 			queryList.forEach((query) => query.removeEventListener("change", handleChange));
 		};

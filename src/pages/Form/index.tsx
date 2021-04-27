@@ -1,5 +1,5 @@
 import React, { cloneElement } from "react";
-import { DatePicker, Input, Space } from "antd";
+import { DatePicker, Input } from "antd";
 import PageHeaderWrap from "@/components/PageHeaderWrap";
 import ProForm from "@/components/Pro/Form/ProForm";
 import styles from "./style.module.scss";
@@ -10,9 +10,11 @@ export default function FormPage(props: any) {
 		<div className='flex flex-col min-h-full'>
 			<PageHeaderWrap title='基础Form' className={styles.page_header} />
 			<main className='bg-white flex-auto p-6'>
-				<ProForm
-					onChange={console.log}
-					onFinish={async (values: any) => {
+				<ProForm<{
+					name:string;
+					date:string
+				}>
+					onFinish={async (values) => {
 						console.log(values);
 						await sleep(1000);
 					}}

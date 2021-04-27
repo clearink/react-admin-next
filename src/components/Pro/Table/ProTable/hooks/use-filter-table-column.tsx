@@ -1,18 +1,11 @@
 import { FieldText } from "@/components/Pro/Field";
-import DevLog from "@/utils/DevLog";
-import { isArray } from "@/utils/ValidateType";
 import { Tooltip } from "antd";
 import { ColumnsType, ColumnType } from "antd/lib/table";
 import React, { cloneElement, isValidElement } from "react";
 import { ProColumnsType } from "../interface";
 
-export default function useFilterTableColumn<RecordType extends object = any>(
-	columns: ProColumnsType<RecordType> = []
-) {
-	if (!isArray) {
-		DevLog("columns must be array \n", columns);
-	}
-	const tableCol: ColumnsType<RecordType> = [];
+export default function useFilterTableColumn<T extends object = any>(columns: ProColumnsType<T> = []) {
+	const tableCol: ColumnsType<T> = [];
 	const formCol: JSX.Element[] = [];
 	for (let i = 0; i < columns.length; i++) {
 		const item = columns[i];
@@ -31,7 +24,7 @@ export default function useFilterTableColumn<RecordType extends object = any>(
 		}
 		if (!hideInTable) {
 			const readElement = read ?? <FieldText />;
-			const colItem: ColumnType<RecordType> = {
+			const colItem: ColumnType<T> = {
 				...rest,
 				render: (value, record, index) => {
 					let dom = cloneElement(readElement, { text: value });

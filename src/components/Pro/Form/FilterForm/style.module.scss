@@ -30,6 +30,7 @@ $base_spacing: 8px;
 }
 
 .collapsed_trigger {
+	user-select: none;
 	cursor: pointer;
 	color: $primary_color;
 	white-space: nowrap;

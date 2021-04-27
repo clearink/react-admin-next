@@ -1,0 +1,32 @@
+@import "@/styles/index.scss";
+$size: 24px;
+$padding: 10px;
+
+.table_info_wrap {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.info_total {
+	margin-right: $padding;
+}
+.info_strong_value {
+	margin: 0 $padding / 2;
+	color: $primary_color;
+	font-weight: bold;
+}
+.info_clear {
+	margin-left: $padding;
+	cursor: pointer;
+	color: $primary_color;
+	font-weight: bold;
+	transform: color 0.3s;
+	&:active {
+		color: rgba($primary_color, 0.8);
+	}
+
+	&.clear_hidden {
+		display: none;
+	}
+}

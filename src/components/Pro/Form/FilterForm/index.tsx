@@ -1,20 +1,26 @@
-import React, { Children, forwardRef, Ref, useImperativeHandle, useMemo, useState } from "react";
+import React, { Children, cloneElement, ReactNode, useEffect, useMemo, useState } from "react";
 import { Col } from "antd";
 import { UpOutlined } from "@ant-design/icons";
 import classNames from "classnames";
 import useRefCallback from "@/hooks/state/use-ref-callback";
 import { valueRange } from "@/utils/Value";
 import ProForm from "../ProForm";
-import { FilterFormProps, FilterFormRef } from "./interface";
+import { FilterFormProps } from "./interface";
 import useBreakpoint from "./hooks/use-breakpoint";
 import { FULL_SCREEN_SPAN } from "./constant";
 import styles from "./style.module.scss";
+import { isUndefined } from "@/utils/ValidateType";
 
-// 筛选布局 children 是 array
-function _FilterForm<Values = any>(props: FilterFormProps<Values>, ref: Ref<FilterFormRef>) {
+/**
+ * 
+ * @param props children is array
+ * @returns 
+ */
+function FilterForm<Values = any>(props: FilterFormProps<Values>) {
 	const {
 		children: _children,
 		collapsed: _collapsed,
+		defaultCollapsed,
 		onCollapse,
 		ghost,
 		submitConfig: _submitConfig,
@@ -23,14 +29,18 @@ function _FilterForm<Values = any>(props: FilterFormProps<Values>, ref: Ref<Filt
 		...rest
 	} = props;
 
-	const [collapsed, setCollapsed] = useState(!!_collapsed);
-	useImperativeHandle(ref, () => ({ setCollapsed }), []);
+	const [collapsed, setCollapsed] = useState(!!defaultCollapsed);
 
-	// 元素占比
-	const span = useBreakpoint(colSpan);
+	// 与外部同步
+	useEffect(() => {
+		if (!isUndefined(_collapsed)) setCollapsed(_collapsed);
+	}, [_collapsed]);
+
+	// 元素占比 防止 返回 0
+	const span = useBreakpoint(colSpan) || FULL_SCREEN_SPAN;
 
 	const handleCollapsed = useRefCallback(() => {
-		setCollapsed(!collapsed);
+		if (isUndefined(_collapsed)) setCollapsed(!collapsed);
 		onCollapse?.(!collapsed);
 	});
 
@@ -41,20 +51,19 @@ function _FilterForm<Values = any>(props: FilterFormProps<Values>, ref: Ref<Filt
 		// -1 是为了保留 submitter 的位置
 		if (collapsed) count = valueRange(count, 0, col - 1);
 		const otherSpan = (col - (count % col)) * span;
-		let max = Infinity;
+		let max = Infinity; // 最多显示的数目
 		if (collapsed && span) max = Math.max(col - 1, 1);
-		const children = Children.map(_children, (child, index) => (
-			<Col
-				span={span}
-				className={classNames(styles.filter_form__item, {
-					[styles.hidden]: index >= max,
-				})}
-			>
-				{child}
-			</Col>
-		));
+		const children = Children.map(_children, (child, index) => {
+			const className = classNames(styles.filter_form__item, { [styles.hidden]: index >= max });
+			return (
+				<Col span={span} className={className}>
+					{child}
+				</Col>
+			);
+		});
 		return [children, otherSpan];
 	}, [_children, collapsed, span]);
+
 	return (
 		<ProForm
 			{...rest}
@@ -62,7 +71,7 @@ function _FilterForm<Values = any>(props: FilterFormProps<Values>, ref: Ref<Filt
 			submitConfig={{
 				...submitConfig,
 				render: (dom, form) => {
-					let submitter: JSX.Element[] | JSX.Element | null = dom;
+					let submitter: ReactNode = [dom[0], cloneElement(dom[1], { children: "查询" })];
 					if (submitConfig === false) submitter = null;
 					else if (submitConfig?.render) submitter = submitConfig.render(dom, form);
 					return (
@@ -70,13 +79,10 @@ function _FilterForm<Values = any>(props: FilterFormProps<Values>, ref: Ref<Filt
 							{children}
 							<Col span={otherSpan} className={styles.filter_form__submitter}>
 								{submitter}
+								{/* TODO: submitConfig 可以自定义以下内容 */}
 								<span className={styles.collapsed_trigger} onClick={handleCollapsed}>
 									{collapsed ? "展开" : "收起"}
-									<UpOutlined
-										className={classNames(styles.trigger_icon, {
-											[styles.collapsed]: collapsed,
-										})}
-									/>
+									<UpOutlined className={classNames(styles.trigger_icon, { [styles.collapsed]: collapsed })} />
 								</span>
 							</Col>
 						</>
@@ -86,8 +92,9 @@ function _FilterForm<Values = any>(props: FilterFormProps<Values>, ref: Ref<Filt
 		/>
 	);
 }
-const FilterForm = forwardRef(_FilterForm);
+
 FilterForm.defaultProps = {
-	collapsed: true,
+	defaultCollapsed: true,
 };
+
 export default FilterForm;

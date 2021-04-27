@@ -4,7 +4,6 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 const initialState = {
   menu: [] as MenuItemProps[],
   collapsed: false,
-  loading: false,
 };
 const slice = createSlice({
   name: "menu",

@@ -50,7 +50,7 @@ function AppSiderMenu() {
 			<Layout.Sider
 				collapsible
 				collapsedWidth={COLLAPSED_WIDTH}
-				collapsed={collapsed}
+				collapsed={collapsed} 
 				trigger={null}
 				breakpoint='md'
 				onBreakpoint={handleToggleMenu}

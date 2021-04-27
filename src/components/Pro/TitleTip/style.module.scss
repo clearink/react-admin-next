@@ -4,11 +4,11 @@
 	align-items: center;
 }
 .title {
-	margin-right: 6px;
 	@include ellipsis;
 	position: relative;
 	display: inline-block;
 }
 .icon {
 	cursor: pointer;
+	margin-left: 6px;
 }

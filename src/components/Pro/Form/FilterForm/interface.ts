@@ -1,8 +1,12 @@
 import { ProFormProps } from "../ProForm/interface";
 
 export interface FilterFormProps<Values = any> extends ProFormProps<Values> {
-	/** 是否收起 默认 false */
+	/**  默认是否收起 = true */
+	defaultCollapsed?: boolean;
+
+	/**  是否收起 传入则由外部控制 */
 	collapsed?: boolean;
+
 	/** 收起/打开时的回调 */
 	onCollapse?: (collapsed: boolean) => void;
 
@@ -20,7 +24,3 @@ export type ColSpan = {
 	span?: number;
 	size: number;
 }[];
-
-export interface FilterFormRef {
-	setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
-}

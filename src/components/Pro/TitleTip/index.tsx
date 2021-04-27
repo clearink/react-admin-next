@@ -1,31 +1,33 @@
-import React, { isValidElement, ReactNode, useMemo } from "react";
+import React, { ReactNode, useMemo } from "react";
 import { Tooltip } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import styles from "./style.module.scss";
-import { isString } from "@/utils/ValidateType";
+import classNames from "classnames";
 /**
  * title 属性后跟一个 tooltip 提示文案
- * TODO 只传入一个 title字段
  */
 export interface TitleTipProps {
-	title?: { title: ReactNode; tip?: ReactNode | (() => ReactNode) } | string;
+	title?: { title: ReactNode; tip?: ReactNode } | ReactNode;
+	className?: string;
+	style?: React.CSSProperties;
 }
 function TitleTip(props: TitleTipProps) {
-	const { title } = props;
+	const { title, className, ...rest } = props;
 	const [text, tip] = useMemo(() => {
 		if (!title) return [undefined, undefined];
-		if (isString(title) || isValidElement(title)) return [title, undefined];
-		return [title.title, title.tip];
+		if (!title.hasOwnProperty("title")) return [title, undefined];
+		const _title = title as { title: ReactNode; tip?: ReactNode };
+		return [_title.title, _title.tip];
 	}, [title]);
 
-	if (!text) return null;
-	if (!tip) return <>{text}</>;
 	return (
-		<div className={styles.title_tip}>
+		<div {...rest} className={classNames(styles.title_tip, className)}>
 			<span className={styles.title}>{text}</span>
-			<Tooltip title={tip}>
-				<InfoCircleOutlined className={styles.icon} />
-			</Tooltip>
+			{tip && (
+				<Tooltip title={tip}>
+					<InfoCircleOutlined className={styles.icon} />
+				</Tooltip>
+			)}
 		</div>
 	);
 }

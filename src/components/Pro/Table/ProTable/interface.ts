@@ -1,18 +1,20 @@
 import { ReactNode, MutableRefObject } from "react";
 import { TitleTipProps } from "@/components/Pro/TitleTip";
-import { ColumnType, TableProps } from "antd/lib/table";
+import { ColumnType, TablePaginationConfig, TableProps } from "antd/lib/table";
 import { RenderedCell } from "rc-table/lib/interface";
 import { FilterFormProps } from "../../Form/FilterForm/interface";
 import { FormInstance } from "antd";
+import { FilterValue, SortOrder } from "antd/lib/table/interface";
 
 //
-export interface ProTableProps<RecordType extends object = any> extends Omit<TableProps<RecordType>, "columns"> {
+export interface ProTableProps<RecordType extends object = any>
+	extends Omit<TableProps<RecordType>, "columns"> {
 	columns?: ProColumnsType<RecordType>;
 
 	/** search form props */
 	search?: false | FilterFormProps<RecordType>;
 
-	searchForm?:MutableRefObject<FormInstance| null | undefined>;
+	searchRef?: MutableRefObject<FormInstance | null | undefined>;
 
 	/** table 上方的 title */
 	tableTitle?: TitleTipProps["title"];
@@ -23,11 +25,31 @@ export interface ProTableProps<RecordType extends object = any> extends Omit<Tab
 	/** render tableInfo 渲染table信息 */
 	// TODO: 修正props类型
 	renderTableInfo?: (dom: JSX.Element, props: any) => ReactNode;
+
+	// 事件
+
+	// toolbar 默认给予的事件
+	// 理论上是应当根据业务的不同而自行 renderToolbar 的
+	// 点击新增按钮
+	// onCreate?: () => any;
+
+	// // 点击删除按钮
+	// onDelete?: (ids: any[]) => any;
+
+	/** table 数据请求函数 */
+	request?: (
+		params: RecordType & Pick<TablePaginationConfig, "current" | "pageSize">,
+
+		filter: Record<string, FilterValue | null>,
+		sort: { [field: string]: SortOrder }
+	) => any;
 }
-export interface ProColumnGroupType<RecordType> extends Omit<ProColumnType<RecordType>, "dataIndex"> {
+export interface ProColumnGroupType<RecordType>
+	extends Omit<ProColumnType<RecordType>, "dataIndex"> {
 	children: ProColumnsType<RecordType>;
 }
-export interface ProColumnType<RecordType = unknown> extends Omit<ColumnType<RecordType>, "render"> {
+export interface ProColumnType<RecordType = unknown>
+	extends Omit<ColumnType<RecordType>, "render"> {
 	/** 文本显示字段  */
 	read?: JSX.Element;
 
@@ -58,7 +80,9 @@ export interface ProColumnType<RecordType = unknown> extends Omit<ColumnType<Rec
 	props?: any;
 }
 
-export type ProColumnsType<RecordType = unknown> = Array<ProColumnType<RecordType> | ProColumnGroupType<RecordType>>;
+export type ProColumnsType<RecordType = unknown> = Array<
+	ProColumnType<RecordType> | ProColumnGroupType<RecordType>
+>;
 /**
  * feature:
  * 筛选栏
@@ -66,3 +90,14 @@ export type ProColumnsType<RecordType = unknown> = Array<ProColumnType<RecordTyp
  * table
  */
 export interface ProTableRef {}
+
+/**
+ * interface ActionType {
+  reload: (resetPageIndex?: boolean) => void;
+  reloadAndRest: () => void;
+  reset: () => void;
+  clearSelected?: () => void;
+  startEditable: (rowKey: Key) => boolean;
+  cancelEditable: (rowKey: Key) => boolean;
+}
+ */

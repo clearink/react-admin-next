@@ -20,10 +20,7 @@ const dataSource = [
 ];
 const columns: ProColumnsType<typeof dataSource[0]> = [
 	{
-		title: (props) => {
-			console.log(props);
-			return "姓名";
-		},
+		title: "姓名",
 		dataIndex: "name",
 		key: "name",
 		search: (
@@ -31,19 +28,40 @@ const columns: ProColumnsType<typeof dataSource[0]> = [
 				<Input />
 			</Form.Item>
 		),
+		sorter: (a, b) => a.age - b.age,
+		filters: [
+			{
+				text: "Joe",
+				value: "Joe",
+			},
+		],
 	},
 	{
 		title: "年龄",
 		dataIndex: "age",
 		search: (
-			<Form.Item>
+			<Form.Item label='年龄'>
 				<Input />
 			</Form.Item>
 		),
+		sorter: (a, b) => a.age - b.age,
+		filters: [
+			{
+				text: "Joe",
+				value: "Joe",
+			},
+		],
 	},
 	{
-		title: "住址",
+		title: "Address",
 		dataIndex: "address",
+		filters: [
+			{
+				text: "London",
+				value: "London",
+			},
+		],
+		sorter: (a, b) => a.address.length - b.address.length,
 	},
 ];
 export default function ProTablePage() {
@@ -52,7 +70,12 @@ export default function ProTablePage() {
 		<div className='min-h-full flex flex-col'>
 			<PageHeaderWrap title='增强表格' />
 			<main className='flex-auto bg-white mt-10'>
-				<ProTable tableTitle='12sadsdfsdf12112' columns={columns} bordered dataSource={dataSource} />
+				<ProTable
+					tableTitle='12sadsdfsdf12112'
+					columns={columns}
+					bordered
+					dataSource={dataSource}
+				/>
 			</main>
 		</div>
 	);

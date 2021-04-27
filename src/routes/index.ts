@@ -109,7 +109,7 @@ const routes: RouteItemConfig[] = [
 					{
 						path: "/pro-table",
 						icon: "icon-computer",
-						title: "pro table",
+						title: "增强表格",
 						component: withLazyLoad(lazy(() => import("@/pages/Table/ProTable"))),
 					},
 				],

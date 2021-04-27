@@ -4,6 +4,7 @@ import { ColumnsType, ColumnType } from "antd/lib/table";
 import React, { cloneElement, isValidElement } from "react";
 import { ProColumnsType } from "../interface";
 
+// TODO: 根据columns 分析出默认的 filters 与 sorter
 export default function useFilterTableColumn<T extends object = any>(columns: ProColumnsType<T> = []) {
 	const tableCol: ColumnsType<T> = [];
 	const formCol: JSX.Element[] = [];

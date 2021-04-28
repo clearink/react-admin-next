@@ -8,12 +8,12 @@ export default function FilterFormPage() {
 		<div>
 			<PageHeaderWrap title='FilterForm' />
 			<main className='p-10 my-4 bg-white'>
-				<Checkbox defaultChecked onChange={console.log}>
+				<Checkbox defaultChecked checked={undefined} onChange={console.log}>
 					12312
 				</Checkbox>
 			</main>
 			<main>
-				<FilterForm>
+				<FilterForm defaultCollapsed collapsed={undefined} onCollapse={console.log}>
 					<Form.Item name='123' label='12321'>
 						<Input />
 					</Form.Item>

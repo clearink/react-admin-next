@@ -1,15 +1,20 @@
 import { FieldText } from "@/components/Pro/Field";
 import { Tooltip } from "antd";
 import { ColumnsType, ColumnType } from "antd/lib/table";
+import { FilterValue, SorterResult, SortOrder } from "antd/lib/table/interface";
 import React, { cloneElement, isValidElement } from "react";
-import { ProColumnsType } from "../interface";
+import { ProColumnsType, ProColumnType } from "../interface";
 
-// TODO: 根据columns 分析出默认的 filters 与 sorter
-export default function useFilterTableColumn<T extends object = any>(columns: ProColumnsType<T> = []) {
+// 是否需要 filteredValue 与 sortOrder 呢?
+export default function useFilterTableColumn<T extends object = any>(
+	columns: ProColumnsType<T> = []
+) {
 	const tableCol: ColumnsType<T> = [];
 	const formCol: JSX.Element[] = [];
+	const filters: Record<string, FilterValue | null | undefined> = {};
+	const sorter: SorterResult<T> | SorterResult<T>[] = {};
 	for (let i = 0; i < columns.length; i++) {
-		const item = columns[i];
+		const item = columns[i] as ProColumnType<T>;
 
 		const { search, read, render, hideInForm, hideInTable, label, props: _props, ...rest } = item;
 		if (search && !hideInForm && isValidElement(search)) {
@@ -24,6 +29,13 @@ export default function useFilterTableColumn<T extends object = any>(columns: Pr
 			formCol.push(cloneElement(search, props));
 		}
 		if (!hideInTable) {
+			if (item.dataIndex) {
+				const name = ([] as React.Key[]).concat(item.dataIndex).join(".");
+				filters[name] = item.hasOwnProperty("filteredValue")
+					? item.filteredValue
+					: item.defaultFilteredValue;
+				sorter[name] = item.hasOwnProperty("sortOrder") ? item.sortOrder : item.defaultSortOrder;
+			}
 			const readElement = read ?? <FieldText />;
 			const colItem: ColumnType<T> = {
 				...rest,
@@ -44,5 +56,5 @@ export default function useFilterTableColumn<T extends object = any>(columns: Pr
 			tableCol.push(colItem);
 		}
 	}
-	return [tableCol, formCol] as const;
+	return [tableCol, formCol, filters, sorter] as const;
 }

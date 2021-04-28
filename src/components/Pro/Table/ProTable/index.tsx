@@ -5,6 +5,7 @@ import {
 	useEffect,
 	useImperativeHandle,
 	useMemo,
+	useReducer,
 	useState,
 } from "react";
 import { Space, Table, Button, Form } from "antd";
@@ -16,25 +17,23 @@ import {
 	ToTopOutlined,
 } from "@ant-design/icons";
 import classNames from "classnames";
-import { FilterValue } from "antd/lib/table/interface";
 import { FilterForm } from "@/components/Pro/Form";
 import useRefCallback from "@/hooks/state/use-ref-callback";
+import { isFunction } from "@/utils/ValidateType";
+import useMountedRef from "@/hooks/state/use-mounted-ref";
+import useDeepEffect from "@/hooks/state/use-deep-effect";
+import { FilterFormProps } from "../../Form/FilterForm/interface";
 import TitleTip from "../../TitleTip";
 import TableInfo from "./components/TableInfo";
 import useFilterTableColumn from "./hooks/use-filter-table-column";
-import { getCurrentAndSize, getFilters, getSorter } from "./utils";
-import { ProTableProps, ProTableRef } from "./interface";
+import reducer, { actions } from "./store";
+import { ProTableProps, ProTableRef, ProTableState } from "./interface";
+import { getCurrentAndSize, getInitState } from "./utils";
 import styles from "./style.module.scss";
-import { isFunction } from "@/utils/ValidateType";
-import { FilterFormProps } from "../../Form/FilterForm/interface";
-import useMountedRef from "@/hooks/state/use-mounted-ref";
-import useDeepEffect from "@/hooks/state/use-deep-effect";
-import withForwardRef from "@/hocs/withForwardRef";
+import { Reducer } from "@reduxjs/toolkit";
 
 /**
- * TODO
- * tableLoading 与 formLoading
- *
+ * TODO: 表单默认值
  */
 
 function ProTable<RecordType extends object = any>(
@@ -54,29 +53,17 @@ function ProTable<RecordType extends object = any>(
 		params: _params,
 		...rest
 	} = props;
-	const [tableCol, formCol] = useFilterTableColumn(columns);
+	const [tableCol, formCol, initFilters, initSorter] = useFilterTableColumn(columns);
 
-	const [loading, setLoading] = useState<ProTableProps["loading"]>(_loading);
-	/**
-	 * 保存 table 的 sorter 与 sorter
-	 * Q: 点击搜索时需不需要清除这些筛选?
-	 * A: 应该不需要 因为这些也是搜索条件 和 form 是一样的作用
-	 * Q: 是否提供一个能够清除所有筛选条件的方法?
-	 * A: TODO
-	 *
-	 *
-	 */
-	// 这四者加上 外部的 _params 变化都会导致 request 函数执行
-	const [filters, setFilters] = useState<Record<string, FilterValue>>({});
-	const [sorter, setSorter] = useState<Record<string, "descend" | "ascend">>({});
-	const [params, setParams] = useState<Partial<RecordType>>({}); // form value
+	const [__loading, setLoading] = useState<ProTableProps["loading"]>(false);
 
-	// 同步外部数据
-	const [pagination, setPagination] = useState<Record<"current" | "pageSize", number>>(() =>
-		getCurrentAndSize(_pagination)
+	const [state, dispatch] = useReducer(
+		reducer as Reducer<ProTableState<RecordType>>,
+		{ pagination: _pagination, filters: initFilters, sorter: initSorter },
+		getInitState
 	);
 	useEffect(() => {
-		setPagination(getCurrentAndSize(_pagination));
+		dispatch(actions.setPagination(_pagination));
 	}, [_pagination]);
 
 	const mountedRef = useMountedRef();
@@ -85,9 +72,9 @@ function ProTable<RecordType extends object = any>(
 		try {
 			setLoading({ delay: 50 });
 			const { dataSource, total } = await request(
-				{ ...params, ..._params, ...pagination },
-				filters,
-				sorter
+				{ ...state.params, ..._params, ...state.pagination },
+				state.filters,
+				state.sorter
 			);
 			// TODO:
 			// set dataSource and total
@@ -96,9 +83,10 @@ function ProTable<RecordType extends object = any>(
 		}
 	});
 
+	// state 与 外部的 _params 变化都会导致 request 函数执行
 	useDeepEffect(() => {
 		handleRequest();
-	}, [handleRequest, filters, sorter, pagination, params, _params]);
+	}, [handleRequest, state, _params]);
 
 	const handleReload = useRefCallback((reset?: boolean) => {
 		if (reset) {
@@ -106,7 +94,29 @@ function ProTable<RecordType extends object = any>(
 		}
 		handleRequest();
 	});
-	// formValue
+	const [form] = Form.useForm(search ? search.form : undefined);
+	useImperativeHandle(searchRef, () => form, [form]); // 暴露出属性
+
+	// ****** bugs ***** 当 columns 设置了 filteredValue 的值 然后 触发 tableChange 时 args.filters 与filteredValue 不一致
+	const handleTableChange = useRefCallback<Required<ProTableProps<RecordType>>["onChange"]>(
+		(...args) => {
+			const [_pagination, _filters, _sorter] = args;
+			rest.onChange?.(...args);
+
+			// 保存 数据
+			dispatch(actions.setPagination(_pagination));
+			dispatch(actions.setFilters(_filters));
+			dispatch(actions.setSorter(_sorter));
+		}
+	);
+	const handleFinish = useRefCallback(async (values: RecordType) => {
+		dispatch(actions.setParams(values));
+		if (search && search.onFinish) {
+			await search.onFinish(values);
+		}
+	});
+
+	// 暴露出的ref事件
 	const tableAction = useMemo(() => {
 		return {
 			reload: handleReload,
@@ -114,9 +124,10 @@ function ProTable<RecordType extends object = any>(
 		};
 	}, [handleReload]);
 
-	const [form] = Form.useForm(search ? search.form : undefined);
-	useImperativeHandle(searchRef, () => form, [form]); // 暴露出属性
+	useImperativeHandle(ref, () => tableAction, [tableAction]);
 
+	/**----------------------- UI相关 --------------------------- */
+	const loading = props.hasOwnProperty("loading") ? _loading : __loading;
 	// 以下 二者皆应在不同的业务去声明
 	const tableInfo = (() => {
 		const tableInfo = (
@@ -130,21 +141,11 @@ function ProTable<RecordType extends object = any>(
 		if (renderTableInfo) return renderTableInfo(tableInfo, {});
 		return tableInfo;
 	})();
+
 	// TODO: 确定tableAction
 	const tableToolbar = renderToolbar?.() ?? [];
 
-	const handleTableChange = useRefCallback<Required<ProTableProps<RecordType>>["onChange"]>(
-		(...args) => {
-			const [_pagination, _filters, _sorter] = args;
-			if (rest.onChange) rest.onChange(...args);
-			// 保存 数据
-			setPagination(getCurrentAndSize(_pagination));
-			setFilters(getFilters(_filters));
-			setSorter(getSorter(_sorter));
-		}
-	);
 	// 处理 submit config
-
 	const searchSubmitConfig = useMemo(() => {
 		const defaultConfig: FilterFormProps["submitConfig"] = {
 			...search,
@@ -164,12 +165,7 @@ function ProTable<RecordType extends object = any>(
 		};
 		return defaultConfig;
 	}, [loading, search]);
-	const handleFinish = useRefCallback(async (values: RecordType) => {
-		setParams(values);
-		if (search && search.onFinish) {
-			await search.onFinish(values);
-		}
-	});
+
 	return (
 		<div className={styles.pro_table_wrap}>
 			{/* 没有form col 就不要显示了 */}
@@ -196,18 +192,16 @@ function ProTable<RecordType extends object = any>(
 			<Table
 				columns={tableCol}
 				{...rest}
-				loading={props.hasOwnProperty("loading") ? _loading : loading}
-				pagination={{ ..._pagination, ...pagination }}
+				loading={loading}
+				pagination={{ ..._pagination, ...state.pagination }}
 				onChange={handleTableChange}
 				className={classNames(styles.table_content, rest.className)}
 			/>
 		</div>
 	);
 }
-export default withForwardRef<P,R>(ProTable);
-// export default forwardRef(ProTable) as <RecordType extends object = any>(
-// 	props: ProTableProps<RecordType> & { ref?: Ref<ProTableRef> }
-// ) => ReturnType<typeof ProTable>;
+
+export default forwardRef(ProTable) as typeof ProTable;
 /**
  * const toolbar: JSX.Element[] = [
 			<Button

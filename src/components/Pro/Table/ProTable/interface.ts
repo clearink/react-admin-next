@@ -1,10 +1,10 @@
-import { ReactNode, MutableRefObject } from "react";
+import { ReactNode, MutableRefObject, Ref } from "react";
 import { TitleTipProps } from "@/components/Pro/TitleTip";
 import { ColumnType, TablePaginationConfig, TableProps } from "antd/lib/table";
 import { RenderedCell } from "rc-table/lib/interface";
 import { FilterFormProps } from "../../Form/FilterForm/interface";
 import { FormInstance } from "antd";
-import { FilterValue, SortOrder } from "antd/lib/table/interface";
+import { FilterValue, SorterResult, SortOrder } from "antd/lib/table/interface";
 import { getFilters, getSorter } from "./utils";
 
 //
@@ -44,6 +44,9 @@ export interface ProTableProps<RecordType extends object = any>
 	 */
 	request?: ProTableRequest<RecordType>;
 	params?: Record<string, any>;
+
+	// fix forwardRef 无法识别泛型组件的问题
+	ref?: Ref<ProTableRef>;
 }
 
 export type ProTableRequest<RecordType extends object = any> = (
@@ -93,6 +96,21 @@ export interface ProColumnType<RecordType = unknown>
 export type ProColumnsType<RecordType = unknown> = Array<
 	ProColumnType<RecordType> | ProColumnGroupType<RecordType>
 >;
+
+// store 中存放 数据 的类型
+export interface ProTableState<RecordType extends object = any> {
+	params: Partial<RecordType>;
+	pagination: Record<"current" | "pageSize", number>;
+	filters: ReturnType<typeof getFilters>;
+	sorter: ReturnType<typeof getSorter>;
+}
+
+// store state 初始化函数
+export interface GetInitStateProps {
+	pagination?: false | TablePaginationConfig;
+	filters: Record<string, FilterValue | null | undefined>;
+	sorter: SorterResult<any> | SorterResult<any>[];
+}
 /**
  * feature:
  * 筛选栏

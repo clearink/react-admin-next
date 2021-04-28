@@ -9,12 +9,11 @@ import { FilterFormProps } from "./interface";
 import useBreakpoint from "./hooks/use-breakpoint";
 import { FULL_SCREEN_SPAN } from "./constant";
 import styles from "./style.module.scss";
-import { isUndefined } from "@/utils/ValidateType";
 
 /**
- * 
+ *
  * @param props children is array
- * @returns 
+ * @returns
  */
 function FilterForm<Values = any>(props: FilterFormProps<Values>) {
 	const {
@@ -29,18 +28,16 @@ function FilterForm<Values = any>(props: FilterFormProps<Values>) {
 		...rest
 	} = props;
 
-	const [collapsed, setCollapsed] = useState(!!defaultCollapsed);
-
-	// 与外部同步
-	useEffect(() => {
-		if (!isUndefined(_collapsed)) setCollapsed(_collapsed);
-	}, [_collapsed]);
+	const [__collapsed, setCollapsed] = useState(!!defaultCollapsed);
 
 	// 元素占比 防止 返回 0
 	const span = useBreakpoint(colSpan) || FULL_SCREEN_SPAN;
 
+	// 为了与外部同步
+	const collapsed = props.hasOwnProperty("collapsed") ? _collapsed : __collapsed;
+
 	const handleCollapsed = useRefCallback(() => {
-		if (isUndefined(_collapsed)) setCollapsed(!collapsed);
+		if (!props.hasOwnProperty("collapsed")) setCollapsed(!collapsed);
 		onCollapse?.(!collapsed);
 	});
 
@@ -82,7 +79,9 @@ function FilterForm<Values = any>(props: FilterFormProps<Values>) {
 								{/* TODO: submitConfig 可以自定义以下内容 */}
 								<span className={styles.collapsed_trigger} onClick={handleCollapsed}>
 									{collapsed ? "展开" : "收起"}
-									<UpOutlined className={classNames(styles.trigger_icon, { [styles.collapsed]: collapsed })} />
+									<UpOutlined
+										className={classNames(styles.trigger_icon, { [styles.collapsed]: collapsed })}
+									/>
 								</span>
 							</Col>
 						</>

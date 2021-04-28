@@ -4,14 +4,14 @@ import { ComponentType } from "react";
 // type UnionProp<P, D> = {
 // 	[K in keyof D]: K extends keyof P ? P[K] : D[K];
 // };
-// P 中都是必须
-// D 是P中的默认值
-export default function withDefaultProps<P extends object, D extends Partial<P> = Partial<P>>(WrappedComponent: ComponentType<P>, defaultProps?: D) {
+type UnionProp<P, D> = Omit<P, keyof D> & Partial<D>;
+export default function withDefaultProps<P extends object, D extends Partial<P>= Partial<P>>(
+	WrappedComponent: ComponentType<P>,
+	defaultProps?: D
+) {
 	WrappedComponent.defaultProps = defaultProps;
 
-	type RequiredProps = Omit<P, keyof D>; // P中没有包含D的参数 则为必须的参数
-	type Props = RequiredProps & Partial<D>;
-	return WrappedComponent as ComponentType<Props>;
+	return WrappedComponent as ComponentType<UnionProp<P, D>>;
 	// return WrappedComponent as ComponentType<RequiredProps & Partial<UnionProp<P, D>>>; // defaultProps 则为可选项了
 }
 // Omit 未包含

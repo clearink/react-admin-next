@@ -15,6 +15,7 @@ export interface FilterFormProps<Values = any> extends ProFormProps<Values> {
 
 	/** 布局依据 eg: { "(max-width:575x)": 24 } */
 	colSpan?: ColSpan;
+
 }
 // TODO: 支持 height
 export type ColSpan = {

@@ -25,8 +25,8 @@ export const isString = (obj: any): obj is string =>
 	validateType(obj as string, "String")
 export const isBoolean = (obj: any): obj is boolean =>
 	validateType(obj, "Boolean")
-export const isFunction = (obj: any): obj is Function =>
-	validateType(obj, "Function")
+export const isFunction = (obj: any): obj is Function => typeof obj === 'function'
+	// validateType(obj, "Function") 因为有很多function类型
 export const isAsyncFunction = (obj: any): obj is Function =>
 	validateType(obj, "AsyncFunction")
 export const isSymbol = (obj: any): obj is symbol => validateType(obj, "Symbol")
@@ -34,4 +34,4 @@ export const isBigInt = (obj: any): obj is bigint => validateType(obj, "BigInt")
 export const isMap = (obj: any): obj is Map<any, any> =>
 	validateType(obj, "Map")
 
-export const isNullUndefined = (obj: any) => isNull(obj) || isUndefined(obj)
+export const isNullUndefined = (obj: any):obj  is null | undefined => isNull(obj) || isUndefined(obj)

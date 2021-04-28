@@ -2,8 +2,8 @@ import PageHeaderWrap from "@/components/PageHeaderWrap";
 import ProTable from "@/components/Pro/Table/ProTable";
 import { ProColumnsType } from "@/components/Pro/Table/ProTable/interface";
 import useTitle from "@/hooks/ui/use-title";
-import { Button, Form, FormInstance, Input } from "antd";
-import { useEffect, useRef } from "react";
+import { sleep } from "@/utils/Test";
+import { Form, Input } from "antd";
 const dataSource = [
 	{
 		key: "1",
@@ -44,7 +44,10 @@ const columns: ProColumnsType<typeof dataSource[0]> = [
 				<Input />
 			</Form.Item>
 		),
-		sorter: (a, b) => a.age - b.age,
+		sorter: {
+			compare: (a, b) => a.age - b.age,
+			multiple: 1,
+		},
 		filters: [
 			{
 				text: "Joe",
@@ -61,7 +64,10 @@ const columns: ProColumnsType<typeof dataSource[0]> = [
 				value: "London",
 			},
 		],
-		sorter: (a, b) => a.address.length - b.address.length,
+		sorter: {
+			compare: (a, b) => a.address.length - b.address.length,
+			multiple: 2,
+		},
 	},
 ];
 export default function ProTablePage() {
@@ -75,6 +81,16 @@ export default function ProTablePage() {
 					columns={columns}
 					bordered
 					dataSource={dataSource}
+					pagination={{
+						current: 2,
+						pageSize: 22,
+						total: 100,
+					}}
+					request={async (params, filter, sort) => {
+						await sleep(40);
+						console.log("params filter sort\n", params, filter, sort);
+						return { dataSource: [], total: 100 };
+					}}
 				/>
 			</main>
 		</div>

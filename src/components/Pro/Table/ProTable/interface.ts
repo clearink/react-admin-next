@@ -5,6 +5,7 @@ import { RenderedCell } from "rc-table/lib/interface";
 import { FilterFormProps } from "../../Form/FilterForm/interface";
 import { FormInstance } from "antd";
 import { FilterValue, SortOrder } from "antd/lib/table/interface";
+import { getFilters, getSorter } from "./utils";
 
 //
 export interface ProTableProps<RecordType extends object = any>
@@ -20,7 +21,8 @@ export interface ProTableProps<RecordType extends object = any>
 	tableTitle?: TitleTipProps["title"];
 
 	/** render 右侧操作栏 */
-	renderToolbar?: (actions: JSX.Element[]) => JSX.Element[];
+	// TODO: tableAction 定义
+	renderToolbar?: (tableAction?: any) => JSX.Element[];
 
 	/** render tableInfo 渲染table信息 */
 	// TODO: 修正props类型
@@ -36,14 +38,22 @@ export interface ProTableProps<RecordType extends object = any>
 	// // 点击删除按钮
 	// onDelete?: (ids: any[]) => any;
 
-	/** table 数据请求函数 */
-	request?: (
-		params: RecordType & Pick<TablePaginationConfig, "current" | "pageSize">,
-
-		filter: Record<string, FilterValue | null>,
-		sort: { [field: string]: SortOrder }
-	) => any;
+	/**
+	 * table 数据请求函数
+	 * 返回 需要展示的数据以及数据总数
+	 */
+	request?: ProTableRequest<RecordType>;
+	params?: Record<string, any>;
 }
+
+export type ProTableRequest<RecordType extends object = any> = (
+	params: Partial<RecordType> & Record<"current" | "pageSize", number>,
+	filter: ReturnType<typeof getFilters>,
+	sort: ReturnType<typeof getSorter>
+) => Promise<{
+	dataSource: RecordType[];
+	total: number;
+}>;
 export interface ProColumnGroupType<RecordType>
 	extends Omit<ProColumnType<RecordType>, "dataIndex"> {
 	children: ProColumnsType<RecordType>;
@@ -89,7 +99,11 @@ export type ProColumnsType<RecordType = unknown> = Array<
  * toolbar: 当前第几页 actionBar
  * table
  */
-export interface ProTableRef {}
+export interface ProTableRef {
+	reload: (reset?: boolean) => void;
+	clearSelected: () => void;
+	// TODO: 支持 startEditable, cancelEditable
+}
 
 /**
  * interface ActionType {

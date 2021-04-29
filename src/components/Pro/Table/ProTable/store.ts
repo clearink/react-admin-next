@@ -1,24 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { FilterValue, TablePaginationConfig } from "antd/lib/table/interface";
-import { Draft, WritableDraft } from "immer/dist/internal";
-import { ProTableState } from "./interface";
-import { getCurrentAndSize, getFilters, getSorter } from "./utils";
+import { getCurrentAndSize, getFilters, getInitState, getSorter } from "./utils";
 
 // 放置 reduce
 
 const initialState = {
-	params: {},
+	// params:{} 因为无法获得表单的默认值 所以不是存储表单的值 而是在 handleRequest函数中去获取
 	pagination: { current: 1, pageSize: 10 },
 	filters: {},
 	sorter: {},
-};
+} as ReturnType<typeof getInitState>;
 const slice = createSlice({
 	name: "pro-table",
 	initialState,
 	reducers: {
-		setParams(state, action: PayloadAction<Record<string, any>>) {
-			state.params = action.payload;
-		},
 		setPagination(state, action: PayloadAction<false | TablePaginationConfig | undefined>) {
 			state.pagination = getCurrentAndSize(action.payload);
 		},

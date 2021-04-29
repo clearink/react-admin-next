@@ -1,10 +1,13 @@
 import React, { useState, useRef, forwardRef } from "react";
 import moment, { isMoment } from "moment";
 import PageHeaderWrap from "@/components/PageHeaderWrap";
-import { Button, DatePicker, Descriptions, Drawer, Input, Modal, Popconfirm, Select, Table } from "antd";
+import { Button, DatePicker, Descriptions, Input, Popconfirm, Select } from "antd";
 
 import styles from "./style.module.scss";
-import EditableTable, { EditableTableProps, EditableTableRef } from "@/components/Pro/Table/EditableTable";
+import EditableTable, {
+	EditableTableProps,
+	EditableTableRef,
+} from "@/components/Pro/Table/EditableTable";
 
 const ProDatePicker = forwardRef((props: any, ref) => {
 	const { value: __value, name, ...rest } = props;
@@ -25,7 +28,7 @@ export default function List() {
 			address: "London, Park Lane no. 0",
 		}))
 	);
-	const __columns: EditableTableProps['columns'] = [
+	const __columns: EditableTableProps["columns"] = [
 		{
 			title: "name",
 			dataIndex: "name",
@@ -80,7 +83,9 @@ export default function List() {
 				<Descriptions.Item>修改方式</Descriptions.Item>
 				<Descriptions.Item label='onAdd'>{`(record)=>record`}</Descriptions.Item>
 				<Descriptions.Item>type='cell'时可以给新增的数据一个默认值</Descriptions.Item>
-				<Descriptions.Item label='addTitle/editTitle'>string|{`title:string,tip:string`}</Descriptions.Item>
+				<Descriptions.Item label='addTitle/editTitle'>
+					string|{`title:string,tip:string`}
+				</Descriptions.Item>
 				<Descriptions.Item>type != 'cell'时的添加/修改标题</Descriptions.Item>
 				<Descriptions.Item label='ref属性'>{`add,edit,delete`}</Descriptions.Item>
 				<Descriptions.Item>增加,修改,删除</Descriptions.Item>

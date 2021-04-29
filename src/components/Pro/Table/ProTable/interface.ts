@@ -22,7 +22,7 @@ export interface ProTableProps<RecordType extends object = any>
 
 	/** render 右侧操作栏 */
 	// TODO: tableAction 定义
-	renderToolbar?: (tableAction?: any) => JSX.Element[];
+	renderToolbar?: (toolbar: JSX.Element[], tableAction?: any) => JSX.Element[];
 
 	/** render tableInfo 渲染table信息 */
 	// TODO: 修正props类型
@@ -98,13 +98,11 @@ export type ProColumnsType<RecordType = unknown> = Array<
 >;
 
 // store 中存放 数据 的类型
-export interface ProTableState<RecordType extends object = any> {
-	params: Partial<RecordType>;
-	pagination: Record<"current" | "pageSize", number>;
-	filters: ReturnType<typeof getFilters>;
-	sorter: ReturnType<typeof getSorter>;
-}
-
+// export interface ProTableState {
+// 	pagination: Record<"current" | "pageSize", number>;
+// 	filters: ReturnType<typeof getFilters>;
+// 	sorter: ReturnType<typeof getSorter>;
+// }
 // store state 初始化函数
 export interface GetInitStateProps {
 	pagination?: false | TablePaginationConfig;

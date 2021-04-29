@@ -1,6 +1,7 @@
-import { isNullUndefined, isUndefined } from "@/utils/ValidateType";
+import { isBoolean, isNullUndefined, isUndefined } from "@/utils/ValidateType";
+import { SpinProps } from "antd";
 import { FilterValue, SorterResult, TablePaginationConfig } from "antd/lib/table/interface";
-import { GetInitStateProps, ProTableState } from "./interface";
+import { GetInitStateProps } from "./interface";
 
 // 获得 table 的 过滤字段
 export function getFilters(filters: Record<string, FilterValue | null | undefined>) {
@@ -31,11 +32,35 @@ export function getCurrentAndSize(
 	};
 }
 
-// 初始化 reduce 的值
-export function getInitState<T extends object = any>(props: GetInitStateProps) {
+// 初始化 reducer 的值
+export function getInitState(props: GetInitStateProps) {
 	return {
 		pagination: getCurrentAndSize(props.pagination),
 		filters: getFilters(props.filters),
 		sorter: getSorter(props.sorter),
-	} as ProTableState<T>;
+	};
+}
+
+//将table loading 处理成 button loading
+export function getButtonLoading(tableLoading?: boolean | SpinProps) {
+	if (isBoolean(tableLoading)) return tableLoading;
+	if (tableLoading?.spinning !== false) {
+		return { delay: tableLoading?.delay };
+	}
+	return false;
+}
+
+/** 获取受控属性的值 */
+export function getPuppetValue<P extends object, N extends keyof P>(
+	propName: N | N[],
+	$props: P,
+	props: P
+) {
+	const list = ([] as N[]).concat(propName);
+	for (let i = 0; i < list.length; i++) {
+		const name = list[i];
+		if ($props.hasOwnProperty(name)) {
+			props[name] = $props[name];
+		}
+	}
 }

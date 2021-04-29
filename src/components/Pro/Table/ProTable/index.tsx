@@ -8,14 +8,8 @@ import {
 	useReducer,
 	useState,
 } from "react";
-import { Space, Table, Button, Form } from "antd";
-import {
-	DeleteOutlined,
-	DownloadOutlined,
-	PlusOutlined,
-	ReloadOutlined,
-	ToTopOutlined,
-} from "@ant-design/icons";
+import { Space, Table, Form, Tooltip } from "antd";
+import { ReloadOutlined } from "@ant-design/icons";
 import classNames from "classnames";
 import { FilterForm } from "@/components/Pro/Form";
 import useRefCallback from "@/hooks/state/use-ref-callback";
@@ -27,14 +21,11 @@ import TitleTip from "../../TitleTip";
 import TableInfo from "./components/TableInfo";
 import useFilterTableColumn from "./hooks/use-filter-table-column";
 import reducer, { actions } from "./store";
-import { ProTableProps, ProTableRef, ProTableState } from "./interface";
-import { getCurrentAndSize, getInitState } from "./utils";
+import { ProTableProps, ProTableRef } from "./interface";
+import { getButtonLoading, getInitState, getPuppetValue } from "./utils";
 import styles from "./style.module.scss";
-import { Reducer } from "@reduxjs/toolkit";
-
-/**
- * TODO: 表单默认值
- */
+import { GetValue } from "@/utils/Value";
+import { dequal } from "dequal";
 
 function ProTable<RecordType extends object = any>(
 	props: ProTableProps<RecordType>,
@@ -47,32 +38,42 @@ function ProTable<RecordType extends object = any>(
 		tableTitle,
 		search,
 		searchRef,
-		pagination: _pagination,
+		pagination: $pagination,
 		request,
-		loading: _loading,
-		params: _params,
+		loading: $loading,
+		params: $params,
 		...rest
 	} = props;
+
+	const [form] = Form.useForm(search ? search.form : undefined);
+	useImperativeHandle(searchRef, () => form, [form]); // 暴露出属性
+
 	const [tableCol, formCol, initFilters, initSorter] = useFilterTableColumn(columns);
 
-	const [__loading, setLoading] = useState<ProTableProps["loading"]>(false);
+	const [_loading, setLoading] = useState<ProTableProps["loading"]>(false);
 
 	const [state, dispatch] = useReducer(
-		reducer as Reducer<ProTableState<RecordType>>,
-		{ pagination: _pagination, filters: initFilters, sorter: initSorter },
+		reducer,
+		{
+			pagination: $pagination,
+			filters: initFilters,
+			sorter: initSorter,
+		},
 		getInitState
 	);
+
 	useEffect(() => {
-		dispatch(actions.setPagination(_pagination));
-	}, [_pagination]);
+		dispatch(actions.setPagination($pagination));
+	}, [$pagination]);
 
 	const mountedRef = useMountedRef();
 	const handleRequest = useRefCallback(async () => {
 		if (!isFunction(request)) return;
+		const formValue = form.getFieldsValue();
 		try {
 			setLoading({ delay: 50 });
 			const { dataSource, total } = await request(
-				{ ...state.params, ..._params, ...state.pagination },
+				{ ...formValue, ...$params, ...state.pagination },
 				state.filters,
 				state.sorter
 			);
@@ -83,10 +84,10 @@ function ProTable<RecordType extends object = any>(
 		}
 	});
 
-	// state 与 外部的 _params 变化都会导致 request 函数执行
+	// state 与 外部的 $params 变化都会导致 request 函数执行
 	useDeepEffect(() => {
 		handleRequest();
-	}, [handleRequest, state, _params]);
+	}, [handleRequest, state, $params]);
 
 	const handleReload = useRefCallback((reset?: boolean) => {
 		if (reset) {
@@ -94,23 +95,42 @@ function ProTable<RecordType extends object = any>(
 		}
 		handleRequest();
 	});
-	const [form] = Form.useForm(search ? search.form : undefined);
-	useImperativeHandle(searchRef, () => form, [form]); // 暴露出属性
 
 	// ****** bugs ***** 当 columns 设置了 filteredValue 的值 然后 触发 tableChange 时 args.filters 与filteredValue 不一致
 	const handleTableChange = useRefCallback<Required<ProTableProps<RecordType>>["onChange"]>(
 		(...args) => {
-			const [_pagination, _filters, _sorter] = args;
+			const [__pagination, _filters, _sorter] = args;
 			rest.onChange?.(...args);
+			// ****** TODO: 页码受控与过滤器受控时的处理
+			let newPagination = GetValue(__pagination, ["current", "pageSize"]);
+			if (dequal(newPagination, state.pagination)) {
+				// 如果
+				newPagination.current = 1;
+			}
+			if ($pagination) {
+				getPuppetValue(["current", "pageSize"], $pagination, newPagination);
+			}
+			console.log(newPagination);
+			dispatch(actions.setPagination(newPagination));
 
-			// 保存 数据
-			dispatch(actions.setPagination(_pagination));
+			// TODO: 判断 是否受控
 			dispatch(actions.setFilters(_filters));
 			dispatch(actions.setSorter(_sorter));
 		}
 	);
 	const handleFinish = useRefCallback(async (values: RecordType) => {
-		dispatch(actions.setParams(values));
+		// 如果本身在第一页 直接调用 handleRequest
+		// 否则的话需要 dispatch 去改变 pagination.current 然后由 useEffect 副作用自行调用
+
+		if (state.pagination.current === 1) handleRequest();
+		else {
+			const newPagination = { ...state.pagination, current: 1 };
+			// 受控时不应该重置 那么如何通知外部变化呢？
+			onchange?.({ ...$pagination, ...newPagination }, state.filters, state.sorter);
+			if ($pagination) getPuppetValue(["current", "pageSize"], $pagination, newPagination);
+			dispatch(actions.setPagination(newPagination));
+		}
+
 		if (search && search.onFinish) {
 			await search.onFinish(values);
 		}
@@ -127,7 +147,7 @@ function ProTable<RecordType extends object = any>(
 	useImperativeHandle(ref, () => tableAction, [tableAction]);
 
 	/**----------------------- UI相关 --------------------------- */
-	const loading = props.hasOwnProperty("loading") ? _loading : __loading;
+	const loading = props.hasOwnProperty("loading") ? $loading : _loading;
 	// 以下 二者皆应在不同的业务去声明
 	const tableInfo = (() => {
 		const tableInfo = (
@@ -138,12 +158,21 @@ function ProTable<RecordType extends object = any>(
 				}}
 			/>
 		);
-		if (renderTableInfo) return renderTableInfo(tableInfo, {});
+		if (renderTableInfo) return renderTableInfo(tableInfo, { actions: tableAction, info: {} });
 		return tableInfo;
 	})();
 
 	// TODO: 确定tableAction
-	const tableToolbar = renderToolbar?.() ?? [];
+	const tableToolbar = (() => {
+		// 默认 只有一个刷新icon
+		const toolbar: JSX.Element[] = [
+			<Tooltip title='刷新' key='reload-icon'>
+				<ReloadOutlined key='reload' className={styles.reload_icon} onClick={handleRequest} />
+			</Tooltip>,
+		];
+		if (renderToolbar) return renderToolbar(toolbar, tableAction);
+		return toolbar;
+	})();
 
 	// 处理 submit config
 	const searchSubmitConfig = useMemo(() => {
@@ -155,8 +184,9 @@ function ProTable<RecordType extends object = any>(
 					search.submitConfig.onReset?.();
 				}
 			},
-			render: (_dom, form) => {
-				const dom = [_dom[0], cloneElement(_dom[1], { loading })];
+			render: ($dom, form) => {
+				// 处理 loading
+				const dom = [$dom[0], cloneElement($dom[1], { loading: getButtonLoading(loading) })];
 				if (search && search.submitConfig && search.submitConfig.render) {
 					return search.submitConfig.render(dom, form);
 				}
@@ -193,7 +223,7 @@ function ProTable<RecordType extends object = any>(
 				columns={tableCol}
 				{...rest}
 				loading={loading}
-				pagination={{ ..._pagination, ...state.pagination }}
+				pagination={{ ...$pagination, ...state.pagination }}
 				onChange={handleTableChange}
 				className={classNames(styles.table_content, rest.className)}
 			/>
@@ -202,27 +232,3 @@ function ProTable<RecordType extends object = any>(
 }
 
 export default forwardRef(ProTable) as typeof ProTable;
-/**
- * const toolbar: JSX.Element[] = [
-			<Button
-				type='primary'
-				danger
-				// className={classNames({ hidden: !tableService.state.rows.length })}
-				// onClick={tableService.handleDelete}
-				icon={<DeleteOutlined />}
-				key='delete'
-			>
-				删除数据
-			</Button>,
-			<Button type='primary' icon={<PlusOutlined />} key='add'>
-				新增数据
-			</Button>,
-			<Button key='import' icon={<DownloadOutlined />}>
-				导入数据
-			</Button>,
-			<Button key='export' icon={<ToTopOutlined />}>
-				导出数据
-			</Button>,
-			<ReloadOutlined key='reload' className={styles.reload_icon} />,
-		];
- */

@@ -86,23 +86,30 @@ const columns: ProColumnsType<typeof dataSource[0]> = [
 ];
 export default function ProTablePage() {
 	useTitle("增强表格");
+	const [p,setP] = useState(1)
 	return (
 		<div className='min-h-full flex flex-col'>
 			<PageHeaderWrap title='增强表格' />
 			<main className='flex-auto bg-white mt-10'>
+				<Button onClick={()=>setP(p+1)}>add</Button>
 				<ProTable
 					tableTitle='12sadsdfsdf12112'
 					columns={columns}
 					bordered
 					pagination={{
-						current: 3,
-						pageSize: 33,
-						total: 100,
+						current: p,
+						pageSize: 20,
+						total: 1000,
 					}}
 					dataSource={dataSource}
+					onChange={()=>{
+						setTimeout(()=>{
+							setP(5)
+						},200)
+					}}
 					request={async (params, filter, sort) => {
 						await sleep(1420);
-						console.log("params filter sort\n", params, filter, sort);
+						console.log("will fetch data \n", params, filter, sort);
 						return { dataSource: [], total: 100 };
 					}}
 				/>

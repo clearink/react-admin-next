@@ -6,6 +6,7 @@ import {
 	useImperativeHandle,
 	useMemo,
 	useReducer,
+	useRef,
 	useState,
 } from "react";
 import { Space, Table, Form, Tooltip } from "antd";
@@ -26,6 +27,8 @@ import { getButtonLoading, getInitState, getPuppetValue } from "./utils";
 import styles from "./style.module.scss";
 import { GetValue } from "@/utils/Value";
 import { dequal } from "dequal";
+import { useDebounceCallback } from "@/hooks/state/use-debounce";
+import { sleep } from "@/utils/Test";
 
 function ProTable<RecordType extends object = any>(
 	props: ProTableProps<RecordType>,
@@ -66,9 +69,15 @@ function ProTable<RecordType extends object = any>(
 		dispatch(actions.setPagination($pagination));
 	}, [$pagination]);
 
+	const requestLock = useRef(false);
 	const mountedRef = useMountedRef();
-	const handleRequest = useRefCallback(async () => {
+	const handleRequest = useDebounceCallback(10, async () => {
 		if (!isFunction(request)) return;
+		if (requestLock.current) {
+			console.warn("a request is pending");
+			return;
+		}
+		requestLock.current = true;
 		const formValue = form.getFieldsValue();
 		try {
 			setLoading({ delay: 50 });
@@ -80,7 +89,10 @@ function ProTable<RecordType extends object = any>(
 			// TODO:
 			// set dataSource and total
 		} finally {
-			if (mountedRef.current) setLoading(false);
+			if (mountedRef.current) {
+				requestLock.current = false;
+				setLoading(false);
+			}
 		}
 	});
 
@@ -96,38 +108,41 @@ function ProTable<RecordType extends object = any>(
 		handleRequest();
 	});
 
-	// ****** bugs ***** 当 columns 设置了 filteredValue 的值 然后 触发 tableChange 时 args.filters 与filteredValue 不一致
-	const handleTableChange = useRefCallback<Required<ProTableProps<RecordType>>["onChange"]>(
-		(...args) => {
-			const [__pagination, _filters, _sorter] = args;
-			rest.onChange?.(...args);
-			// ****** TODO: 页码受控与过滤器受控时的处理
-			let newPagination = GetValue(__pagination, ["current", "pageSize"]);
-			if (dequal(newPagination, state.pagination)) {
-				// 如果
-				newPagination.current = 1;
-			}
-			if ($pagination) {
-				getPuppetValue(["current", "pageSize"], $pagination, newPagination);
-			}
-			console.log(newPagination);
-			dispatch(actions.setPagination(newPagination));
-
-			// TODO: 判断 是否受控
-			dispatch(actions.setFilters(_filters));
-			dispatch(actions.setSorter(_sorter));
+	// TODO: 是否需要保证只有一个request在运行
+	type TableChange = Required<ProTableProps<RecordType>>["onChange"];
+	const handleTableChange = useRefCallback<TableChange>(async (...args) => {
+		const [__pagination, _filters, _sorter] = args;
+		rest.onChange?.(...args);
+		// ****** TODO: 页码受控与过滤器受控时的处理
+		let newPagination = GetValue(__pagination, ["current", "pageSize"]);
+		if (dequal(newPagination, state.pagination)) {
+			// 如果
+			newPagination.current = 1;
 		}
-	);
+		// if ($pagination) {
+		// 	getPuppetValue(["current", "pageSize"], $pagination, newPagination);
+		// }
+		// 当 内部与外部同时改变了 以下三者时 皆以下面为准
+		//和 antd 保持一致 或者叫做以内部为准
+		await sleep(10);
+		dispatch(actions.setPagination(newPagination));
+
+		// TODO: 判断 是否受控
+		dispatch(actions.setFilters(_filters));
+		dispatch(actions.setSorter(_sorter));
+	});
 	const handleFinish = useRefCallback(async (values: RecordType) => {
 		// 如果本身在第一页 直接调用 handleRequest
 		// 否则的话需要 dispatch 去改变 pagination.current 然后由 useEffect 副作用自行调用
 
+		await sleep(10);
+		
 		if (state.pagination.current === 1) handleRequest();
 		else {
 			const newPagination = { ...state.pagination, current: 1 };
-			// 受控时不应该重置 那么如何通知外部变化呢？
-			onchange?.({ ...$pagination, ...newPagination }, state.filters, state.sorter);
-			if ($pagination) getPuppetValue(["current", "pageSize"], $pagination, newPagination);
+			// // 受控时不应该重置 那么如何通知外部变化呢？
+			// onchange?.({ ...$pagination, ...newPagination }, state.filters, state.sorter);
+			// if ($pagination) getPuppetValue(["current", "pageSize"], $pagination, newPagination);
 			dispatch(actions.setPagination(newPagination));
 		}
 

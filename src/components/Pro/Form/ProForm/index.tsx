@@ -8,8 +8,8 @@ import { formatFormValue } from "@/components/Pro/utils/format-form-value";
 import { ProFormProps } from "./interface";
 
 function ProForm<Values = any>(props: ProFormProps<Values>) {
-	const { children, form: __form, onFinish, submitConfig, timeFormat, ...rest } = props;
-	const [form] = Form.useForm(__form);
+	const { children, form: $form, onFinish, submitConfig, timeFormat, ...rest } = props;
+	const [form] = Form.useForm($form);
 	const mountedRef = useMountedRef();
 	const [loading, setLoading] = useState<ButtonProps["loading"]>(false);
 

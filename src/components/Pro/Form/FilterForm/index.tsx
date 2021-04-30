@@ -17,8 +17,8 @@ import styles from "./style.module.scss";
  */
 function FilterForm<Values = any>(props: FilterFormProps<Values>) {
 	const {
-		children: _children,
-		collapsed: _collapsed,
+		children: $children,
+		collapsed: $collapsed,
 		defaultCollapsed,
 		onCollapse,
 		ghost,
@@ -34,7 +34,7 @@ function FilterForm<Values = any>(props: FilterFormProps<Values>) {
 	const span = useBreakpoint(colSpan) || FULL_SCREEN_SPAN;
 
 	// 为了与外部同步
-	const collapsed = props.hasOwnProperty("collapsed") ? _collapsed : __collapsed;
+	const collapsed = props.hasOwnProperty("collapsed") ? $collapsed : __collapsed;
 
 	const handleCollapsed = useRefCallback(() => {
 		if (!props.hasOwnProperty("collapsed")) setCollapsed(!collapsed);
@@ -42,7 +42,7 @@ function FilterForm<Values = any>(props: FilterFormProps<Values>) {
 	});
 
 	const [children, otherSpan] = useMemo(() => {
-		const childCount = Children.count(_children);
+		const childCount = Children.count($children);
 		const col = ~~(FULL_SCREEN_SPAN / span); // 多少列
 		let count = childCount;
 		// -1 是为了保留 submitter 的位置
@@ -50,7 +50,7 @@ function FilterForm<Values = any>(props: FilterFormProps<Values>) {
 		const otherSpan = (col - (count % col)) * span;
 		let max = Infinity; // 最多显示的数目
 		if (collapsed && span) max = Math.max(col - 1, 1);
-		const children = Children.map(_children, (child, index) => {
+		const children = Children.map($children, (child, index) => {
 			const className = classNames(styles.filter_form__item, { [styles.hidden]: index >= max });
 			return (
 				<Col span={span} className={className}>
@@ -59,7 +59,7 @@ function FilterForm<Values = any>(props: FilterFormProps<Values>) {
 			);
 		});
 		return [children, otherSpan];
-	}, [_children, collapsed, span]);
+	}, [$children, collapsed, span]);
 
 	return (
 		<ProForm

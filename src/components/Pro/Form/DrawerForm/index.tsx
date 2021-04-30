@@ -13,9 +13,9 @@ import styles from "./style.module.scss";
 import useFixModalMask from "../hooks/use-fix-modal-mask";
 
 function DrawerForm<Values = any>(props: DrawerFormProps<Values>, ref: Ref<DrawerFormRef>) {
-	const { title, trigger, children, renderFooter: __renderFooter, form: __form, onFinish, timeFormat, ...rest } = props;
+	const { title, trigger, children, renderFooter: $renderFooter, form: $form, onFinish, timeFormat, ...rest } = props;
 	const { visible, on, off, toggle } = useSwitch(false);
-	const [form] = Form.useForm(__form);
+	const [form] = Form.useForm($form);
 
 	useImperativeHandle(ref, () => ({ form, on, off, toggle }), [form, off, on, toggle]); // 暴露的方法
 
@@ -43,7 +43,7 @@ function DrawerForm<Values = any>(props: DrawerFormProps<Values>, ref: Ref<Drawe
 	}, [rest]);
 
 	const renderFooter = useRefCallback((dom: JSX.Element[]) => {
-		if (__renderFooter) return __renderFooter(form, off);
+		if ($renderFooter) return $renderFooter(form, off);
 		return (
 			<div className={styles.footer_wrap}>
 				{cloneElement(dom[0], { children: "取消", onClick: off })}

@@ -19,11 +19,12 @@ import useMountedRef from "@/hooks/state/use-mounted-ref";
 import useDeepEffect from "@/hooks/state/use-deep-effect";
 import { FilterFormProps } from "../../Form/FilterForm/interface";
 import TitleTip from "../../TitleTip";
+import getDumbValue from "../../utils/get-dumb-value";
 import TableInfo from "./components/TableInfo";
 import useFilterTableColumn from "./hooks/use-filter-table-column";
 import reducer, { actions } from "./store";
 import { ProTableProps, ProTableRef } from "./interface";
-import { getButtonLoading, getInitState, getPuppetValue } from "./utils";
+import { getButtonLoading, getInitState } from "./utils";
 import styles from "./style.module.scss";
 import { GetValue } from "@/utils/Value";
 import { dequal } from "dequal";
@@ -119,9 +120,11 @@ function ProTable<RecordType extends object = any>(
 			// 如果
 			newPagination.current = 1;
 		}
-		// if ($pagination) {
-		// 	getPuppetValue(["current", "pageSize"], $pagination, newPagination);
-		// }
+
+		if ($pagination) {
+			getDumbValue(["current", "pageSize"], $pagination, newPagination);
+		}
+
 		// 当 内部与外部同时改变了 以下三者时 皆以下面为准
 		//和 antd 保持一致 或者叫做以内部为准
 		await sleep(10);
@@ -136,7 +139,7 @@ function ProTable<RecordType extends object = any>(
 		// 否则的话需要 dispatch 去改变 pagination.current 然后由 useEffect 副作用自行调用
 
 		await sleep(10);
-		
+
 		if (state.pagination.current === 1) handleRequest();
 		else {
 			const newPagination = { ...state.pagination, current: 1 };

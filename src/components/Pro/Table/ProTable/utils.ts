@@ -49,18 +49,3 @@ export function getButtonLoading(tableLoading?: boolean | SpinProps) {
 	}
 	return false;
 }
-
-/** 获取受控属性的值 */
-export function getPuppetValue<P extends object, N extends keyof P>(
-	propName: N | N[],
-	$props: P,
-	props: P
-) {
-	const list = ([] as N[]).concat(propName);
-	for (let i = 0; i < list.length; i++) {
-		const name = list[i];
-		if ($props.hasOwnProperty(name)) {
-			props[name] = $props[name];
-		}
-	}
-}

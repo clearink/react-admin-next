@@ -41,7 +41,7 @@ function EditableTable<RecordType extends object = any>(
 ) {
 	const {
 		dataSource,
-		columns: __columns,
+		columns: $columns,
 		onChange,
 		rowKey,
 		type,
@@ -84,7 +84,7 @@ function EditableTable<RecordType extends object = any>(
 		return true;
 	});
 
-	const [tableColumns, formColumns] = useFormatColumn(type, __columns ?? [], handleEditRecord);
+	const [tableColumns, formColumns] = useFormatColumn(type, $columns ?? [], handleEditRecord);
 
 	const components = useMemo(() => {
 		if (type === "cell") return { body: { row: EditableRow, cell: EditableCell } };

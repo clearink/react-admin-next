@@ -1,9 +1,5 @@
 import { ColProps, FormItemProps } from "antd";
 
-export interface ProFormItemProps<T> {
-	render?: (dom: JSX.Element, props: Omit<T, "render">) => JSX.Element;
-}
-export type ProFormItemRender<T> = (dom: JSX.Element, props: Omit<T, "render">) => JSX.Element;
 export type ProFormItemSize =
 	| number
 	| "xs"

@@ -1,5 +1,6 @@
-import { ProFormItemRender } from "../interface";
+import { ProComponentRender } from "../../interface";
+
 export interface ProFormAvatarProps {
-	render?: ProFormItemRender<ProFormAvatarProps>;
+	render?: ProComponentRender<ProFormAvatarProps>;
 	value?: string;
 }

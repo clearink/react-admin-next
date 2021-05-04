@@ -4,7 +4,7 @@ import { ColumnType, TablePaginationConfig, TableProps } from "antd/lib/table";
 import { RenderedCell } from "rc-table/lib/interface";
 import { FilterFormProps } from "../../Form/FilterForm/interface";
 import { FormInstance } from "antd";
-import { FilterValue, SorterResult, SortOrder } from "antd/lib/table/interface";
+import { FilterValue, SorterResult } from "antd/lib/table/interface";
 import { getFilters, getInitState, getSorter } from "./utils";
 
 //
@@ -27,16 +27,13 @@ export interface ProTableProps<RecordType extends object = any>
 
 	/** render 右侧操作栏 */
 	// TODO: tableAction 定义
-	renderToolbar?: (toolbar: JSX.Element[], tableAction?: any) => JSX.Element[];
+	renderToolbar?: (dom: JSX.Element[], actions: ProTableRef) => JSX.Element[];
 
 	/** render tableInfo 渲染table信息 */
 	// TODO: 修正props类型
-	renderTableInfo?: (
-		dom: JSX.Element,
-		props: { actions: ProTableRef; info: ReturnType<typeof getInitState> }
-	) => ReactNode;
+	renderTableInfo?: (dom: JSX.Element, actions: ProTableRef) => ReactNode;
 
-	// 添加几个常用的默认事件吧 设置为 false 则认为不需要
+	// 添加几个常用的默认事件吧 不设置 则不显示
 	onCreate?: () => void;
 	onDelete?: (ids: React.Key[]) => void;
 
@@ -60,7 +57,7 @@ export type ProTableRequest<RecordType extends object = any> = (
 			dataSource: RecordType[];
 			total: number;
 	  }
-	| false
+	| undefined
 >;
 export interface ProColumnGroupType<RecordType>
 	extends Omit<ProColumnType<RecordType>, "dataIndex"> {

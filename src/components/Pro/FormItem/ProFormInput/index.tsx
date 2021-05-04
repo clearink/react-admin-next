@@ -9,7 +9,7 @@ function ProFormInput(props: ProFormInputProps) {
 	if (render) return render(DOM, props);
 	return DOM;
 }
-export default withFormItem<ProFormInputProps>(ProFormInput, {
+export default withFormItem(ProFormInput, {
 	allowClear: true,
 	placeholder: "请输入",
 });

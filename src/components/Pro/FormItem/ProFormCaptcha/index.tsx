@@ -62,4 +62,4 @@ function ProFormCaptcha(props: ProFormCaptchaProps) {
 	);
 }
 
-export default withFormItem<ProFormCaptchaProps>(ProFormCaptcha);
+export default withFormItem(ProFormCaptcha);

@@ -1,7 +1,7 @@
 import { InputProps } from "antd";
-import { ProFormItemRender } from "../interface";
+import { ProComponentRender } from "../../interface";
 
 export interface ProFormInputProps extends InputProps {
-	render?: ProFormItemRender<ProFormInputProps>;
+	render?: ProComponentRender<ProFormInputProps>;
 	value?: InputProps["value"];
 }

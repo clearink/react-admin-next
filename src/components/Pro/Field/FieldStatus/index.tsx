@@ -1,6 +1,6 @@
 import { cloneElement } from "react";
 import { Badge, Tag } from "antd";
-import useRequest from "../../hooks/use-requets";
+import useRequest from "../../hooks/use-request";
 import useGetStatus from "./hooks/use-get-status";
 import { FieldStatusProps } from "./interface";
 /**
@@ -11,10 +11,13 @@ import { FieldStatusProps } from "./interface";
 function FieldStatus(props: FieldStatusProps) {
 	const { text, render, valueEnum: $valueEnum, type, request, params, ...rest } = props;
 
-	const { data: _valueEnum } = useRequest(params ?? "", request);
+	const shouldFetch = !props.hasOwnProperty("valueEnum");
+	
+	const { data: _valueEnum } = useRequest(params!, shouldFetch ? request : null);
+	const valueEnum = shouldFetch ? _valueEnum : $valueEnum;
 
-	const valueEnum = props.hasOwnProperty("valueEnum") ? $valueEnum : _valueEnum;
 	const { color, label } = useGetStatus(text, valueEnum);
+
 	let DOM = <></>;
 	if (type === "tag") DOM = <Tag color={color} children={label} />;
 	else DOM = <Badge color={color} text={label} />;

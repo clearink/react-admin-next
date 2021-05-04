@@ -223,7 +223,7 @@ function ProTable<RecordType extends object = any>(
 				onClear={handleClearSelected}
 			/>
 		);
-		if (renderTableInfo) return renderTableInfo(tableInfo, { actions: tableAction, info: state });
+		if (renderTableInfo) return renderTableInfo(tableInfo, tableAction);
 		return tableInfo;
 	})();
 

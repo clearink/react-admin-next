@@ -6,7 +6,6 @@ import { defaultPagination, getCurrentAndSize, getFilters, getInitState, getSort
 // 放置 reduce
 
 const initialState = {
-	// params:{} 因为无法获得表单的默认值 所以不是存储表单的值 而是在 handleRequest函数中去获取
 	pagination: defaultPagination,
 	filters: {},
 	sorter: {},

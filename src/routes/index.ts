@@ -135,16 +135,10 @@ const routes: RouteItemConfig[] = [
 				],
 			},
 			{
-				path: "/dash-board",
-				title: "控制台",
-				icon: "icon-computer",
-				component: withLazyLoad(lazy(() => import("@/pages/Dashboard"))),
-			},
-			{
-				path: '/other',
-				title: '其他',
-				icon: 'icon-heart',
-				component: withLazyLoad(lazy(() => import('@/layouts/BlankLayout'))),
+				path: "/other",
+				title: "其他",
+				icon: "icon-heart",
+				component: withLazyLoad(lazy(() => import("@/layouts/BlankLayout"))),
 				routes: [
 					{
 						path: "/scroll-load",
@@ -152,10 +146,20 @@ const routes: RouteItemConfig[] = [
 						icon: "icon-computer",
 						component: withLazyLoad(lazy(() => import("@/pages/Scroll"))),
 					},
-
-				]
-			}
-
+					{
+						path: "/collapse",
+						title: "折叠面板",
+						icon: "icon-computer",
+						component: withLazyLoad(lazy(() => import("@/pages/Collapse"))),
+					},
+				],
+			},
+			{
+				path: "/dash-board",
+				title: "控制台",
+				icon: "icon-computer",
+				component: withLazyLoad(lazy(() => import("@/pages/Dashboard"))),
+			},
 		],
 	},
 ];

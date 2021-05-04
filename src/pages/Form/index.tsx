@@ -1,9 +1,9 @@
-import React, { cloneElement } from "react";
-import { DatePicker, Input } from "antd";
+import React from "react";
 import PageHeaderWrap from "@/components/PageHeaderWrap";
 import ProForm from "@/components/Pro/Form/ProForm";
 import styles from "./style.module.scss";
 import { sleep } from "@/utils/Test";
+import { ProFormCaptcha, ProFormInput } from "@/components/Pro/FormItem";
 
 export default function FormPage(props: any) {
 	return (
@@ -11,23 +11,26 @@ export default function FormPage(props: any) {
 			<PageHeaderWrap title='基础Form' className={styles.page_header} />
 			<main className='bg-white flex-auto p-6'>
 				<ProForm<{
-					name:string;
-					date:string
+					name: string;
+					age: string;
 				}>
 					onFinish={async (values) => {
-						console.log(values);
 						await sleep(1000);
 					}}
-					submitConfig={{
-						render: (dom) => cloneElement(dom[1], { children: "提交表单" }),
-					}}
 				>
-					<ProForm.Item name='name'>
-						<Input />
-					</ProForm.Item>
-					<ProForm.Item name='date'>
-						<DatePicker />
-					</ProForm.Item>
+					<ProFormInput label='age' name='age' width='m' required />
+					<ProFormCaptcha
+						label='验证码'
+						name="captcha"
+						field={{
+							phoneName: "age",
+							onGetCaptcha: async (value) => {
+								console.log(value);
+								await sleep(1000);
+								return true;
+							},
+						}}
+					/>
 				</ProForm>
 			</main>
 		</div>

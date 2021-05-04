@@ -4,14 +4,13 @@ import { message } from "antd";
 import configs from "@/configs";
 import LoginUtil from "@/utils/LoginUtil";
 
-// type Method = "get" | "post" | "delete" | "head" | "put" | "options" | "patch"
-// const requestMap = new Map<string, { time: number }>();
-// 多次请求相隔时间不能小于200ms
 class Http {
-	private axios: AxiosInstance = Axios.create();
+	private axios = Axios.create();
 	private timer: undefined | number = undefined;
-	private SAME_REQUEST = "SAME_REQUEST_SHOULD_CANCEL";
-	private SAME_REQUEST_MIN_INTERVAL = 0; // 相同请求间隔最小时间
+	private source = Axios.CancelToken.source();
+	private fetchMap = new Map<string, number>();
+	// private SAME_REQUEST = "SAME_REQUEST_SHOULD_CANCEL";
+	private SAME_REQUEST_MIN_INTERVAL = 100; // 相同请求间隔最小时间
 
 	constructor() {
 		const { axios } = this;
@@ -37,8 +36,18 @@ class Http {
 			const token = LoginUtil.getToken();
 			// 有token 时在请求头上加上 token
 			if (token) config.headers[configs.TOKEN] = token;
-			config.headers[configs.TOKEN] =
-				"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MTcxMTI2NzUsInVzZXJuYW1lIjoibWMifQ.QX9q6HCvWrS20lm1UbY2iXO1-PvvqR3QUJ7IWxlC5wo";
+
+			const url = `${config.url}${JSON.stringify(config.params)}${JSON.stringify(config.data)}`;
+			const lastTime = this.fetchMap.get(url);
+			if (lastTime && lastTime + this.SAME_REQUEST_MIN_INTERVAL > Date.now()) {
+				// 需要取消请求
+				return Promise.reject(config);
+			} else {
+				this.fetchMap.set(url, Date.now());
+			}
+
+			Object.assign(config, { cancelToken: this.source.token });
+
 			return config;
 		}, Promise.reject);
 	}
@@ -88,24 +97,29 @@ class Http {
 		}, 300);
 	}
 
+	// 集中处理取消请求逻辑
+	private cancelToken(message?: string) {
+		this.source.cancel(message);
+	}
+
 	// get
-	public get<R = any>(url: string, params?: Object) {
-		return this.axios.get<R>(url, { params });
+	public async get<R = any>(url: string, params?: Object) {
+		return await (await this.axios.get<R>(url, { params })).data;
 	}
 
 	// post
-	public post<R = any>(url: string, data: Object, options?: AxiosRequestConfig) {
-		return this.axios.post<R>(url, data, options);
+	public async post<R = any>(url: string, data: Object, options?: AxiosRequestConfig) {
+		return await (await this.axios.post<R>(url, data, options)).data;
 	}
 
 	// put
-	public put<R = any>(url: string, data: Object, options?: AxiosRequestConfig) {
-		return this.axios.put<R>(url, data, options);
+	public async put<R = any>(url: string, data: Object, options?: AxiosRequestConfig) {
+		return await (await this.axios.put<R>(url, data, options)).data;
 	}
 
 	// delete
-	public delete<R = any>(url: string, options?: AxiosRequestConfig) {
-		return this.axios.delete<R>(url, options);
+	public async delete<R = any>(url: string, options?: AxiosRequestConfig) {
+		return await (await this.axios.delete<R>(url, options)).data;
 	}
 }
 

@@ -25,7 +25,7 @@ export default function Submitter(props: SubmitterProps) {
 		onSubmit?.();
 	});
 	const dom = [
-		<Button key='reset' onClick={handleReset}>
+		<Button key='reset' onClick={handleReset} disabled={!!loading}>
 			重置
 		</Button>,
 		<Button key='submit' type='primary' loading={loading} onClick={handleSubmit}>

@@ -1,116 +1,79 @@
+import { SEX_CONST } from "@/assets/constant/sex";
 import PageHeaderWrap from "@/components/PageHeaderWrap";
+import { FieldAvatar, FieldStatus, FieldText } from "@/components/Pro/Field";
+import { ProFormInput } from "@/components/Pro/FormItem";
 import ProTable from "@/components/Pro/Table/ProTable";
-import { ProColumnsType, ProTableRef } from "@/components/Pro/Table/ProTable/interface";
+import { ProColumnsType } from "@/components/Pro/Table/ProTable/interface";
 import useTitle from "@/hooks/ui/use-title";
-import { sleep } from "@/utils/Test";
-import { Button, Form, Input } from "antd";
-import { useState } from "react";
-const dataSource = [
+import { GetNurseLevel, UserList } from "@/http/api/user";
+const columns: ProColumnsType<any> = [
 	{
-		key: "1",
-		name: "胡彦斌",
-		age: {
-			age: {
-				age: 32,
-			},
-		},
-		address: "西湖区湖底公园1号",
+		title: "头像",
+		dataIndex: "avatar",
+		read: <FieldAvatar />,
 	},
 	{
-		key: "2",
-		name: "胡彦祖",
-		age: {
-			age: {
-				age: 42,
-			},
-		},
-		address: "西湖区湖底公园1号",
+		title: "id",
+		dataIndex: "id",
+		hideInTable: true,
+		search: <ProFormInput label='' name='nameOrMobile' field={{ placeholder: "姓名/手机" }} />,
 	},
-];
-const columns: ProColumnsType<typeof dataSource[0]> = [
 	{
 		title: "姓名",
 		dataIndex: "name",
-		key: "name",
-		search: (
-			<Form.Item label='姓名'>
-				<Input />
-			</Form.Item>
-		),
-		sorter: (a, b) => a.age.age.age - b.age.age.age,
-		filters: [
-			{
-				text: "Joe",
-				value: "Joe",
-			},
-			{
-				text: "Joe23",
-				value: "Joe232",
-			},
-		],
-		defaultFilteredValue: ["Joe232", "Joe"],
+		read: <FieldText ellipsis copyable />,
+		width: 100,
 	},
 	{
 		title: "年龄",
-		dataIndex: ["age", "age", "age"],
-		search: (
-			<Form.Item label='年龄' initialValue="332name">
-				<Input />
-			</Form.Item>
-		),
-		sorter: {
-			compare: (a, b) => a.age.age.age - b.age.age.age,
-			multiple: 1,
-		},
-		filters: [
-			{
-				text: "Joe",
-				value: "Joe",
-			},
-		],
+		dataIndex: "age",
 	},
 	{
-		title: "Address",
-		dataIndex: "address",
-		filters: [
-			{
-				text: "London",
-				value: "London",
-			},
-		],
-		sorter: {
-			compare: (a, b) => a.address.length - b.address.length,
-			multiple: 2,
-		},
+		title: "性别",
+		dataIndex: "gender",
+		read: <FieldStatus valueEnum={SEX_CONST.list} />,
+	},
+	{
+		title: "住户手机",
+		dataIndex: "mobile",
+		read: <FieldText ellipsis copyable />,
+	},
+	{
+		title: "职务",
+		dataIndex: "position",
+		read: (
+			<FieldStatus
+				params='/sys/dict/getDictItems/careworkerPosition'
+				request={async () => {
+					const { result } = await GetNurseLevel();
+					return result.map((item: any) => ({ label: item.text, value: item.value }));
+				}}
+			/>
+		),
 	},
 ];
 export default function ProTablePage() {
 	useTitle("增强表格");
-	const [p,setP] = useState(1)
 	return (
 		<div className='min-h-full flex flex-col'>
 			<PageHeaderWrap title='增强表格' />
 			<main className='flex-auto bg-white mt-10'>
-				<Button onClick={()=>setP(p+1)}>add</Button>
 				<ProTable
 					tableTitle='12sadsdfsdf12112'
 					columns={columns}
-					bordered
-					pagination={{
-						current: p,
-						pageSize: 20,
-						total: 1000,
+					onCreate={() => {
+						console.log("create");
 					}}
-					dataSource={dataSource}
-					onChange={()=>{
-						setTimeout(()=>{
-							setP(5)
-						},200)
-					}}
-					request={async (params, filter, sort) => {
-						await sleep(1420);
-						console.log("will fetch data \n", params, filter, sort);
-						return { dataSource: [], total: 100 };
+					request={async (params) => {
+						const { current, ...rest } = params;
+						const { result } = await UserList({
+							pageNo: current,
+							...rest,
+						});
+						return {
+							dataSource: result.records,
+							total: result.total,
+						};
 					}}
 				/>
 			</main>

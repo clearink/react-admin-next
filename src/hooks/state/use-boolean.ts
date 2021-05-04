@@ -1,13 +1,12 @@
-import useMethod from "./use-method";
+import useMethods from "./use-methods";
 
 const reducers = {
 	on: () => true,
 	off: () => false,
 	toggle: (value: boolean) => !value,
 };
-
 export function useBoolean(init: boolean = false) {
-	return useMethod(reducers, init);
+	return useMethods(reducers, init);
 }
 
 export function useSwitch(init: boolean = false) {

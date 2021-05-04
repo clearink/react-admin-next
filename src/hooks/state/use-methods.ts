@@ -9,7 +9,10 @@ export type Methods<R extends ExtensionReducer<S>, S> = {
 	[K in keyof R]: OmitState<R[K]>;
 };
 
-export function useExtendReducer<R extends ExtensionReducer<S>, S>(reducers: R, setState: Dispatch<SetStateAction<S>>) {
+export function useExtendReducer<R extends ExtensionReducer<S>, S>(
+	reducers: R,
+	setState: Dispatch<SetStateAction<S>>
+) {
 	const ref = useRef<Methods<R, S> | undefined>(undefined);
 	if (isUndefined(ref.current)) {
 		ref.current = Object.entries(reducers).reduce((methods, [key, fn]) => {
@@ -21,8 +24,13 @@ export function useExtendReducer<R extends ExtensionReducer<S>, S>(reducers: R, 
 	return ref.current;
 }
 
-export default function useMethod<R extends ExtensionReducer<S>, S>(reducers: R, initialState: S | (() => S)) {
+export default function useMethods<R extends ExtensionReducer<S>, S>(
+	reducers: R,
+	initialState: S | (() => S)
+) {
 	const [state, setState] = useState(initialState);
 	const methods = useExtendReducer(reducers, setState);
 	return [state, methods, setState] as const;
 }
+// TODO: 模仿 redux/toolkit
+export function createReducer() {}

@@ -1,16 +1,21 @@
-import { ReactNode, MutableRefObject, Ref } from "react";
+import React, { ReactNode, MutableRefObject, Ref } from "react";
 import { TitleTipProps } from "@/components/Pro/TitleTip";
 import { ColumnType, TablePaginationConfig, TableProps } from "antd/lib/table";
 import { RenderedCell } from "rc-table/lib/interface";
 import { FilterFormProps } from "../../Form/FilterForm/interface";
 import { FormInstance } from "antd";
 import { FilterValue, SorterResult, SortOrder } from "antd/lib/table/interface";
-import { getFilters, getSorter } from "./utils";
+import { getFilters, getInitState, getSorter } from "./utils";
 
 //
 export interface ProTableProps<RecordType extends object = any>
-	extends Omit<TableProps<RecordType>, "columns"> {
+	extends Omit<TableProps<RecordType>, "columns" | "rowSelection"> {
 	columns?: ProColumnsType<RecordType>;
+
+	/**
+	 * 多选 = false时 不显示
+	 */
+	rowSelection?: false | TableProps<RecordType>["rowSelection"];
 
 	/** search form props */
 	search?: false | FilterFormProps<RecordType>;
@@ -26,17 +31,14 @@ export interface ProTableProps<RecordType extends object = any>
 
 	/** render tableInfo 渲染table信息 */
 	// TODO: 修正props类型
-	renderTableInfo?: (dom: JSX.Element, props: any) => ReactNode;
+	renderTableInfo?: (
+		dom: JSX.Element,
+		props: { actions: ProTableRef; info: ReturnType<typeof getInitState> }
+	) => ReactNode;
 
-	// 事件
-
-	// toolbar 默认给予的事件
-	// 理论上是应当根据业务的不同而自行 renderToolbar 的
-	// 点击新增按钮
-	// onCreate?: () => any;
-
-	// // 点击删除按钮
-	// onDelete?: (ids: any[]) => any;
+	// 添加几个常用的默认事件吧 设置为 false 则认为不需要
+	onCreate?: () => void;
+	onDelete?: (ids: React.Key[]) => void;
 
 	/**
 	 * table 数据请求函数
@@ -50,13 +52,16 @@ export interface ProTableProps<RecordType extends object = any>
 }
 
 export type ProTableRequest<RecordType extends object = any> = (
-	params: Partial<RecordType> & Record<"current" | "pageSize", number>,
+	params: Partial<RecordType> & Record<"current" | "pageSize", number> & Record<string, any>,
 	filter: ReturnType<typeof getFilters>,
 	sort: ReturnType<typeof getSorter>
-) => Promise<{
-	dataSource: RecordType[];
-	total: number;
-}>;
+) => Promise<
+	| {
+			dataSource: RecordType[];
+			total: number;
+	  }
+	| false
+>;
 export interface ProColumnGroupType<RecordType>
 	extends Omit<ProColumnType<RecordType>, "dataIndex"> {
 	children: ProColumnsType<RecordType>;
@@ -97,12 +102,6 @@ export type ProColumnsType<RecordType = unknown> = Array<
 	ProColumnType<RecordType> | ProColumnGroupType<RecordType>
 >;
 
-// store 中存放 数据 的类型
-// export interface ProTableState {
-// 	pagination: Record<"current" | "pageSize", number>;
-// 	filters: ReturnType<typeof getFilters>;
-// 	sorter: ReturnType<typeof getSorter>;
-// }
 // store state 初始化函数
 export interface GetInitStateProps {
 	pagination?: false | TablePaginationConfig;
@@ -115,12 +114,15 @@ export interface GetInitStateProps {
  * toolbar: 当前第几页 actionBar
  * table
  */
-export interface ProTableRef {
+export interface ProTableRef<RecordType extends object = any> {
+	state: ReturnType<typeof getInitState>;
 	reload: (reset?: boolean) => void;
 	clearSelected: () => void;
+	setPagination: (config: Record<"current" | "pageSize", number>) => void;
+	setFilters: (filters: Record<string, FilterValue | null>) => void;
+	setSorter: (sorter: SorterResult<RecordType> | SorterResult<RecordType>[]) => void;
 	// TODO: 支持 startEditable, cancelEditable
 }
-
 /**
  * interface ActionType {
   reload: (resetPageIndex?: boolean) => void;

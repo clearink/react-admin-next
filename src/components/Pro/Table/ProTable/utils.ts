@@ -21,9 +21,10 @@ export function getSorter<T = SorterResult<any>>(sorter: T | T[]) {
 }
 
 // 同步 table 的 分页数据
+export const defaultPagination = { current: 1, pageSize: 10, total: 0 };
 export function getCurrentAndSize(
-	pagination?: TablePaginationConfig | false,
-	defaultValue: Record<"current" | "pageSize", number> = { current: 1, pageSize: 10 }
+	pagination: undefined | TablePaginationConfig | false,
+	defaultValue: Record<"current" | "pageSize", number>
 ) {
 	if (!pagination) return defaultValue;
 	return {
@@ -32,12 +33,34 @@ export function getCurrentAndSize(
 	};
 }
 
+// 初始化 分页 因为可能会有defaultValue 的干扰
+export function getInitPagination(
+	pagination: TablePaginationConfig | false | undefined,
+	defaultValue: Record<"current" | "pageSize", number> = defaultPagination
+) {
+	if (!pagination) return defaultValue;
+	return {
+		current: pagination.defaultCurrent ?? defaultValue.current,
+		pageSize: pagination.defaultPageSize ?? defaultValue.pageSize,
+	};
+}
+
+export function getInitTotal(
+	pagination: TablePaginationConfig | false | undefined,
+	defaultValue: Record<"current" | "pageSize" | "total", number> = defaultPagination
+) {
+	if (!pagination) return defaultValue.total;
+	return pagination.total ?? defaultValue.total;
+}
+
 // 初始化 reducer 的值
 export function getInitState(props: GetInitStateProps) {
 	return {
-		pagination: getCurrentAndSize(props.pagination),
+		keys: [] as React.Key[],
+		pagination: getInitPagination(props.pagination),
 		filters: getFilters(props.filters),
 		sorter: getSorter(props.sorter),
+		total: getInitTotal(props.pagination),
 	};
 }
 

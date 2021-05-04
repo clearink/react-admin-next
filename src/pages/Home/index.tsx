@@ -25,11 +25,14 @@ export default function Home(props: any) {
 					<li className='line-through text-gray-500 mb-4'>
 						<Link to='/other/scroll-load'>滚动加载</Link>
 					</li>
-					<li className='text-gray-500 mb-4'>
-						<Link to='/list/virtual-list'>虚拟列表</Link>
+					<li className='line-through text-gray-500 mb-4'>
+						<Link to='/table/pro-table'>proTable</Link>
+					</li>
+					<li className=' text-gray-500 mb-4'>
+						<Link to='/other/collapse'>Collapse 折叠面板</Link>
 					</li>
 					<li className='text-gray-500 mb-4'>
-						<Link to='/table/pro-table'>pro-table</Link>
+						<Link to='/list/virtual-list'>虚拟列表</Link>
 					</li>
 				</ul>
 			</div>

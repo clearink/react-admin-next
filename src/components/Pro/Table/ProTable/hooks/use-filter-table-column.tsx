@@ -5,7 +5,7 @@ import React, { cloneElement, isValidElement } from "react";
 import TableText from "../components/TableText";
 import { ProColumnsType, ProColumnType } from "../interface";
 
-// TODO: 将 filters default 与 value 分离开
+
 export default function useFilterTableColumn<T extends object = any>(
 	columns: ProColumnsType<T> = []
 ) {

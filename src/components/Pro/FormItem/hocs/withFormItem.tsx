@@ -1,7 +1,7 @@
 import React from "react";
 import { Form } from "antd";
-import { getProFormItemStyle, getRequiredRule } from "./utils";
 import { WithFormItemProps } from "../interface";
+import { getProFormItemStyle, getRequiredRule } from "../utils";
 
 // P 是例如 ProFormInputProps之类的类型
 export default function withFormItem<P>(Field: React.ComponentType<P>, defaultProps?: Partial<P>) {

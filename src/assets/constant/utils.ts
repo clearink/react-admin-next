@@ -1,5 +1,4 @@
-import Constant, { ConstantItem as Item } from "@/utils/Constant";
-import { BadgeProps } from "antd/lib/badge";
+import Constant from "@/utils/Constant";
 export type { PartialExcludeKey } from "@/utils/Constant";
 
 // class MyConstant<V extends Item> extends Constant<V> {
@@ -33,5 +32,11 @@ export type { PartialExcludeKey } from "@/utils/Constant";
 // 	text: "全部",
 // 	key: "all",
 // };
-export type ConstantItem = Omit<Item, "color"> & { color: BadgeProps["color"] };
+export interface ValueEnum {
+	label: string;
+	value: string | number;
+
+	key?: string;
+	color?: string;
+}
 export default Constant;

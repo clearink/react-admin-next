@@ -112,7 +112,7 @@ function ProTable<RecordType extends object = any>(
 		handleRequest();
 	}, [handleRequest, state.pagination, state.filters, state.sorter]);
 
-	// TODO: 是否需要保证只有一个request在运行
+
 	type TableChange = Required<ProTableProps<RecordType>>["onChange"];
 	const handleTableChange = useRefCallback<TableChange>(async (...args) => {
 		const [__pagination, _filters, _sorter] = args;
@@ -227,7 +227,7 @@ function ProTable<RecordType extends object = any>(
 		return tableInfo;
 	})();
 
-	// TODO: 确定tableAction
+
 	const tableToolbar = (() => {
 		// 默认 只有一个刷新icon
 		const toolbar = [

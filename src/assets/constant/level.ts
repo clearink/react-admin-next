@@ -1,7 +1,7 @@
 import { StatusEnumItem } from "@/components/Pro/Field/FieldStatus/interface";
-import Constant, { ConstantItem } from "./utils";
+import Constant, { ValueEnum } from "./utils";
 
-interface SexItem extends ConstantItem {
+interface SexItem extends ValueEnum {
 	value: "generalNurse" | "seniorNurse";
 }
 

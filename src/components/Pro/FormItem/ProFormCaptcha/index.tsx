@@ -55,7 +55,6 @@ function ProFormCaptcha(props: ProFormCaptchaProps) {
 				onClick={handleClick}
 				className={classNames(styles.trigger, trigger?.className)}
 			>
-				{/* TODO: 根据 text 与 activeText 渲染不同的文本 */}
 				{renderText()}
 			</Button>
 		</div>

@@ -31,7 +31,6 @@ const { actions, reducer } = createSlice({
 		},
 	},
 });
-// TODO: 倒计时结束 执行 onTarget
 export interface useCountDownProps {
 	num: number;
 	interval?: number;

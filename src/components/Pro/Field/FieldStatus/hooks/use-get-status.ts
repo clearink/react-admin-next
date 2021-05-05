@@ -1,20 +1,28 @@
 import { useMemo } from "react";
-import { COLOR_ENUM, defaultColor } from "../constant";
+import configs from "@/configs";
 import { StatusEnumItem } from "../interface";
+import { gradientColor } from "../utils";
+
+const defaultColorEnum = (configs as any).colorEnum;
 
 export default function useGetStatus(
 	text?: string,
-	valueEnum?: StatusEnumItem[]
+	valueEnum?: StatusEnumItem[],
+	colorRange?: [string, string]
 ): Partial<StatusEnumItem> {
 	return useMemo(() => {
+		const colorEnum = defaultColorEnum?.length
+			? defaultColorEnum
+			: gradientColor(colorRange, valueEnum?.length);
+
 		const matchIndex = (valueEnum || []).findIndex((item) => item.value === text);
 		if (!valueEnum || matchIndex === -1) {
-			const ret = { label: text, status: text };
-			return { ...ret, color: defaultColor };
+			return { label: text, value: text };
 		}
+
 		const matchItem = valueEnum[matchIndex];
-		const color = COLOR_ENUM[matchIndex % COLOR_ENUM.length];
-		// TODO 还缺少一个字段计算颜色渐变的函数 根据 matchIndex / COLOR_ENUM.length 的值去匹配颜色
-		return { ...matchItem, color: matchItem.color ?? color ?? defaultColor };
-	}, [text, valueEnum]);
+		const color = colorEnum[matchIndex % colorEnum.length];
+
+		return { ...matchItem, color: matchItem.color ?? color };
+	}, [colorRange, text, valueEnum]);
 }

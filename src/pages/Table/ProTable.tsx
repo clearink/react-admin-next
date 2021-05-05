@@ -43,7 +43,8 @@ const columns: ProColumnsType<any> = [
 		dataIndex: "position",
 		read: (
 			<FieldStatus
-				params='/sys/dict/getDictItems/careworkerPosition'
+				colorRange={["#2c3e50", "#f39c12"]}
+				params={GetNurseLevel.key}
 				request={async () => {
 					const { result } = await GetNurseLevel();
 					return result.map((item: any) => ({ label: item.text, value: item.value }));
@@ -59,7 +60,7 @@ export default function ProTablePage() {
 			<PageHeaderWrap title='增强表格' />
 			<main className='flex-auto bg-white mt-10'>
 				<ProTable
-					tableTitle='12sadsdfsdf12112'
+					tableTitle={{ title: "护工管理", tip: "护工人员管理" }}
 					columns={columns}
 					onCreate={() => {
 						console.log("create");

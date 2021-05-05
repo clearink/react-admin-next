@@ -26,11 +26,9 @@ export interface ProTableProps<RecordType extends object = any>
 	tableTitle?: TitleTipProps["title"];
 
 	/** render 右侧操作栏 */
-	// TODO: tableAction 定义
 	renderToolbar?: (dom: JSX.Element[], actions: ProTableRef) => JSX.Element[];
 
 	/** render tableInfo 渲染table信息 */
-	// TODO: 修正props类型
 	renderTableInfo?: (dom: JSX.Element, actions: ProTableRef) => ReactNode;
 
 	// 添加几个常用的默认事件吧 不设置 则不显示

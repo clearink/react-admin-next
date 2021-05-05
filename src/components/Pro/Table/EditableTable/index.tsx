@@ -21,13 +21,16 @@ export interface EditableTableProps<RecordType extends object = any>
 	extends Omit<TableProps<RecordType>, "columns" | "onChange"> {
 	columns?: Array<ColumnType<RecordType> & ColumnExtendProps>;
 	/** 编辑方式 单元格编辑 模态框编辑 */
-	type: "cell" | "modal" | "drawer";
+	type?: "cell" | "modal" | "drawer";
 	onChange?: (recordList: RecordType[]) => void;
-	rowKey: string;
+	rowKey?: string;
 	onAdd?: (record: RecordType) => RecordType;
 	addTitle?: ColumnFormProps["title"];
 	editTitle?: ColumnFormProps["title"];
 	formProps?: Omit<DrawerFormProps<RecordType> | ModalFormProps<RecordType>, "onFinish">;
+
+	// fix 泛型失效
+	ref?: Ref<EditableTableRef<RecordType>>
 }
 
 export interface EditableTableRef<RecordType extends object = any> {
@@ -64,7 +67,7 @@ function EditableTable<RecordType extends object = any>(
 
 	// 保存数据
 	const handleAddRecord = useRefCallback(async (values) => {
-		const newRecord = onAdd?.(values) ?? { [rowKey]: Date.now(), ...values };
+		const newRecord = onAdd?.(values) ?? { [rowKey!]: Date.now(), ...values };
 		const newData = innerDataSource.concat(newRecord);
 		if (onChange) await onChange(newData);
 		else setInnerDataSource(newData);
@@ -75,7 +78,7 @@ function EditableTable<RecordType extends object = any>(
 		const newData = innerDataSource.map((item) => {
 			let record = editRecord!;
 			if (type === "cell") record = values;
-			if (record[rowKey] === item[rowKey]) return { ...item, ...values };
+			if (record[rowKey!] === item[rowKey!]) return { ...item, ...values };
 			return item;
 		});
 
@@ -107,7 +110,7 @@ function EditableTable<RecordType extends object = any>(
 		}
 	});
 	const handleDelete = useRefCallback((record: RecordType) => {
-		const newData = innerDataSource.filter((item) => record[rowKey] !== item[rowKey]);
+		const newData = innerDataSource.filter((item) => record[rowKey!] !== item[rowKey!]);
 		if (onChange) onChange(newData);
 		else setInnerDataSource(newData);
 	});
@@ -151,12 +154,11 @@ function EditableTable<RecordType extends object = any>(
 }
 
 // TODO 泛型组件使用withDefaultProps后丢失了泛型功能 后期修正
-// const EEE:React.FunctionComponent<EditableTableProps<T extends object = any>> = EditableTable<T>;
 
 export default withDefaultProps(forwardRef(EditableTable), {
 	rowKey: "key",
 	type: "cell",
-});
+}) as typeof EditableTable;
 
 /**
  * Q: 给 drawerForm 和 modalForm传递属性

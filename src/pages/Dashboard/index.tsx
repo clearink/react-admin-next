@@ -3,7 +3,9 @@ import { ProFormSelect } from "@/components/Pro/FormItem";
 import { Button } from "antd";
 import { ProForm } from "@/components/Pro/Form";
 import { mutate } from "swr";
+
 export default function DashBoard() {
+
 	return (
 		<div>
 			<ProForm onFinish={console.log}>
@@ -45,16 +47,3 @@ export default function DashBoard() {
 		</div>
 	);
 }
-/**
- * const [state,setState] = useState(false)
-	const debounceValue= useDebounceValue(1000, state)
-	return (
-		<div>
-			<Button onClick={() => {
-				setState(!state)
-			}}>toggle</Button>
-			<div>debounceValue:{`${debounceValue}`}</div>
-
-		</div>
-	);
- */

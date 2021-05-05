@@ -23,7 +23,7 @@ import TitleTip from "../../TitleTip";
 import TableInfo from "./components/TableInfo";
 import useFilterTableColumn from "./hooks/use-filter-table-column";
 import reducer, { actions } from "./store";
-import { ProTableProps, ProTableRef } from "./interface";
+import { ProTableProps, ProTableRef, ProTableType } from "./interface";
 import { getButtonLoading, getInitState } from "./utils";
 import styles from "./style.module.scss";
 import { SubmitterProps } from "../../Form/Submitter";
@@ -80,7 +80,7 @@ function ProTable<RecordType extends object = any>(
 		requestLock.current = true;
 		const formValue = form.getFieldsValue();
 		try {
-			setLoading({ delay: 100 });
+			setLoading({ delay: 50 });
 			// 请求参数
 			const params = {
 				...formValue,
@@ -111,7 +111,6 @@ function ProTable<RecordType extends object = any>(
 	useDeepEffect(() => {
 		handleRequest();
 	}, [handleRequest, state.pagination, state.filters, state.sorter]);
-
 
 	type TableChange = Required<ProTableProps<RecordType>>["onChange"];
 	const handleTableChange = useRefCallback<TableChange>(async (...args) => {
@@ -227,7 +226,6 @@ function ProTable<RecordType extends object = any>(
 		return tableInfo;
 	})();
 
-
 	const tableToolbar = (() => {
 		// 默认 只有一个刷新icon
 		const toolbar = [
@@ -327,4 +325,4 @@ export default withDefaultProps(forwardRef(ProTable), {
 	size: "middle",
 	bordered: true,
 	rowKey: "id",
-}) as typeof ProTable;
+}) as ProTableType;

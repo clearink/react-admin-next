@@ -1,3 +1,5 @@
+import { ReactElement } from "react";
+import { Form } from "antd";
 import { ProFormProps } from "../ProForm/interface";
 
 export interface FilterFormProps<Values = any> extends ProFormProps<Values> {
@@ -15,7 +17,6 @@ export interface FilterFormProps<Values = any> extends ProFormProps<Values> {
 
 	/** 布局依据 eg: { "(max-width:575x)": 24 } */
 	colSpan?: ColSpan;
-
 }
 // TODO: 支持 height
 export type ColSpan = {
@@ -25,3 +26,8 @@ export type ColSpan = {
 	span?: number;
 	size: number;
 }[];
+
+type InternalFilerFormType = <V = any>(props: FilterFormProps<V>) => ReactElement;
+export interface FilerFormType extends InternalFilerFormType {
+	Item: typeof Form.Item;
+}

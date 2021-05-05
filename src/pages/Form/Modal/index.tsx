@@ -16,9 +16,9 @@ export default function FormEdit(props: any) {
 					<div>12332112</div>
 				</Modal>
 				<Button onClick={toggle}>toggle</Button>
-				<ModalForm
+				<ModalForm<{ name: string }>
 					title={{ title: "modal form", tip: "modal form" }}
-					onFinish={async (values: any) => {
+					onFinish={async (values) => {
 						await sleep(1000);
 						console.log(values);
 						return true;

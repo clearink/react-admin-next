@@ -5,7 +5,8 @@ import useRefCallback from "@/hooks/state/use-ref-callback";
 import { ProFormContainer } from "./pro-form-container";
 import useMountedRef from "@/hooks/state/use-mounted-ref";
 import { formatFormValue } from "@/components/Pro/utils/format-form-value";
-import { ProFormProps } from "./interface";
+import { ProFormProps, ProFormType } from "./interface";
+import withDefaultProps from "@/hocs/withDefaultProps";
 
 function ProForm<Values = any>(props: ProFormProps<Values>) {
 	const { children, form: $form, onFinish, submitConfig, timeFormat, ...rest } = props;
@@ -26,7 +27,7 @@ function ProForm<Values = any>(props: ProFormProps<Values>) {
 			<Form form={form} onFinish={handleFinish} {...rest}>
 				{props.children}
 				{submitConfig !== false && <Submitter {...submitConfig} />}
-				
+
 				{/* 添加一个隐藏的btn 目的是可以自动提交 */}
 				<button type='submit' hidden></button>
 			</Form>
@@ -35,10 +36,7 @@ function ProForm<Values = any>(props: ProFormProps<Values>) {
 }
 
 ProForm.Item = Form.Item;
-ProForm.defaultProps = {
-	timeFormat: "YYYY-MM-DD",
-};
-export default ProForm;
+export default withDefaultProps(ProForm, { timeFormat: "YYYY-MM-DD" }) as ProFormType;
 /**
  * 一个表单最重要的是什么?
  * 除去不可预见的各种控件外

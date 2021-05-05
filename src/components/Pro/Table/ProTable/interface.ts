@@ -1,4 +1,4 @@
-import React, { ReactNode, MutableRefObject, Ref } from "react";
+import React, { ReactNode, MutableRefObject, Ref, ReactElement } from "react";
 import { TitleTipProps } from "@/components/Pro/TitleTip";
 import { ColumnType, TablePaginationConfig, TableProps } from "antd/lib/table";
 import { RenderedCell } from "rc-table/lib/interface";
@@ -128,3 +128,7 @@ export interface ProTableRef<RecordType extends object = any> {
   cancelEditable: (rowKey: Key) => boolean;
 }
  */
+
+export type ProTableType = <RecordType extends object = any>(
+	props: ProTableProps<RecordType>
+) => ReactElement;

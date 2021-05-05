@@ -5,7 +5,6 @@ import { ProForm } from "@/components/Pro/Form";
 import { mutate } from "swr";
 
 export default function DashBoard() {
-
 	return (
 		<div>
 			<ProForm onFinish={console.log}>
@@ -16,6 +15,17 @@ export default function DashBoard() {
 						valueEnum: [
 							{ label: "男", value: "male" },
 							{ label: "女", value: "female" },
+						],
+					}}
+				/>
+				<ProFormSelect
+					name='status'
+					width='m'
+					label='状态'
+					field={{
+						valueEnum: [
+							{ label: "正常", value: true },
+							{ label: "禁止", value: false },
 						],
 					}}
 				/>

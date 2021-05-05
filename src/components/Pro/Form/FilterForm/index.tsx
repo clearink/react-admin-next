@@ -1,14 +1,15 @@
 import React, { Children, cloneElement, ReactNode, useMemo, useState } from "react";
-import { Col } from "antd";
+import { Col, Form } from "antd";
 import { UpOutlined } from "@ant-design/icons";
 import classNames from "classnames";
 import useRefCallback from "@/hooks/state/use-ref-callback";
 import { valueRange } from "@/utils/Value";
 import ProForm from "../ProForm";
-import { FilterFormProps } from "./interface";
+import { FilerFormType, FilterFormProps } from "./interface";
 import useBreakpoint from "./hooks/use-breakpoint";
 import { FULL_SCREEN_SPAN } from "./constant";
 import styles from "./style.module.scss";
+import withDefaultProps from "@/hocs/withDefaultProps";
 
 /**
  *
@@ -91,9 +92,5 @@ function FilterForm<Values = any>(props: FilterFormProps<Values>) {
 		/>
 	);
 }
-
-FilterForm.defaultProps = {
-	defaultCollapsed: true,
-};
-
-export default FilterForm;
+FilterForm.Item = Form.Item;
+export default withDefaultProps(FilterForm, { defaultCollapsed: true }) as FilerFormType;

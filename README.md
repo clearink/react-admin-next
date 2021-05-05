@@ -19,12 +19,14 @@ const handleOnChange = (value) => {
 		return <div />
 	}
 
-	export default forwardRef(Component) as typeof Component
+type ProComponentType = <T extends other >(
+	props: SomeProps<T>
+) => ReactElement;
+
+	export default forwardRef(Component) as ProComponentType
 
 	// interface.tsx
-	export interface SomeProps<T>{
-		...
-
+	export interface SomeProps<T>{ 
 		ref?:Ref<SomeRef>
 	}
 ```

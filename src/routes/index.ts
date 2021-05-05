@@ -160,6 +160,12 @@ const routes: RouteItemConfig[] = [
 				icon: "icon-computer",
 				component: withLazyLoad(lazy(() => import("@/pages/Dashboard"))),
 			},
+			{
+				path: "/page-creator",
+				title: "页面生成器",
+				icon: "icon-computer",
+				component: withLazyLoad(lazy(() => import("@/pages/PageCreator"))),
+			},
 		],
 	},
 ];

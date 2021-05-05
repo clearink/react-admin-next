@@ -1,11 +1,12 @@
 import { SEX_CONST } from "@/assets/constant/sex";
 import PageHeaderWrap from "@/components/PageHeaderWrap";
 import { FieldAvatar, FieldStatus, FieldText } from "@/components/Pro/Field";
-import { ProFormInput } from "@/components/Pro/FormItem";
-import ProTable from "@/components/Pro/Table/ProTable";
+import { ProFormInput, ProFormSelect } from "@/components/Pro/FormItem";
+import { ProTable } from "@/components/Pro/Table";
 import { ProColumnsType } from "@/components/Pro/Table/ProTable/interface";
 import useTitle from "@/hooks/ui/use-title";
 import { GetNurseLevel, UserList } from "@/http/api/user";
+
 const columns: ProColumnsType<any> = [
 	{
 		title: "头像",
@@ -34,7 +35,7 @@ const columns: ProColumnsType<any> = [
 		read: <FieldStatus valueEnum={SEX_CONST.list} />,
 	},
 	{
-		title: "住户手机",
+		title: "联系电话",
 		dataIndex: "mobile",
 		read: <FieldText ellipsis copyable />,
 	},
@@ -43,11 +44,36 @@ const columns: ProColumnsType<any> = [
 		dataIndex: "position",
 		read: (
 			<FieldStatus
+				type='tag'
 				colorRange={["#2c3e50", "#f39c12"]}
 				params={GetNurseLevel.key}
 				request={async () => {
 					const { result } = await GetNurseLevel();
 					return result.map((item: any) => ({ label: item.text, value: item.value }));
+				}}
+			/>
+		),
+	},
+	{
+		title: "账号状态",
+		dataIndex: "enabled",
+		read: (
+			<FieldStatus
+				valueEnum={[
+					{ label: "正常", value: true },
+					{ label: "禁止", value: false },
+				]}
+			/>
+		),
+		search: (
+			<ProFormSelect
+				name='as'
+				label=''
+				field={{
+					valueEnum: [
+						{ label: "正常", value: true },
+						{ label: "禁止", value: false },
+					],
 				}}
 			/>
 		),

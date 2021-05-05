@@ -6,7 +6,7 @@ export type ProComponentRender<T> = (
 
 export interface ValueEnum {
 	label: string;
-	value: string | number;
+	value: string | number | boolean;
 	
 	key?: string;
 	color?: string;

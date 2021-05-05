@@ -1,4 +1,11 @@
-import React, { cloneElement, forwardRef, isValidElement, Ref, useImperativeHandle, useMemo } from "react";
+import React, {
+	cloneElement,
+	forwardRef,
+	isValidElement,
+	Ref,
+	useImperativeHandle,
+	useMemo,
+} from "react";
 import { createPortal } from "react-dom";
 import { Modal, FormProps, Form } from "antd";
 import { useSwitch } from "@/hooks/state/use-boolean";
@@ -8,12 +15,21 @@ import { antdFormProps as __FormProps } from "../../utils/constant";
 import withDefaultProps from "@/hocs/withDefaultProps";
 import useRefCallback from "@/hooks/state/use-ref-callback";
 import useFixModalMask from "../hooks/use-fix-modal-mask";
-import { ModalFormProps, ModalFormRef } from "./interface";
+import { ModalFormProps, ModalFormRef, ModalFormType } from "./interface";
 import ProForm from "../ProForm";
 import styles from "./style.module.scss";
 
 function ModalForm<Values = any>(props: ModalFormProps<Values>, ref: Ref<ModalFormRef>) {
-	const { title, trigger, children, renderFooter: $renderFooter, form: $form, onFinish, timeFormat, ...rest } = props;
+	const {
+		title,
+		trigger,
+		children,
+		renderFooter: $renderFooter,
+		form: $form,
+		onFinish,
+		timeFormat,
+		...rest
+	} = props;
 	const { visible, on, off, toggle } = useSwitch(false);
 	const [form] = Form.useForm($form);
 
@@ -90,4 +106,5 @@ function ModalForm<Values = any>(props: ModalFormProps<Values>, ref: Ref<ModalFo
 		</>
 	);
 }
-export default withDefaultProps(forwardRef(ModalForm), { width: 600 });
+ModalForm.Item = Form.Item;
+export default withDefaultProps(forwardRef(ModalForm), { width: 600 }) as ModalFormType;

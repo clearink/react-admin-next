@@ -1,20 +1,24 @@
 import { Select } from "antd";
 import { SelectValue } from "antd/lib/select";
+import { forwardRef } from "react";
 import useRequest from "../../hooks/use-request";
 import withFormItem from "../hocs/withFormItem";
 import { checkLocalData } from "../utils";
-import { ProFormSelectProps } from "./interface";
+import { ProFormSelectProps, ProFormSelectType } from "./interface";
 
-function ProFormSelect<VT extends SelectValue>(props: ProFormSelectProps<VT>) {
+function ProFormSelect<VT extends SelectValue = SelectValue>(
+	props: ProFormSelectProps<VT>,
+	ref: ProFormSelectProps<VT>["ref"]
+) {
 	const { params, request, render, valueEnum: $valueEnum, options, ...rest } = props;
 
 	const useLocal = checkLocalData(props, "valueEnum", "options");
 	const { data: _valueEnum, isValidating } = useRequest(params, request, useLocal);
 	const valueEnum = useLocal ? $valueEnum ?? options : _valueEnum;
 
-	const DOM = <Select options={valueEnum} loading={isValidating} {...rest} />;
+	const DOM = <Select ref={ref} options={valueEnum as any} loading={isValidating} {...rest} />;
 	if (render) return render(DOM, props);
 	return DOM;
 }
-// TODO 处理泛型问题
-export default withFormItem(ProFormSelect);
+
+export default withFormItem(forwardRef(ProFormSelect), { allowClear: true }) as ProFormSelectType;

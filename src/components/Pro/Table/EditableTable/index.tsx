@@ -2,7 +2,7 @@ import { forwardRef, Ref, useEffect, useImperativeHandle, useMemo, useRef, useSt
 import { FormItemProps, Table } from "antd";
 import { ColumnType, TableProps } from "antd/lib/table";
 import { EditableRow, EditableCell } from "./edit-row-cell";
-import useFormatColumn from "./use-format-column";
+import useFormatColumn from "./hooks/use-format-column";
 import styles from "./style.module.scss";
 import useRefCallback from "@/hooks/state/use-ref-callback";
 import ColumnForm, { ColumnFormProps, ColumnFormRef } from "./column-form";

@@ -1,4 +1,11 @@
-import React, { cloneElement, forwardRef, isValidElement, Ref, useImperativeHandle, useMemo } from "react";
+import React, {
+	cloneElement,
+	forwardRef,
+	isValidElement,
+	Ref,
+	useImperativeHandle,
+	useMemo,
+} from "react";
 import { createPortal } from "react-dom";
 import { Drawer, FormProps, Form } from "antd";
 import { useSwitch } from "@/hooks/state/use-boolean";
@@ -6,14 +13,23 @@ import { FilterValue, GetValue } from "@/utils/Value";
 import withDefaultProps from "@/hocs/withDefaultProps";
 import useRefCallback from "@/hooks/state/use-ref-callback";
 import TitleTip from "../../TitleTip";
-import { antdFormProps as __FormProps } from "../../utils/constant";
+import { antdFormProps as $FormProps } from "../../utils/constant";
 import ProForm from "../ProForm";
-import { DrawerFormProps, DrawerFormRef } from "./interface";
+import { DrawerFormProps, DrawerFormRef, DrawerFormType } from "./interface";
 import styles from "./style.module.scss";
 import useFixModalMask from "../hooks/use-fix-modal-mask";
 
 function DrawerForm<Values = any>(props: DrawerFormProps<Values>, ref: Ref<DrawerFormRef>) {
-	const { title, trigger, children, renderFooter: $renderFooter, form: $form, onFinish, timeFormat, ...rest } = props;
+	const {
+		title,
+		trigger,
+		children,
+		renderFooter: $renderFooter,
+		form: $form,
+		onFinish,
+		timeFormat,
+		...rest
+	} = props;
 	const { visible, on, off, toggle } = useSwitch(false);
 	const [form] = Form.useForm($form);
 
@@ -36,7 +52,7 @@ function DrawerForm<Values = any>(props: DrawerFormProps<Values>, ref: Ref<Drawe
 	const [formProps, drawerProps] = useMemo(() => {
 		const antdFormProps: Array<
 			keyof Omit<FormProps, "children" | "title" | "form" | "onFinish">
-		> = __FormProps as any[];
+		> = $FormProps as any[];
 		const formProps = GetValue(rest, antdFormProps);
 		const drawerProps = FilterValue(rest, antdFormProps);
 		return [formProps, drawerProps];
@@ -89,4 +105,5 @@ function DrawerForm<Values = any>(props: DrawerFormProps<Values>, ref: Ref<Drawe
 		</>
 	);
 }
-export default withDefaultProps(forwardRef(DrawerForm), { width: 600 });
+DrawerForm.Item = Form.Item;
+export default withDefaultProps(forwardRef(DrawerForm), { width: 600 }) as DrawerFormType;

@@ -1,8 +1,8 @@
 import { isValidElement, useMemo } from "react";
 import { FilterValue, GetValue } from "@/utils/Value";
 import { ColumnType } from "antd/lib/table";
-import { ColumnExtendProps, EditableTableProps } from ".";
-import { antdFormItemProps } from "../../utils/constant";
+import { ColumnExtendProps, EditableTableProps } from "..";
+import { antdFormItemProps } from "../../../utils/constant";
 
 // 转换 columns 分离出 formColumn 与
 export default function useFormatColumn<RecordType extends object = any>(

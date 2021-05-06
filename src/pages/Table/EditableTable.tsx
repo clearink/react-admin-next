@@ -1,30 +1,22 @@
-import React, { useState, useRef, forwardRef } from "react";
-import moment, { isMoment } from "moment";
+import React, { useState, useRef } from "react";
 import PageHeaderWrap from "@/components/PageHeaderWrap";
-import { Button, DatePicker, Descriptions, Input, Popconfirm, Select } from "antd";
+import { Button, Descriptions, Select } from "antd";
 
-import styles from "./style.module.scss";
 import EditableTable from "@/components/Pro/Table/EditableTable";
 import {
 	EditableColumnsType,
 	EditableTableRef,
 	EditType,
 } from "@/components/Pro/Table/EditableTable/interface";
-import { ProFormInput, ProFormSelect } from "@/components/Pro/FormItem";
+import { ProFormDatePicker, ProFormInput, ProFormSelect } from "@/components/Pro/FormItem";
 import { FieldStatus } from "@/components/Pro/Field";
-
-const ProDatePicker = forwardRef((props: any, ref) => {
-	const { value: __value, name, ...rest } = props;
-	const value = isMoment(__value) ? __value : moment(__value);
-	console.log(value);
-	return <DatePicker value={value} {...rest} />;
-});
+import styles from "./style.module.scss";
 
 export default function List() {
 	const ref = useRef<EditableTableRef>(null);
 	const [type, setType] = useState<EditType>("cell");
 	const [data, setData] = useState(() =>
-		Array.from({ length: 10 }, (_, i) => ({
+		Array.from({ length: 1 }, (_, i) => ({
 			key: i,
 			time: "2021-3-14",
 			name: `"Edward King 0"${i}`,
@@ -58,7 +50,7 @@ export default function List() {
 			title: "time",
 			dataIndex: "time",
 			width: "20%",
-			edit: <ProDatePicker />,
+			edit: <ProFormDatePicker />,
 		},
 		{
 			title: "address",

@@ -5,7 +5,6 @@ import TableText from "../../components/TableText";
 
 // 转换 columns 分离出 formColumn 与
 export default function useFormatColumn<RT extends object = any>(
-	type: EditType | undefined,
 	columns: EditableColumnsType<RT>,
 	handleSave: (row: RT) => void
 ) {
@@ -38,14 +37,17 @@ export default function useFormatColumn<RT extends object = any>(
 					return dom;
 				},
 				onCell: (record, index) => {
-					if (type === "cell") {
-						return { edit, record, handleSave, name: dataIndex } as any;
-					}
-					return rest.onCell?.(record, index);
+					return {
+						edit,
+						record,
+						handleSave,
+						name: dataIndex,
+						...rest.onCell?.(record, index),
+					} as any;
 				},
 			};
 			tableCol.push(colItem);
 		}
 		return [tableCol, formCol] as const;
-	}, [columns, handleSave, type]);
+	}, [columns, handleSave]);
 }

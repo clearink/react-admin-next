@@ -2,24 +2,23 @@ import React, {
 	cloneElement,
 	forwardRef,
 	isValidElement,
+	ReactElement,
 	Ref,
 	useImperativeHandle,
 	useMemo,
 } from "react";
 import { createPortal } from "react-dom";
-import { Drawer, FormProps, Form } from "antd";
+import { Drawer, Form } from "antd";
 import { useSwitch } from "@/hooks/state/use-boolean";
-import { FilterValue, GetValue } from "@/utils/Value";
 import withDefaultProps from "@/hocs/withDefaultProps";
 import useRefCallback from "@/hooks/state/use-ref-callback";
 import TitleTip from "../../TitleTip";
-import { antdFormProps as $FormProps } from "../../utils/constant";
 import ProForm from "../ProForm";
 import { DrawerFormProps, DrawerFormRef, DrawerFormType } from "./interface";
 import styles from "./style.module.scss";
 import useFixModalMask from "../hooks/use-fix-modal-mask";
 
-function DrawerForm<Values = any>(props: DrawerFormProps<Values>, ref: Ref<DrawerFormRef>) {
+function $DrawerForm<Values = any>(props: DrawerFormProps<Values>, ref: Ref<DrawerFormRef>) {
 	const {
 		title,
 		trigger,
@@ -27,7 +26,7 @@ function DrawerForm<Values = any>(props: DrawerFormProps<Values>, ref: Ref<Drawe
 		renderFooter: $renderFooter,
 		form: $form,
 		onFinish,
-		timeFormat,
+		drawer,
 		...rest
 	} = props;
 	const { visible, on, off, toggle } = useSwitch(false);
@@ -48,16 +47,6 @@ function DrawerForm<Values = any>(props: DrawerFormProps<Values>, ref: Ref<Drawe
 		});
 	}, [trigger, on]);
 
-	// 从props中分离出 drawerProps 和 formProps
-	const [formProps, drawerProps] = useMemo(() => {
-		const antdFormProps: Array<
-			keyof Omit<FormProps, "children" | "title" | "form" | "onFinish">
-		> = $FormProps as any[];
-		const formProps = GetValue(rest, antdFormProps);
-		const drawerProps = FilterValue(rest, antdFormProps);
-		return [formProps, drawerProps];
-	}, [rest]);
-
 	const renderFooter = useRefCallback((dom: JSX.Element[]) => {
 		if ($renderFooter) return $renderFooter(form, off);
 		return (
@@ -68,7 +57,7 @@ function DrawerForm<Values = any>(props: DrawerFormProps<Values>, ref: Ref<Drawe
 		);
 	});
 	const handleClose = useRefCallback((e: any) => {
-		drawerProps.onClose?.(e);
+		drawer?.onClose?.(e);
 		off();
 	});
 
@@ -79,8 +68,7 @@ function DrawerForm<Values = any>(props: DrawerFormProps<Values>, ref: Ref<Drawe
 	const DOM = (
 		<ProForm
 			form={form}
-			{...formProps}
-			timeFormat={timeFormat}
+			{...rest}
 			onFinish={handleFinish}
 			submitConfig={{
 				render: (dom) => (
@@ -88,7 +76,8 @@ function DrawerForm<Values = any>(props: DrawerFormProps<Values>, ref: Ref<Drawe
 						visible={visible}
 						title={<TitleTip title={title} />}
 						footer={renderFooter(dom)}
-						{...drawerProps}
+						width={600}
+						{...drawer}
 						getContainer={false}
 						onClose={handleClose}
 					>
@@ -105,5 +94,6 @@ function DrawerForm<Values = any>(props: DrawerFormProps<Values>, ref: Ref<Drawe
 		</>
 	);
 }
+const DrawerForm = forwardRef($DrawerForm) as any;
 DrawerForm.Item = Form.Item;
-export default withDefaultProps(forwardRef(DrawerForm), { width: 600 }) as DrawerFormType;
+export default withDefaultProps(DrawerForm) as DrawerFormType;

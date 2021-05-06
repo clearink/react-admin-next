@@ -25,12 +25,12 @@ export default function FormEdit(props: any) {
 					}}
 					trigger={<Button>submit</Button>}
 				>
-					<ProForm.Item name='name'>
+					<ModalForm.Item name='name'>
 						<Input />
-					</ProForm.Item>
-					<ProForm.Item name='date'>
+					</ModalForm.Item>
+					<ModalForm.Item name='date'>
 						<DatePicker />
-					</ProForm.Item>
+					</ModalForm.Item>
 				</ModalForm>
 			</main>
 		</div>

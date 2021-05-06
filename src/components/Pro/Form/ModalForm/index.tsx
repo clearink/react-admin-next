@@ -7,11 +7,9 @@ import React, {
 	useMemo,
 } from "react";
 import { createPortal } from "react-dom";
-import { Modal, FormProps, Form } from "antd";
+import { Modal, Form } from "antd";
 import { useSwitch } from "@/hooks/state/use-boolean";
 import TitleTip from "../../TitleTip";
-import { FilterValue, GetValue } from "@/utils/Value";
-import { antdFormProps as __FormProps } from "../../utils/constant";
 import withDefaultProps from "@/hocs/withDefaultProps";
 import useRefCallback from "@/hooks/state/use-ref-callback";
 import useFixModalMask from "../hooks/use-fix-modal-mask";
@@ -19,7 +17,7 @@ import { ModalFormProps, ModalFormRef, ModalFormType } from "./interface";
 import ProForm from "../ProForm";
 import styles from "./style.module.scss";
 
-function ModalForm<Values = any>(props: ModalFormProps<Values>, ref: Ref<ModalFormRef>) {
+function $ModalForm<Values = any>(props: ModalFormProps<Values>, ref: Ref<ModalFormRef>) {
 	const {
 		title,
 		trigger,
@@ -27,7 +25,7 @@ function ModalForm<Values = any>(props: ModalFormProps<Values>, ref: Ref<ModalFo
 		renderFooter: $renderFooter,
 		form: $form,
 		onFinish,
-		timeFormat,
+		modal,
 		...rest
 	} = props;
 	const { visible, on, off, toggle } = useSwitch(false);
@@ -47,18 +45,8 @@ function ModalForm<Values = any>(props: ModalFormProps<Values>, ref: Ref<ModalFo
 		});
 	}, [trigger, on]);
 
-	// 从props中分离出 ModalProps 和 formProps
-	const [formProps, modalProps] = useMemo(() => {
-		const antdFormProps: Array<
-			keyof Omit<FormProps, "children" | "title" | "form" | "onFinish">
-		> = __FormProps as any[];
-		const formProps = GetValue(rest, antdFormProps);
-		const ModalProps = FilterValue(rest, antdFormProps);
-		return [formProps, ModalProps];
-	}, [rest]);
-
 	const handleClose = useRefCallback((e: any) => {
-		modalProps.onCancel?.(e);
+		modal?.onCancel?.(e);
 		off();
 	});
 
@@ -79,15 +67,15 @@ function ModalForm<Values = any>(props: ModalFormProps<Values>, ref: Ref<ModalFo
 	const DOM = (
 		<ProForm
 			form={form}
-			{...formProps}
-			timeFormat={timeFormat}
+			{...rest}
 			onFinish={handleFinish}
 			submitConfig={{
 				render: (dom) => (
 					<Modal
 						visible={visible}
 						title={<TitleTip title={title} />}
-						{...modalProps}
+						width={600}
+						{...modal}
 						getContainer={false}
 						onCancel={handleClose}
 						footer={renderFooter(dom)}
@@ -106,5 +94,6 @@ function ModalForm<Values = any>(props: ModalFormProps<Values>, ref: Ref<ModalFo
 		</>
 	);
 }
+const ModalForm = forwardRef($ModalForm) as any;
 ModalForm.Item = Form.Item;
-export default withDefaultProps(forwardRef(ModalForm), { width: 600 }) as ModalFormType;
+export default withDefaultProps(ModalForm) as ModalFormType;

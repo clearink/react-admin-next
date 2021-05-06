@@ -8,7 +8,7 @@ export interface ProFormSelectProps<VT> extends ProComponentRequest, SelectProps
 	ref?: Ref<RefSelectProps>;
 }
 
-declare type ProRawValue = string | number | boolean;
+declare type ProRawValue = ValueEnum["value"];
 export interface ProLabeledValue {
 	label: React.ReactNode;
 	value: ProRawValue;

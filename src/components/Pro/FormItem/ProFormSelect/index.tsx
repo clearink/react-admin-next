@@ -21,4 +21,7 @@ function ProFormSelect<VT extends SelectValue = SelectValue>(
 	return DOM;
 }
 
-export default withFormItem(forwardRef(ProFormSelect), { allowClear: true }) as ProFormSelectType;
+export default withFormItem(forwardRef(ProFormSelect), {
+	allowClear: true,
+	placeholder: "请选择",
+}) as ProFormSelectType;

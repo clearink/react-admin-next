@@ -7,7 +7,7 @@ import {
 	useRef,
 	useState,
 	KeyboardEvent,
-	FocusEventHandler
+	FocusEventHandler,
 } from "react";
 import { Form } from "antd";
 import { FormItemProps, Rule } from "antd/lib/form";
@@ -18,6 +18,7 @@ import { EditContainer } from "../../utils";
 import styles from "./style.module.scss";
 
 export function EditableRow(props: EditableRowProps) {
+	console.log('EditableRow',props);
 	const [form] = Form.useForm();
 	return (
 		<Form form={form} component={false}>
@@ -29,7 +30,7 @@ export function EditableRow(props: EditableRowProps) {
 }
 
 export function EditableCell<V extends object = any>(props: EditableCellProps<V>) {
-	console.log(" EditableCell", props);
+
 	const { children, edit, name, record, handleSave, className, ...rest } = props;
 
 	const [editing, setEditing] = useState(false); // 是否处于编辑状态
@@ -51,7 +52,7 @@ export function EditableCell<V extends object = any>(props: EditableCellProps<V>
 
 	const handleSaveRecord = useRefCallback(async () => {
 		const values = await form.validateFields();
-		handleSave({ ...record, values });
+		handleSave({ ...record, ...values });
 		toggleEdit();
 	});
 
@@ -81,10 +82,12 @@ export function EditableCell<V extends object = any>(props: EditableCellProps<V>
 			const props = {
 				name,
 				rules,
-				onKeyDown: handleEnter,
-				onBlur: handleBlur,
-				ref: focusRef,
-				...editElement.props,
+				field: {
+					onKeyDown: handleEnter,
+					onBlur: handleBlur,
+					ref: focusRef,
+					...editElement.props,
+				},
 			};
 			childNode = cloneElement(editElement, props);
 		} else {

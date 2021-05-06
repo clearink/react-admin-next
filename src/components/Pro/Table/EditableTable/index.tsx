@@ -1,4 +1,4 @@
-import { forwardRef, Ref, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { forwardRef, Ref, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Table } from "antd";
 import { EditableRow, EditableCell } from "./components/EditRowCell";
 import useFormatColumn from "./hooks/use-format-column";
@@ -8,7 +8,6 @@ import ColumnForm from "./components/ColumnForm";
 import withDefaultProps from "@/hocs/withDefaultProps";
 import { EditableTableProps, EditableTableRef, EditableTableType } from "./interface";
 import { ColumnFormRef } from "./components/ColumnForm/interface";
-import { checkLocalData } from "../../utils";
 
 // TODO: shouldCellUpdate 优化 table
 // 可编辑表格
@@ -30,11 +29,12 @@ function EditableTable<RT extends object = any>(
 		...rest
 	} = props;
 
-	const addFormRef = useRef<ColumnFormRef>(null);
-	const editFormRef = useRef<ColumnFormRef>(null);
+	const addRef = useRef<ColumnFormRef>(null); // 新增 form
+	const editRef = useRef<ColumnFormRef>(null); // 编辑 form
+
 	const [editRecord, setEditRecord] = useState<RT | null>(null); // 记录当前修改的数据项
 
-	const [_dataSource, setDataSource] = useState<readonly RT[]>([]);
+	const [_dataSource, setDataSource] = useState<readonly RT[]>([]); // 内部 dataSource
 
 	const dataSource = $dataSource ?? _dataSource;
 
@@ -48,7 +48,7 @@ function EditableTable<RT extends object = any>(
 		const newRecord = onCreate?.(values) ?? { [rowKey!]: Date.now(), ...values };
 
 		await handleChange(_dataSource.concat(newRecord));
-		addFormRef.current?.form.resetFields();
+		addRef.current?.form.resetFields();
 
 		return true;
 	});
@@ -65,21 +65,18 @@ function EditableTable<RT extends object = any>(
 		return true;
 	});
 
-	const [tableCol, formCol] = useFormatColumn(type, $columns ?? [], handleEdit);
+	const [tableCol, formCol] = useFormatColumn($columns ?? [], handleEdit);
 
 	const components = useMemo(() => {
 		if (type === "cell") return { body: { row: EditableRow, cell: EditableCell } };
 	}, [type]);
-
-
-
 
 	/* ----------------------------------暴露的方法 start--------------------------------------- */
 
 	// 创建
 	const handleCreateRecord = useRefCallback((record?: RT) => {
 		if (type === "cell") handleCreate(record);
-		else addFormRef.current?.on();
+		else addRef.current?.on();
 	});
 
 	// 修改
@@ -88,9 +85,9 @@ function EditableTable<RT extends object = any>(
 			console.error(`edit type is type not allow run this event`);
 			return;
 		}
-		editFormRef.current?.on();
+		editRef.current?.on();
 		if (record !== editRecord) {
-			editFormRef.current?.form.setFieldsValue(record);
+			editRef.current?.form.setFieldsValue(record);
 			setEditRecord(record);
 		}
 	});
@@ -101,7 +98,6 @@ function EditableTable<RT extends object = any>(
 		handleChange(newData);
 	});
 
-	
 	useImperativeHandle(
 		ref,
 		() => ({ add: handleCreateRecord, edit: handleEditRecord, delete: handleDeleteRecord }),
@@ -116,7 +112,7 @@ function EditableTable<RT extends object = any>(
 			{/* 新增form */}
 			<ColumnForm<RT>
 				type={type}
-				ref={addFormRef}
+				ref={addRef}
 				title={addTitle}
 				{...formProps}
 				onFinish={handleCreate}
@@ -126,7 +122,7 @@ function EditableTable<RT extends object = any>(
 			{/* 编辑form */}
 			<ColumnForm<RT>
 				type={type}
-				ref={editFormRef}
+				ref={editRef}
 				title={editTitle}
 				{...formProps}
 				onFinish={handleEdit}

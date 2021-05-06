@@ -1,6 +1,6 @@
 import { GetNurseLevel } from "@/http/api/user";
 import { ProFormSelect } from "@/components/Pro/FormItem";
-import { Button } from "antd";
+import { Button, Form, Input, Table } from "antd";
 import { ProForm } from "@/components/Pro/Form";
 import { mutate } from "swr";
 
@@ -44,7 +44,7 @@ export default function DashBoard() {
 						},
 					}}
 				/>
-			</ProForm>
+			</ProForm> 
 			<Button
 				className='mt-5'
 				onClick={() => {
@@ -54,6 +54,13 @@ export default function DashBoard() {
 			>
 				mutate
 			</Button>
+			<Table
+				columns={[
+					{
+						title: "123",
+					},
+				]}
+			/>
 		</div>
 	);
 }

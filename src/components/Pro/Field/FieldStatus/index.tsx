@@ -3,7 +3,7 @@ import { Badge, Tag } from "antd";
 import useRequest from "../../hooks/use-request";
 import useGetStatus from "./hooks/use-get-status";
 import { FieldStatusProps } from "./interface";
-import { checkLocalData } from "../../FormItem/utils";
+import { checkLocalData } from "../../utils";
 /**
  * 如何根据valueEnum 计算出 label
  * TODO: 能否处理树形结构的值呢?

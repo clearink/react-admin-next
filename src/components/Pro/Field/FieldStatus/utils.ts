@@ -8,24 +8,31 @@ function fillStrColor(str: string) {
 	}, []);
 }
 
-export function gradientColor([start, end]: [string, string] = ["", ""], maxLevel = 2) {
+export function gradientColor(colorRange: string[], maxLevel = 2) {
 	const reg = /^#([\da-fA-F]{3}|[\da-fA-F]{6})$/;
+	const len = colorRange.length;
+	const start = colorRange[0];
+	const end = colorRange[len - 1];
 
-	if (!reg.test(start) || !reg.test(end)) return Array(maxLevel);
+	if (len >= maxLevel || !reg.test(start) || !reg.test(end)) return colorRange;
 
 	const hexStart = fillStrColor(start).map((item) => parseInt(item, 16));
 	const hexEnd = fillStrColor(end).map((item) => parseInt(item, 16));
 
-	const ret: string[] = [`rgb(${hexStart[0]},${hexStart[1]},${hexStart[2]})`];
+	const ret: string[] = [];
+	const max = Math.max(2, maxLevel);
+	for (let i = 0; i < maxLevel; i++) {
+		const $r = ((hexEnd[0] - hexStart[0]) * i) / (max - 1);
+		const r = Math.abs(~~$r + hexStart[0]);
 
-	for (let i = maxLevel - 2; i > 0; i--) {
-		const r = Math.abs(~~((hexEnd[0] - hexStart[0]) / i) + hexStart[0]);
-		const g = Math.abs(~~((hexEnd[1] - hexStart[1]) / i) + hexStart[1]);
-		const b = Math.abs(~~((hexEnd[2] - hexStart[2]) / i) + hexStart[2]);
+		const $g = ((hexEnd[1] - hexStart[1]) * i) / (max - 1);
+		const g = Math.abs(~~$g + hexStart[1]);
+
+		const $b = ((hexEnd[2] - hexStart[2]) * i) / (max - 1);
+		const b = Math.abs(~~$b + hexStart[2]);
+
 		ret.push(`rgb(${r},${g},${b})`);
 	}
 
-	ret.push(`rgb(${hexEnd[0]},${hexEnd[1]},${hexEnd[2]})`);
-	
 	return ret;
 }

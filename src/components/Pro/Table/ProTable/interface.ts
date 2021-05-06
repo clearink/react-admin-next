@@ -57,10 +57,6 @@ export type ProTableRequest<RecordType extends object = any> = (
 	  }
 	| undefined
 >;
-export interface ProColumnGroupType<RecordType>
-	extends Omit<ProColumnType<RecordType>, "dataIndex"> {
-	children: ProColumnsType<RecordType>;
-}
 export interface ProColumnType<RecordType = unknown>
 	extends Omit<ColumnType<RecordType>, "render"> {
 	/** 文本显示字段  */
@@ -96,6 +92,11 @@ export interface ProColumnType<RecordType = unknown>
 export type ProColumnsType<RecordType = unknown> = Array<
 	ProColumnType<RecordType> | ProColumnGroupType<RecordType>
 >;
+
+export interface ProColumnGroupType<RecordType>
+	extends Omit<ProColumnType<RecordType>, "dataIndex"> {
+	children: ProColumnsType<RecordType>;
+}
 
 // store state 初始化函数
 export interface GetInitStateProps {

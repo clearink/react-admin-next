@@ -2,8 +2,8 @@ import { Select } from "antd";
 import { SelectValue } from "antd/lib/select";
 import { forwardRef } from "react";
 import useRequest from "../../hooks/use-request";
+import { checkLocalData } from "../../utils";
 import withFormItem from "../hocs/withFormItem";
-import { checkLocalData } from "../utils";
 import { ProFormSelectProps, ProFormSelectType } from "./interface";
 
 function ProFormSelect<VT extends SelectValue = SelectValue>(

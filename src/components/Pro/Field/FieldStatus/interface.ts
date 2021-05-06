@@ -15,5 +15,5 @@ export interface FieldStatusProps
 	type?: "tag" | "badge";
 	color?: string;
 	/** 颜色渐变区间 */
-	colorRange?: [string, string];
+	colorRange?: string[];
 }

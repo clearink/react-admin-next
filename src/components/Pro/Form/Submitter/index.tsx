@@ -1,5 +1,5 @@
 import { Button, ButtonProps, FormInstance, Space } from "antd";
-import { ProFormContainer } from "../ProForm/pro-form-container";
+import { ProFormContainer } from "../ProForm/utils";
 import useRefCallback from "@/hooks/state/use-ref-callback";
 import { ReactElement } from "react";
 

@@ -1,11 +1,12 @@
 import ProForm from "@/components/Pro/Form/ProForm";
+import withDefaultProps from "@/hocs/withDefaultProps";
 import { Button, Space } from "antd";
 import React, { useMemo } from "react";
-import { ProFormProps } from "../ProForm/interface";
-import { StepFormProps } from "./interface";
-import { StepFormContainer } from "./step-form-container";
+import { ProFormProps } from "../../../ProForm/interface";
+import { StepFormContainer } from "../../utils";
+import { StepFormProps, StepFormType } from "./interface";
 
-function StepForm(props: StepFormProps) {
+function StepForm<V = any>(props: StepFormProps<V>) {
 	const { children, renderSubmitter, loading, isFirst, isLast, stepProps, ...rest } = props;
 	const { handleNextStep, handlePreStep } = StepFormContainer.useContainer();
 	const submitConfig = useMemo(() => {
@@ -20,7 +21,8 @@ function StepForm(props: StepFormProps) {
 						{isLast ? "提交" : "下一步"}
 					</Button>,
 				];
-				if (renderSubmitter) return renderSubmitter(dom, form, { handleNextStep, handlePreStep, loading });
+				if (renderSubmitter)
+					return renderSubmitter(dom, form, { handleNextStep, handlePreStep, loading });
 				return <Space size={4}>{dom}</Space>;
 			},
 		} as ProFormProps["submitConfig"];
@@ -34,9 +36,8 @@ function StepForm(props: StepFormProps) {
 }
 
 StepForm.StepForm = true;
-StepForm.defaultProps = {
+export default withDefaultProps(StepForm, {
 	isFirst: true,
 	isLast: false,
 	loading: false,
-};
-export default StepForm;
+}) as StepFormType;

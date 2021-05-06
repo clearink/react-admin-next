@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ButtonProps, Form } from "antd";
 import Submitter from "../Submitter";
 import useRefCallback from "@/hooks/state/use-ref-callback";
-import { ProFormContainer } from "./pro-form-container";
+import { ProFormContainer } from "./utils";
 import useMountedRef from "@/hooks/state/use-mounted-ref";
 import { formatFormValue } from "@/components/Pro/utils/format-form-value";
 import { ProFormProps, ProFormType } from "./interface";

@@ -21,7 +21,7 @@ import { useDebounceCallback } from "@/hooks/state/use-debounce";
 import withDefaultProps from "@/hocs/withDefaultProps";
 import TitleTip from "../../TitleTip";
 import TableInfo from "./components/TableInfo";
-import useFilterTableColumn from "./hooks/use-filter-table-column";
+import useFormatColumn from "./hooks/use-format-column";
 import reducer, { actions } from "./store";
 import { ProTableProps, ProTableRef, ProTableType } from "./interface";
 import { getButtonLoading, getInitState } from "./utils";
@@ -62,7 +62,7 @@ function ProTable<RecordType extends object = any>(
 	const [form] = Form.useForm(search ? search.form : undefined);
 	useImperativeHandle(searchRef, () => form, [form]); // 暴露出属性
 
-	const [tableCol, formCol, $filters, $sorter] = useFilterTableColumn(columns);
+	const [tableCol, formCol, $filters, $sorter] = useFormatColumn(columns);
 
 	const [_loading, setLoading] = useState<ProTableProps["loading"]>(false);
 
@@ -174,23 +174,26 @@ function ProTable<RecordType extends object = any>(
 			dispatch(actions.setSorter(sorter));
 		}
 	);
-	const tableAction = useMemo(() => {
-		return {
+	
+	// 暴露的方法
+	const tableAction = useMemo(
+		() => ({
 			state,
 			reload: handleReload,
 			clearSelected: handleClearSelected,
 			setPagination: handleSetPagination,
 			setFilters: handleSetFilters,
 			setSorter: handleSetSorter,
-		};
-	}, [
-		handleClearSelected,
-		handleReload,
-		handleSetFilters,
-		handleSetPagination,
-		handleSetSorter,
-		state,
-	]);
+		}),
+		[
+			state,
+			handleReload,
+			handleClearSelected,
+			handleSetPagination,
+			handleSetFilters,
+			handleSetSorter,
+		]
+	);
 
 	useImperativeHandle(ref, () => tableAction, [tableAction]);
 

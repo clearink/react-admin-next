@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { Button, Input } from "antd";
 import { ButtonProps } from "antd/lib/button";
 import useCountDown from "./hooks/use-count-down";
-import { ProFormContainer } from "../../Form/ProForm/pro-form-container";
+import { ProFormContainer } from "../../Form/ProForm/utils";
 import withFormItem from "../hocs/withFormItem";
 import useRefCallback from "@/hooks/state/use-ref-callback";
 import useMountedRef from "@/hooks/state/use-mounted-ref";

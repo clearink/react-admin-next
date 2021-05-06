@@ -1,0 +1,26 @@
+.edit_cell {
+	$cell_padding: 4px 11px;
+	position: relative;
+	cursor: pointer;
+	border: 1px solid transparent;
+	transition: border-color 0.3s ease-in-out;
+	padding: $cell_padding;
+	border-radius: 4px;
+	&:hover {
+		border-color: #d9d9d9;
+	}
+}
+.edit_cell_wrap {
+	position: relative;
+	:global {
+		.ant-form-item {
+			margin: 0 !important;
+		}
+		.ant-form-item-explain {
+			position: absolute;
+			top: 100%;
+			font-size: 13px;
+			z-index: 1;
+		}
+	}
+}

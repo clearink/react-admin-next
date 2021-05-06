@@ -5,9 +5,9 @@ export type ProComponentRender<T> = (
 ) => JSX.Element;
 
 export interface ValueEnum {
-	label: string;
+	label: string | number;
 	value: string | number | boolean;
-	
+
 	key?: string;
 	color?: string;
 }

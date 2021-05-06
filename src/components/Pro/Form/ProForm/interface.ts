@@ -4,6 +4,7 @@ import { SubmitterProps } from "../Submitter";
 export interface ProFormProps<Values = any> extends FormProps<Values> {
 	children?: React.ReactNode;
 	submitConfig?: SubmitterProps | false;
+	/** 时间格式化字符串 */
 	timeFormat?: string;
 }
 

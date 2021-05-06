@@ -4,10 +4,14 @@ import PageHeaderWrap from "@/components/PageHeaderWrap";
 import { Button, DatePicker, Descriptions, Input, Popconfirm, Select } from "antd";
 
 import styles from "./style.module.scss";
-import EditableTable, {
-	EditableTableProps,
+import EditableTable from "@/components/Pro/Table/EditableTable";
+import {
+	EditableColumnsType,
 	EditableTableRef,
-} from "@/components/Pro/Table/EditableTable";
+	EditType,
+} from "@/components/Pro/Table/EditableTable/interface";
+import { ProFormInput, ProFormSelect } from "@/components/Pro/FormItem";
+import { FieldStatus } from "@/components/Pro/Field";
 
 const ProDatePicker = forwardRef((props: any, ref) => {
 	const { value: __value, name, ...rest } = props;
@@ -18,28 +22,37 @@ const ProDatePicker = forwardRef((props: any, ref) => {
 
 export default function List() {
 	const ref = useRef<EditableTableRef>(null);
-	const [type, setType] = useState<EditableTableProps["type"]>("cell");
+	const [type, setType] = useState<EditType>("cell");
 	const [data, setData] = useState(() =>
-		Array.from({ length: 100 }, (_, i) => ({
+		Array.from({ length: 10 }, (_, i) => ({
 			key: i,
 			time: "2021-3-14",
 			name: `"Edward King 0"${i}`,
-			age: "32" + i,
+			age: i,
 			address: "London, Park Lane no. 0",
 		}))
 	);
-	const __columns: EditableTableProps["columns"] = [
+	const __columns: EditableColumnsType<any> = [
 		{
 			title: "name",
 			dataIndex: "name",
 			width: "30%",
-			edit: <Input />,
+			edit: <ProFormInput />,
 		},
 		{
 			title: "age",
 			dataIndex: "age",
 			width: "30%",
-			edit: <Select options={Array.from({ length: 100 }, (_, i) => ({ label: i, value: i }))} />,
+			read: (
+				<FieldStatus valueEnum={Array.from({ length: 30 }, (_, i) => ({ label: i, value: i }))} />
+			),
+			edit: (
+				<ProFormSelect
+					field={{
+						valueEnum: Array.from({ length: 30 }, (_, i) => ({ label: i, value: i })),
+					}}
+				/>
+			),
 		},
 		{
 			title: "time",
@@ -51,29 +64,29 @@ export default function List() {
 			title: "address",
 			dataIndex: "address",
 		},
-		{
-			title: "action",
-			key: "action",
-			fixed: "right",
-			width: 200,
-			render: (value) => {
-				return (
-					<>
-						<Button
-							onClick={() => {
-								ref.current?.edit(value);
-							}}
-							className='mb-4'
-						>
-							编辑
-						</Button>
-						<Popconfirm title='确定删除吗?' onConfirm={() => ref.current?.delete(value)}>
-							<Button danger>删除</Button>
-						</Popconfirm>
-					</>
-				);
-			},
-		},
+		// {
+		// 	title: "action",
+		// 	key: "action",
+		// 	fixed: "right",
+		// 	width: 200,
+		// 	render: (value) => {
+		// 		return (
+		// 			<>
+		// 				<Button
+		// 					onClick={() => {
+		// 						ref.current?.edit(value);
+		// 					}}
+		// 					className='mb-4'
+		// 				>
+		// 					编辑
+		// 				</Button>
+		// 				<Popconfirm title='确定删除吗?' onConfirm={() => ref.current?.delete(value)}>
+		// 					<Button danger>删除</Button>
+		// 				</Popconfirm>
+		// 			</>
+		// 		);
+		// 	},
+		// },
 	];
 	return (
 		<div className={styles.list_page_wrap}>
@@ -114,15 +127,15 @@ export default function List() {
 						新增
 					</Button>
 				</div>
-				<EditableTable
+				<EditableTable<typeof data[0]>
 					type={type}
 					size='middle'
 					columns={__columns}
 					dataSource={data}
 					ref={ref}
 					addTitle='新增一条数据'
-					onChange={(records) => {
-						setData(records as typeof data);
+					onDataChange={(records) => {
+						setData(records);
 					}}
 				/>
 			</main>

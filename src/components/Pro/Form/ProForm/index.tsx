@@ -26,10 +26,12 @@ function ProForm<Values = any>(props: ProFormProps<Values>) {
 		<ProFormContainer.Provider initialState={{ loading, form }}>
 			<Form form={form} onFinish={handleFinish} {...rest}>
 				{props.children}
-				{submitConfig !== false && <Submitter {...submitConfig} />}
-
-				{/* 添加一个隐藏的btn 目的是可以自动提交 */}
-				<button type='submit' hidden></button>
+				{submitConfig !== false && (
+					<>
+						<Submitter {...submitConfig} />
+						<button key='submit-btn' type='submit' hidden></button>,
+					</>
+				)}
 			</Form>
 		</ProFormContainer.Provider>
 	);

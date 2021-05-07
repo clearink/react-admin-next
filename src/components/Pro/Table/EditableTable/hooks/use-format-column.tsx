@@ -1,13 +1,11 @@
 import { cloneElement, isValidElement, useMemo } from "react";
 import { ColumnType } from "antd/lib/table";
-import { EditType, EditableColumnsType, EditableColumnType } from "../interface";
+import { EditableColumnsType, EditableColumnType } from "../interface";
 import TableText from "../../components/TableText";
+import { EditableCellProps } from "../components/EditRowCell/interface";
 
 // 转换 columns 分离出 formColumn 与
-export default function useFormatColumn<RT extends object = any>(
-	columns: EditableColumnsType<RT>,
-	handleSave: (row: RT) => void
-) {
+export default function useFormatColumn<RT extends object = any>(columns: EditableColumnsType<RT>) {
 	return useMemo(() => {
 		const tableCol: any[] = [];
 		const formCol: any[] = [];
@@ -39,15 +37,14 @@ export default function useFormatColumn<RT extends object = any>(
 				onCell: (record, index) => {
 					return {
 						edit,
-						record,
-						handleSave,
+						value: record[`${dataIndex}`],
 						name: dataIndex,
 						...rest.onCell?.(record, index),
-					} as any;
+					} as EditableCellProps;
 				},
 			};
 			tableCol.push(colItem);
 		}
 		return [tableCol, formCol] as const;
-	}, [columns, handleSave]);
+	}, [columns]);
 }

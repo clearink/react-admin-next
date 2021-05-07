@@ -4,7 +4,6 @@ import withFormItem from "../hocs/withFormItem";
 import { ProFormInputProps } from "./interface";
 
 function ProFormInput(props: ProFormInputProps, ref: LegacyRef<Input>) {
-	console.log('ProFormInputProps', props);
 	const { render, ...rest } = props;
 	const DOM = <Input ref={ref} {...rest} />;
 	if (render) return render(DOM, props);

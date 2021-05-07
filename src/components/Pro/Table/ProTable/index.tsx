@@ -13,7 +13,7 @@ import { DeleteOutlined, PlusOutlined, ReloadOutlined } from "@ant-design/icons"
 import classNames from "classnames";
 import { FilterForm } from "@/components/Pro/Form";
 import useRefCallback from "@/hooks/state/use-ref-callback";
-import { isFunction } from "@/utils/ValidateType";
+import { isFunction, isUndefined } from "@/utils/ValidateType";
 import useMountedRef from "@/hooks/state/use-mounted-ref";
 import useDeepEffect from "@/hooks/state/use-deep-effect";
 import { GetValue } from "@/utils/Value";
@@ -69,8 +69,9 @@ function ProTable<RecordType extends object = any>(
 	const initState = { pagination: $pagination, filters: $filters, sorter: $sorter };
 	const [state, dispatch] = useReducer(reducer, initState, getInitState);
 	// dataSource
+	const usePropData = !isUndefined($dataSource);
 	const [_dataSource, setDataSource] = useState(() => $dataSource);
-	const dataSource = props.hasOwnProperty("dataSource") ? $dataSource : _dataSource;
+	const dataSource = usePropData ? $dataSource : _dataSource;
 
 	const requestLock = useRef(false);
 	const mountedRef = useMountedRef();
@@ -174,7 +175,7 @@ function ProTable<RecordType extends object = any>(
 			dispatch(actions.setSorter(sorter));
 		}
 	);
-	
+
 	// 暴露的方法
 	const tableAction = useMemo(
 		() => ({
@@ -214,7 +215,10 @@ function ProTable<RecordType extends object = any>(
 	}, [$rowSelection, state.keys]);
 
 	/**----------------------- UI相关 --------------------------- */
-	const loading = props.hasOwnProperty("loading") ? $loading : _loading;
+
+	const usePropLoading = !isUndefined($loading)
+	const loading = usePropLoading ? $loading : _loading;
+	
 	// 以下 二者皆应在不同的业务去声明
 	const tableInfo = (() => {
 		const tableInfo = (

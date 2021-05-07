@@ -3,7 +3,9 @@ import { RefSelectProps, SelectProps } from "antd/lib/select";
 import { ProComponentRender, ProComponentRequest, ValueEnum } from "../../interface";
 import { WithFormItemProps } from "../interface";
 
-export interface ProFormSelectProps<VT> extends ProComponentRequest, SelectProps<VT> {
+export interface ProFormSelectProps<VT>
+	extends ProComponentRequest,
+		Omit<SelectProps<VT>, "options"> {
 	render?: ProComponentRender<ProFormSelectProps<VT>>;
 	ref?: Ref<RefSelectProps>;
 }

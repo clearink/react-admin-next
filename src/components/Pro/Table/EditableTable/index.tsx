@@ -8,6 +8,7 @@ import ColumnForm from "./components/ColumnForm";
 import withDefaultProps from "@/hocs/withDefaultProps";
 import { EditableTableProps, EditableTableRef, EditableTableType } from "./interface";
 import { ColumnFormRef } from "./components/ColumnForm/interface";
+import { isUndefined } from "@/utils/ValidateType";
 
 // TODO: shouldCellUpdate 优化 table
 // 可编辑表格
@@ -29,6 +30,8 @@ function EditableTable<RT extends object = any>(
 		...rest
 	} = props;
 
+	const [tableCol, formCol] = useFormatColumn($columns ?? []);
+
 	const addRef = useRef<ColumnFormRef>(null); // 新增 form
 	const editRef = useRef<ColumnFormRef>(null); // 编辑 form
 
@@ -38,6 +41,7 @@ function EditableTable<RT extends object = any>(
 
 	const dataSource = $dataSource ?? _dataSource;
 
+	/** ---------------------------------方法 start ---------------------------------------- */
 	const handleChange = async (newData: RT[]) => {
 		if (onDataChange) await onDataChange(newData);
 		else setDataSource(newData);
@@ -54,22 +58,29 @@ function EditableTable<RT extends object = any>(
 	});
 
 	// 修改数据
-	const handleEdit = useRefCallback(async (values) => {
+	const handleEdit = useRefCallback(async (values: RT) => {
 		const newData = dataSource.map((item) => {
-			let record = editRecord!;
-			if (type === "cell") record = values;
-			if (record[rowKey!] === item[rowKey!]) return { ...item, ...values };
-			return item;
+			const record = type === "cell" ? values : {...editRecord, ...values};
+			if (isUndefined(rowKey) || record[rowKey] !== item[rowKey]) return item;
+			return { ...item, ...record };
 		});
 		await handleChange(newData);
 		return true;
 	});
+	/** ---------------------------------方法 end ---------------------------------------- */
 
-	const [tableCol, formCol] = useFormatColumn($columns ?? [], handleEdit);
-
-	const components = useMemo(() => {
-		if (type === "cell") return { body: { row: EditableRow, cell: EditableCell } };
-	}, [type]);
+	/** ---------------------------------属性扩展 start ---------------------------------------- */
+	const handleOnRow = useRefCallback((record: RT, index: number) => {
+		if (type === "cell") {
+			return {
+				...rest.onRow?.(record, index),
+				form: formProps,
+				record,
+				handleEdit,
+			};
+		}
+	});
+	/** ---------------------------------属性扩展 end ---------------------------------------- */
 
 	/* ----------------------------------暴露的方法 start--------------------------------------- */
 
@@ -82,7 +93,7 @@ function EditableTable<RT extends object = any>(
 	// 修改
 	const handleEditRecord = useRefCallback((record: RT) => {
 		if (type === "cell") {
-			console.error(`edit type is type not allow run this event`);
+			console.error(`cell 模式下无法执行该操作`);
 			return;
 		}
 		editRef.current?.on();
@@ -105,15 +116,28 @@ function EditableTable<RT extends object = any>(
 	);
 	/* ----------------------------------暴露的方法 end--------------------------------------- */
 
+	/* ----------------------------------组件替换 start--------------------------------------- */
+	const components = useMemo(() => {
+		if (type === "cell") return { body: { row: EditableRow, cell: EditableCell } };
+	}, [type]);
+
+	/* ----------------------------------组件替换 end--------------------------------------- */
 	return (
 		<div className={styles.editable_table_wrap}>
-			<Table<RT> {...rest} columns={tableCol} components={components} dataSource={dataSource} />
+			<Table<RT>
+				{...rest}
+				columns={tableCol}
+				components={components}
+				onRow={handleOnRow as any}
+				dataSource={dataSource}
+			/>
 
 			{/* 新增form */}
 			<ColumnForm<RT>
 				type={type}
 				ref={addRef}
 				title={addTitle}
+				name={`editable-add-form-${addTitle}`}
 				{...formProps}
 				onFinish={handleCreate}
 			>
@@ -124,6 +148,7 @@ function EditableTable<RT extends object = any>(
 				type={type}
 				ref={editRef}
 				title={editTitle}
+				name={`editable-edit-form-${editTitle}`}
 				{...formProps}
 				onFinish={handleEdit}
 			>

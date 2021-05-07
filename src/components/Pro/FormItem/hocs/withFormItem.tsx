@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { Form } from "antd";
 import { WithFormItemProps } from "../interface";
 import { getProFormItemStyle, getRequiredRule } from "../utils";
@@ -19,9 +19,14 @@ export default function withFormItem<P>(Field: React.ComponentType<P>, defaultPr
 		}
 
 		/** 解决 Field 报错的问题 */
+		const fieldStyle: CSSProperties = {
+			width: "100%",
+			...(defaultProps as any)?.style,
+			...(field as any)?.style,
+		};
 		return (
 			<Form.Item {...itemProps} {...rest} style={{ width: itemWidth, ...rest.style }}>
-				<Field {...defaultProps} {...field!} />
+				<Field {...defaultProps} {...field!} style={fieldStyle} />
 			</Form.Item>
 		);
 	};

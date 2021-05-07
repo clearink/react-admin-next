@@ -8,9 +8,9 @@ export default function useRequest<Data = any>(
 	/** 使用 ()=>undefined 防止错误的发送请求 例如没有设置params */
 	request: fetcherFn<Data> = defaultFetcher,
 	/** 使用 props 传入的数据 */
-	useLocal = false
+	useProp = false
 ) {
-	const ret = useFetch(params!, useLocal ? defaultFetcher : request, {
+	const ret = useFetch(params!, useProp ? defaultFetcher : request, {
 		revalidateOnFocus: false,
 		dedupingInterval: 3600000, // 缓存数据时间 1h
 	});

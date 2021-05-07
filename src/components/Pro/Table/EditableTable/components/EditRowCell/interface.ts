@@ -1,12 +1,16 @@
-export interface EditableRowProps {
-	className?: string;
-}
+import { ProFormProps } from "@/components/Pro/Form/ProForm/interface";
 
-export interface EditableCellProps<V> {
-	children: React.ReactNode;
-	edit?: JSX.Element;
-	name: string;
+export interface EditableRowProps<V> {
 	className?: string;
 	record: V;
-	handleSave: (record: V) => void;
+	form: ProFormProps<V>;
+	handleEdit: (values: V) => void;
+}
+
+export interface EditableCellProps {
+	children?: React.ReactNode;
+	edit?: JSX.Element;
+	name: string;
+	value: any;
+	className?: string;
 }

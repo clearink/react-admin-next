@@ -4,11 +4,11 @@ import { forwardRef, Ref } from "react";
 import { ColumnFormProps, ColumnFormRef, ColumnFormType } from "./interface";
 
 function ColumnForm<V = any>(props: ColumnFormProps<V>, ref: Ref<ColumnFormRef>) {
-	const { type, children, ...rest } = props;
+	const { type, ...rest } = props;
 
-	if (type === "drawer") return <DrawerForm {...rest}>{children}</DrawerForm>;
+	if (type === "drawer") return <DrawerForm {...rest} ref={ref} />;
 
-	if (type === "modal") return <ModalForm {...rest}>{children}</ModalForm>;
+	if (type === "modal") return <ModalForm {...rest} ref={ref} />;
 	return <></>;
 }
 

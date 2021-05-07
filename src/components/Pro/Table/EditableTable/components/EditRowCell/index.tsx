@@ -1,4 +1,4 @@
-import {
+import React, {
 	cloneElement,
 	createElement,
 	isValidElement,
@@ -16,25 +16,34 @@ import classNames from "classnames";
 import { EditableCellProps, EditableRowProps } from "./interface";
 import { EditContainer } from "../../utils";
 import styles from "./style.module.scss";
+import { ProForm } from "@/components/Pro/Form";
 
-export function EditableRow(props: EditableRowProps) {
-	console.log('EditableRow',props);
+export function EditableRow<V>(props: EditableRowProps<V>) {
+	const { form: formProps, handleEdit, record, ...rest } = props;
 	const [form] = Form.useForm();
+	const handleFinish = (values: V) => {
+		handleEdit({ ...record, ...values });
+	};
 	return (
-		<Form form={form} component={false}>
-			<EditContainer.Provider initialState={{ form }}>
-				<tr {...props} />
+		<ProForm
+			form={form}
+			component={false}
+			{...formProps}
+			submitConfig={false}
+			onFinish={handleFinish}
+		>
+			<EditContainer.Provider initialState={form}>
+				<tr {...rest} />
 			</EditContainer.Provider>
-		</Form>
+		</ProForm>
 	);
 }
 
-export function EditableCell<V extends object = any>(props: EditableCellProps<V>) {
-
-	const { children, edit, name, record, handleSave, className, ...rest } = props;
+export function EditableCell(props: EditableCellProps) {
+	const { children, className, edit, name, value, ...rest } = props;
 
 	const [editing, setEditing] = useState(false); // 是否处于编辑状态
-	const { form } = EditContainer.useContainer(); // row 的 form
+	const form = EditContainer.useContainer(); // row 的 form
 
 	const focusRef = useRef<any>(null); // 焦点控制
 
@@ -46,13 +55,12 @@ export function EditableCell<V extends object = any>(props: EditableCellProps<V>
 		setEditing((p) => !p);
 		// 设置字段的初始值
 		if (!editing) {
-			form.setFieldsValue({ [name]: record[name] });
+			form.setFieldsValue({ [name]: value });
 		}
 	});
 
 	const handleSaveRecord = useRefCallback(async () => {
-		const values = await form.validateFields();
-		handleSave({ ...record, ...values });
+		form.submit();
 		toggleEdit();
 	});
 
@@ -60,12 +68,14 @@ export function EditableCell<V extends object = any>(props: EditableCellProps<V>
 	const handleEnter = useRefCallback((e: KeyboardEvent<HTMLDivElement>) => {
 		if (e.key === "Enter") handleSaveRecord();
 		if (edit?.props.onKeyDown) edit.props.onKeyDown(e);
+		if (edit?.props.field?.onKeyDown) edit.props.field.onKeyDown(e);
 	});
 
 	// 丢失焦点默认保存数据
 	const handleBlur = useRefCallback((e: FocusEventHandler<HTMLElement>) => {
 		handleSaveRecord();
 		if (edit?.props.onBlur) edit.props.onBlur(e);
+		if (edit?.props.field?.onBlur) edit.props.field.onBlur(e);
 	});
 
 	// 一般定义在 columns中的数据不会有ref吧
@@ -83,10 +93,10 @@ export function EditableCell<V extends object = any>(props: EditableCellProps<V>
 				name,
 				rules,
 				field: {
+					...(editElement.props as any).field,
 					onKeyDown: handleEnter,
 					onBlur: handleBlur,
 					ref: focusRef,
-					...editElement.props,
 				},
 			};
 			childNode = cloneElement(editElement, props);

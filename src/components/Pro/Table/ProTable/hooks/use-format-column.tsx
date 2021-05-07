@@ -1,3 +1,4 @@
+import { isUndefined } from "@/utils/ValidateType";
 import { Tooltip } from "antd";
 import { ColumnsType, ColumnType } from "antd/lib/table";
 import { FilterValue, SorterResult } from "antd/lib/table/interface";
@@ -5,9 +6,7 @@ import React, { cloneElement, isValidElement } from "react";
 import TableText from "../../components/TableText";
 import { ProColumnsType, ProColumnType } from "../interface";
 
-export default function useFormatColumn<T extends object = any>(
-	columns: ProColumnsType<T> = []
-) {
+export default function useFormatColumn<T extends object = any>(columns: ProColumnsType<T> = []) {
 	const tableCol: ColumnsType<T> = [];
 	const formCol: JSX.Element[] = [];
 	const filters: Record<string, FilterValue | null> = {};
@@ -16,7 +15,7 @@ export default function useFormatColumn<T extends object = any>(
 		const item = columns[i] as ProColumnType<T>;
 
 		const { search, read, render, hideInForm, hideInTable, label, props: $props, ...rest } = item;
-		const { dataIndex,title } = item;
+		const { dataIndex, title } = item;
 		if (!hideInForm && isValidElement(search)) {
 			// TODO: 处理 ProGroupColumn
 			const props = {
@@ -33,8 +32,8 @@ export default function useFormatColumn<T extends object = any>(
 		if (dataIndex) {
 			const name = ([] as React.Key[]).concat(dataIndex).join(".");
 			// 目前仅仅支持 默认值 不支持 外部受控
-			if (item.hasOwnProperty("defaultFilteredValue")) filters[name] = item.defaultFilteredValue!;
-			if (item.hasOwnProperty("defaultSortOrder")) sorter[name] = item.defaultSortOrder;
+			if (!isUndefined(item.defaultFilteredValue)) filters[name] = item.defaultFilteredValue!;
+			if (!isUndefined(item.defaultSortOrder)) sorter[name] = item.defaultSortOrder;
 		}
 		const readElement = read ?? <TableText />;
 		const colItem: ColumnType<T> = {

@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import PageHeaderWrap from "@/components/PageHeaderWrap";
-import { Button, Descriptions, Select } from "antd";
+import { Button, Descriptions, Popconfirm, Select, Space } from "antd";
 
 import EditableTable from "@/components/Pro/Table/EditableTable";
 import {
@@ -16,7 +16,7 @@ export default function List() {
 	const ref = useRef<EditableTableRef>(null);
 	const [type, setType] = useState<EditType>("cell");
 	const [data, setData] = useState(() =>
-		Array.from({ length: 1 }, (_, i) => ({
+		Array.from({ length: 30 }, (_, i) => ({
 			key: i,
 			time: "2021-3-14",
 			name: `"Edward King 0"${i}`,
@@ -56,29 +56,29 @@ export default function List() {
 			title: "address",
 			dataIndex: "address",
 		},
-		// {
-		// 	title: "action",
-		// 	key: "action",
-		// 	fixed: "right",
-		// 	width: 200,
-		// 	render: (value) => {
-		// 		return (
-		// 			<>
-		// 				<Button
-		// 					onClick={() => {
-		// 						ref.current?.edit(value);
-		// 					}}
-		// 					className='mb-4'
-		// 				>
-		// 					编辑
-		// 				</Button>
-		// 				<Popconfirm title='确定删除吗?' onConfirm={() => ref.current?.delete(value)}>
-		// 					<Button danger>删除</Button>
-		// 				</Popconfirm>
-		// 			</>
-		// 		);
-		// 	},
-		// },
+		{
+			title: "action",
+			key: "action",
+			fixed: "right",
+			width: 200,
+			render: (dom, value, record) => {
+				return (
+					<>
+						<Button
+							onClick={() => {
+								ref.current?.edit(record);
+							}}
+							className='mr-4'
+						>
+							编辑
+						</Button>
+						<Popconfirm title='确定删除吗?' onConfirm={() => ref.current?.delete(record)}>
+							<Button danger>删除</Button>
+						</Popconfirm>
+					</>
+				);
+			},
+		},
 	];
 	return (
 		<div className={styles.list_page_wrap}>
@@ -125,7 +125,8 @@ export default function List() {
 					columns={__columns}
 					dataSource={data}
 					ref={ref}
-					addTitle='新增一条数据'
+					addTitle='新增数据'
+					editTitle='编辑数据'
 					onDataChange={(records) => {
 						setData(records);
 					}}

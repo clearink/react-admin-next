@@ -13,7 +13,7 @@ export interface FieldStatusProps
 	text?: string;
 	/** 渲染方式 */
 	type?: "tag" | "badge";
-	color?: string;
+	color?: BadgeProps['color'];
 	/** 颜色渐变区间 */
 	colorRange?: string[];
 }

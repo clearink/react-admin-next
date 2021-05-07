@@ -22,4 +22,4 @@ function $ProFormSelect<VT extends SelectValue = SelectValue>(
 }
 
 const ProFormSelect = forwardRef($ProFormSelect) as any;
-export default withFormItem(ProFormSelect, { allowClear: true }) as ProFormSelectType;
+export default withFormItem(ProFormSelect, { allowClear: true,placeholder:"请选择" }) as ProFormSelectType;

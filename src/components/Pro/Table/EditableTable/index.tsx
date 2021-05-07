@@ -41,7 +41,7 @@ function EditableTable<RT extends object = any>(
 
 	const dataSource = $dataSource ?? _dataSource;
 
-	/** ---------------------------------方法 start ---------------------------------------- */
+	/* ---------------------------------方法 start ---------------------------------------- */
 	const handleChange = async (newData: RT[]) => {
 		if (onDataChange) await onDataChange(newData);
 		else setDataSource(newData);
@@ -51,7 +51,7 @@ function EditableTable<RT extends object = any>(
 	const handleCreate = useRefCallback(async (values) => {
 		const newRecord = onCreate?.(values) ?? { [rowKey!]: Date.now(), ...values };
 
-		await handleChange(_dataSource.concat(newRecord));
+		await handleChange(dataSource.concat(newRecord));
 		addRef.current?.form.resetFields();
 
 		return true;
@@ -67,9 +67,9 @@ function EditableTable<RT extends object = any>(
 		await handleChange(newData);
 		return true;
 	});
-	/** ---------------------------------方法 end ---------------------------------------- */
+	/* ---------------------------------方法 end ---------------------------------------- */
 
-	/** ---------------------------------属性扩展 start ---------------------------------------- */
+	/* ---------------------------------属性扩展 start ---------------------------------------- */
 	const handleOnRow = useRefCallback((record: RT, index: number) => {
 		if (type === "cell") {
 			return {
@@ -80,7 +80,7 @@ function EditableTable<RT extends object = any>(
 			};
 		}
 	});
-	/** ---------------------------------属性扩展 end ---------------------------------------- */
+	/* ---------------------------------属性扩展 end ---------------------------------------- */
 
 	/* ----------------------------------暴露的方法 start--------------------------------------- */
 

@@ -3,7 +3,6 @@ export function createFetcher<F extends Function>(key: string, fetcher: F) {
 	fetcher.toString = function () {
 		return key;
 	};
-
 	return Object.assign(fetcher, { key });
 }
 

@@ -164,7 +164,27 @@ const routes: RouteItemConfig[] = [
 				path: "/page-creator",
 				title: "页面生成器",
 				icon: "icon-computer",
-				component: withLazyLoad(lazy(() => import("@/pages/PageCreator"))),
+				component: withLazyLoad(lazy(() => import("@/layouts/BlankLayout"))),
+				routes: [
+					{
+						path: "/",
+						title: "模板生成器",
+						icon: "icon-computer",
+						component: withLazyLoad(lazy(() => import("@/pages/PageCreator/CreatorCore"))),
+					},
+					{
+						path: "/api",
+						title: "api生成器",
+						icon: "icon-computer",
+						component: withLazyLoad(lazy(() => import("@/pages/PageCreator/ApiConfig"))),
+					},
+					{
+						path: "/enum",
+						title: "enum生成器",
+						icon: "icon-computer",
+						component: withLazyLoad(lazy(() => import("@/pages/PageCreator/EnumConfig"))),
+					},
+				],
 			},
 		],
 	},

@@ -4,7 +4,7 @@ import { ColumnType, TablePaginationConfig, TableProps } from "antd/lib/table";
 import { RenderedCell } from "rc-table/lib/interface";
 import { FilterFormProps } from "../../Form/FilterForm/interface";
 import { FormInstance } from "antd";
-import { FilterValue, SorterResult } from "antd/lib/table/interface";
+import { ColumnTitle, FilterValue, SorterResult } from "antd/lib/table/interface";
 import { getFilters, getInitState, getSorter } from "./utils";
 
 //
@@ -26,10 +26,10 @@ export interface ProTableProps<RecordType extends object = any>
 	tableTitle?: TitleTipProps["title"];
 
 	/** render 右侧操作栏 */
-	renderToolbar?: (dom: JSX.Element[], actions: ProTableRef) => JSX.Element[];
+	renderToolbar?: (dom: JSX.Element[], actions: ProTableRef<RecordType>) => JSX.Element[];
 
 	/** render tableInfo 渲染table信息 */
-	renderTableInfo?: (dom: JSX.Element, actions: ProTableRef) => ReactNode;
+	renderTableInfo?: (dom: JSX.Element, actions: ProTableRef<RecordType>) => ReactNode;
 
 	// 添加几个常用的默认事件吧 不设置 则不显示
 	onCreate?: () => void;
@@ -53,10 +53,23 @@ export type ProTableRequest<RecordType extends object = any> = (
 ) => Promise<
 	| {
 			dataSource: RecordType[];
-			total: number;
+			total?: number;
 	  }
 	| undefined
 >;
+
+// 扩展的 title
+type ProColumnTitle<RT> =
+	| ReactNode
+	| TitleTipProps["title"]
+	| ((props: ColumnTitle<RT>) => ReactNode);
+// 扩展的 render
+type ProColumnRender<T = unknown> = (
+	dom: ReactNode,
+	record: T,
+	index: number,
+	action: ProTableRef<T>
+) => React.ReactNode | RenderedCell<T>;
 export interface ProColumnType<RecordType = unknown>
 	extends Omit<ColumnType<RecordType>, "render"> {
 	/** 文本显示字段  */
@@ -65,25 +78,17 @@ export interface ProColumnType<RecordType = unknown>
 	/** 搜索字段  */
 	search?: JSX.Element;
 
+	/** 扩展 title 方法 */
+	title: ProColumnTitle<RecordType>;
+
 	/** 扩展 render方法 */
-	render?: (
-		dom: ReactNode,
-		value: any,
-		record: RecordType,
-		index: number
-	) => React.ReactNode | RenderedCell<RecordType>;
+	render?: ProColumnRender<RecordType>;
 
 	/** table隐藏 */
 	hideInTable?: boolean;
 
 	/** form隐藏 */
 	hideInForm?: boolean;
-
-	/** 当title是函数时 使用 label 字段 @deprecated 没啥用 未来 delete */
-	label?: TitleTipProps["title"];
-
-	/** @deprecated 提示文本 暂无功能 */
-	tooltip?: string;
 
 	/** search and read 都需要的属性 */
 	props?: any;
@@ -110,7 +115,7 @@ export interface GetInitStateProps {
  * toolbar: 当前第几页 actionBar
  * table
  */
-export interface ProTableRef<RecordType extends object = any> {
+export interface ProTableRef<RecordType = unknown> {
 	state: ReturnType<typeof getInitState>;
 	reload: (reset?: boolean) => void;
 	clearSelected: () => void;

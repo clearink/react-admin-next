@@ -16,4 +16,7 @@ function $ProFormDatePicker(props: ProFormDatePickerProps, ref: ProFormDatePicke
 
 const ProFormDatePicker = forwardRef($ProFormDatePicker) as any;
 
-export default withFormItem<ProFormDatePickerProps>(ProFormDatePicker, { allowClear: true });
+export default withFormItem<ProFormDatePickerProps>(ProFormDatePicker, {
+	allowClear: true,
+	style: { width: "100%" },
+});

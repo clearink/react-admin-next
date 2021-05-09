@@ -1,28 +1,24 @@
-import { ReactElement, Ref } from "react";
+import { ReactElement, ReactNode, Ref } from "react";
 import { TableProps } from "antd";
 import { ColumnType } from "antd/lib/table";
-
+import { RenderedCell } from "rc-table/lib/interface";
 import { DrawerFormProps } from "../../Form/DrawerForm/interface";
 import { ModalFormProps } from "../../Form/ModalForm/interface";
 import { TitleTipProps } from "../../TitleTip";
-import { ProColumnRender } from "../interface";
+import { ColumnTitle } from "antd/lib/table/interface";
 
-
-export declare type EditType = "cell" | "row" | "modal" | "drawer";
+export declare type EditType = "row" | "modal" | "drawer";
 export interface EditableTableProps<RT extends object = any>
 	extends Omit<TableProps<RT>, "columns" | "onChange"> {
-	
 	columns?: EditableColumnsType<RT>;
-	
+
 	rowKey?: string;
 
-	/** 编辑方式 单元格 整行 模态框 抽屉 */
+	/** 编辑方式 模态框 抽屉 */
 	type?: EditType;
-	
+
 	/** table数据改变时触发 */
-	onDataChange?: (recordList: RT[]) => void;
-	/** 创建新项时触发 */
-	onCreate?: (record: RT) => RT;
+	onDataChange?: (recordList: RT[], record: RT, type: DatChangeType) => void;
 
 	/** 新增标题 */
 	addTitle?: TitleTipProps["title"];
@@ -34,15 +30,26 @@ export interface EditableTableProps<RT extends object = any>
 	// fix 泛型失效
 	ref?: Ref<EditableTableRef<RT>>;
 }
-
+export type DatChangeType = "add" | "edit" | "delete";
 // 暴露的方法
-export interface EditableTableRef<RT extends object = any> {
+export interface EditableTableRef<RT = any> {
 	add: (record?: RT) => void;
 	edit: (record: RT) => void;
 	delete: (record: RT) => void;
 }
 
-// export type ColumnTableRender = <RT>(dom:ReactNode,value)=>ReactNode | RenderedCell<RT>;
+export declare type EditableColumnRender<RT = any> = (
+	dom: ReactNode,
+	record: RT,
+	index: number,
+	action: EditableTableRef<RT>
+) => React.ReactNode | RenderedCell<RT>;
+
+// 扩展的 title
+type EditableColumnTitle<RT> =
+	| ReactNode
+	| TitleTipProps["title"]
+	| ((props: ColumnTitle<RT>) => ReactNode);
 export interface EditableColumnType<RT = unknown> extends Omit<ColumnType<RT>, "render"> {
 	read?: JSX.Element;
 	edit?: JSX.Element;
@@ -51,8 +58,11 @@ export interface EditableColumnType<RT = unknown> extends Omit<ColumnType<RT>, "
 	/** 隐藏控件 */
 	hideInForm?: boolean;
 
+	/** 扩展 title 方法 */
+	title: EditableColumnTitle<RT>;
+
 	/** 扩展render 功能 */
-	render?: ProColumnRender<RT>;
+	render?: EditableColumnRender<RT>;
 	/** 直接传递的 read 与 edit 的 */
 	props?: any;
 }

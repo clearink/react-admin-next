@@ -89,6 +89,7 @@ class Http {
 	// 错误提示
 	private errorMessage(error?: CommonServerData) {
 		window.clearTimeout(this.timer);
+		// 删除之前的 message.error
 		this.timer = window.setTimeout(() => {
 			message.error({
 				key: "error",

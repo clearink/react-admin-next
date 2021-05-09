@@ -1,20 +1,24 @@
+import React, { useRef, useState } from "react";
 import { REQUEST_TYPE_CONST } from "@/assets/constant/request-type";
 import PageHeaderWrap from "@/components/PageHeaderWrap";
 import { FieldStatus, FieldText } from "@/components/Pro/Field";
-import { ProFormInput, ProFormSelect } from "@/components/Pro/FormItem";
-import { EditableTable, ProTable } from "@/components/Pro/Table";
+import { ProFormInput, ProFormSelect, ProFormSwitch } from "@/components/Pro/FormItem";
+import { EditableTable } from "@/components/Pro/Table";
 import {
 	EditableColumnsType,
 	EditableTableRef,
 } from "@/components/Pro/Table/EditableTable/interface";
-import { Button } from "antd";
-import React, { useRef, useState } from "react";
+import { Button, Popconfirm, Switch } from "antd";
+import CodePreview from "@/components/Company/CodePreview";
+import { kebabToCamel } from "./utils";
 
 interface ApiItem {
 	id: string | number;
 	name: string;
-	key: string | number;
-	content: string;
+	key: string;
+	type: string;
+	url: string;
+	params?: boolean;
 }
 const columns: EditableColumnsType<ApiItem> = [
 	{
@@ -36,13 +40,68 @@ const columns: EditableColumnsType<ApiItem> = [
 		edit: <ProFormSelect field={{ valueEnum: REQUEST_TYPE_CONST.list }} />,
 	},
 	{
-		title: "内容",
-		dataIndex: "content",
+		title: "地址",
+		dataIndex: "url",
 		edit: <ProFormInput />,
 	},
+	{
+		title: "参数",
+		dataIndex: "params",
+		edit: <ProFormSwitch />,
+		render: (dom, record) => {
+			return <Switch checked={record.params} />;
+		},
+	},
+	{
+		title: "操作",
+		key: "option",
+		render: (dom, record, index, action) => {
+			return (
+				<>
+					<Button
+						type='link'
+						size='small'
+						onClick={() => {
+							action.edit(record);
+						}}
+					>
+						编辑
+					</Button>
+					<Popconfirm title='确定删除吗?' onConfirm={() => action.delete(record)}>
+						<Button type='link' size='small' danger>
+							删除
+						</Button>
+					</Popconfirm>
+					<Button
+						type='link'
+						size='small'
+						onClick={() => {
+							action.edit(record);
+						}}
+					>
+						预览
+					</Button>
+				</>
+			);
+		},
+	},
 ];
+/**
+ export const GetNurseLevel = createFetcher("fetch-nurse-level", () =>
+	http.get("/sys/dict/getDictItems/careworkerPosition")
+);
+key:  fetch-nurse-level
+ */
 export default function PageConfig() {
-	const [dataSource, setDataSource] = useState<ApiItem[]>([]);
+	const [dataSource, setDataSource] = useState<ApiItem[]>([
+		{
+			id: 1,
+			name: "获取用户列表",
+			key: "get-user-list",
+			type: "get",
+			url: "/a/b/user/list",
+		},
+	]);
 	const ref = useRef<EditableTableRef>(null);
 	const handleCreate = () => {
 		ref.current?.add();
@@ -51,8 +110,7 @@ export default function PageConfig() {
 		<div className='flex flex-col h-full'>
 			<PageHeaderWrap title='api生成器' />
 			<main className='bg-white mt-10 p-6 flex-1'>
-				{/* <ProTable columns={columns} onCreate={handleCreate} dataSource={dataSource} /> */}
-				<div className='text-right mb-4'>
+				<div className='text-right mb-8'>
 					<Button type='primary' onClick={handleCreate} className='mr-4'>
 						新增数据
 					</Button>
@@ -61,12 +119,12 @@ export default function PageConfig() {
 						onClick={() => {
 							dataSource
 								.map((item) => {
-									return `export const ${item.key} = ${item.content}; //${item.name}`;
+									const hasParams = !!item.params;
+									return `export const ${kebabToCamel(item.key)} = (${
+										hasParams ? "params:any" : ""
+									}) => http.${item.type}("${item.url}"${hasParams ? ", params" : ""})`;
 								})
 								.forEach((item) => console.log(item));
-							/**
-						export const GetCaptcha = (params: any) => http.get("/orgmgt/sendCaptchaOrg", params);
-						 */
 						}}
 					>
 						导出
@@ -76,13 +134,11 @@ export default function PageConfig() {
 					ref={ref}
 					columns={columns}
 					dataSource={dataSource}
-					type='modal'
 					onDataChange={(list) => {
-						console.log("list", list);
-						// 重复的 key 剔除
 						setDataSource(list);
 					}}
 				/>
+				<CodePreview />
 			</main>
 		</div>
 	);

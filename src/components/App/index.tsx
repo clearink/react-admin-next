@@ -15,7 +15,7 @@ function App() {
 		<ErrorBoundary>
 			<Provider store={store}>
 				<ConfigProvider locale={zhCN}>
-					<SWRConfig value={{ errorRetryCount: 1 }}>
+					<SWRConfig value={{ errorRetryCount: 0 }}>
 						<Router>
 							<Routes>{element}</Routes>
 						</Router>

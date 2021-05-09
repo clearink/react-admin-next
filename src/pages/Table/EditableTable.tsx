@@ -14,7 +14,7 @@ import styles from "./style.module.scss";
 
 export default function List() {
 	const ref = useRef<EditableTableRef>(null);
-	const [type, setType] = useState<EditType>("cell");
+	const [type, setType] = useState<EditType>("modal");
 	const [data, setData] = useState(() =>
 		Array.from({ length: 30 }, (_, i) => ({
 			key: i,
@@ -97,8 +97,8 @@ export default function List() {
 			</Descriptions>
 			<main className='bg-white min-h-full p-5'>
 				<div className='pb-4 text-right'>
-					<Select
-						defaultValue='cell'
+					<Select<EditType>
+						defaultValue='modal'
 						onChange={(value) => {
 							console.log(value);
 							setType(value);

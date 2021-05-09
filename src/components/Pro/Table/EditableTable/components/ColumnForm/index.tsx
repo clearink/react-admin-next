@@ -5,9 +5,7 @@ import { ColumnFormProps, ColumnFormRef, ColumnFormType } from "./interface";
 
 function ColumnForm<V = any>(props: ColumnFormProps<V>, ref: Ref<ColumnFormRef>) {
 	const { type, ...rest } = props;
-
 	if (type === "drawer") return <DrawerForm {...rest} ref={ref} />;
-
 	if (type === "modal") return <ModalForm {...rest} ref={ref} />;
 	return <></>;
 }

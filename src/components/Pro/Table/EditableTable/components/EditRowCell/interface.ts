@@ -3,7 +3,7 @@ import { ProFormProps } from "@/components/Pro/Form/ProForm/interface";
 export interface EditableRowProps<V> {
 	className?: string;
 	record: V;
-	form: ProFormProps<V>;
+	form?: ProFormProps<V>;
 	handleEdit: (values: V) => void;
 }
 

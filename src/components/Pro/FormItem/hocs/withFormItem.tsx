@@ -20,7 +20,6 @@ export default function withFormItem<P>(Field: React.ComponentType<P>, defaultPr
 
 		/** 解决 Field 报错的问题 */
 		const fieldStyle: CSSProperties = {
-			width: "100%",
 			...(defaultProps as any)?.style,
 			...(field as any)?.style,
 		};

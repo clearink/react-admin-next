@@ -2,6 +2,7 @@ import React, {
 	cloneElement,
 	forwardRef,
 	Ref,
+	useEffect,
 	useImperativeHandle,
 	useMemo,
 	useReducer,
@@ -62,7 +63,8 @@ function ProTable<RecordType extends object = any>(
 	const [form] = Form.useForm(search ? search.form : undefined);
 	useImperativeHandle(searchRef, () => form, [form]); // 暴露出属性
 
-	const [tableCol, formCol, $filters, $sorter] = useFormatColumn(columns);
+	const actionRef = useRef<ProTableRef<RecordType>>();
+	const [tableCol, formCol, $filters, $sorter] = useFormatColumn(columns, actionRef);
 
 	const [_loading, setLoading] = useState<ProTableProps["loading"]>(false);
 
@@ -93,7 +95,7 @@ function ProTable<RecordType extends object = any>(
 			if (result) {
 				const { dataSource, total } = result;
 				setDataSource(dataSource);
-				dispatch(actions.setTotal(total));
+				dispatch(actions.setTotal(total ?? dataSource.length));
 			}
 		} finally {
 			if (mountedRef.current) {
@@ -161,6 +163,7 @@ function ProTable<RecordType extends object = any>(
 		if (reset) {
 			form.resetFields();
 			dispatch(actions.setCurrent(1));
+			// TODO: 如何 初始化 filters 与 sorters ?
 		}
 		handleRequest();
 	});
@@ -195,6 +198,9 @@ function ProTable<RecordType extends object = any>(
 			handleSetSorter,
 		]
 	);
+	useEffect(() => {
+		actionRef.current = tableAction;
+	}, [tableAction]);
 
 	useImperativeHandle(ref, () => tableAction, [tableAction]);
 
@@ -216,9 +222,9 @@ function ProTable<RecordType extends object = any>(
 
 	/**----------------------- UI相关 --------------------------- */
 
-	const usePropLoading = !isUndefined($loading)
+	const usePropLoading = !isUndefined($loading);
 	const loading = usePropLoading ? $loading : _loading;
-	
+
 	// 以下 二者皆应在不同的业务去声明
 	const tableInfo = (() => {
 		const tableInfo = (

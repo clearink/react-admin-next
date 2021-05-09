@@ -1,14 +1,17 @@
-import { cloneElement, isValidElement, useMemo } from "react";
+import { cloneElement, isValidElement, RefObject, useMemo } from "react";
 import { ColumnType } from "antd/lib/table";
-import { EditableColumnsType, EditableColumnType } from "../interface";
+import { EditableColumnsType, EditableColumnType, EditableTableRef } from "../interface";
 import TableText from "../../components/TableText";
 import { EditableCellProps } from "../components/EditRowCell/interface";
 
-// 转换 columns 分离出 formColumn 与
-export default function useFormatColumn<RT extends object = any>(columns: EditableColumnsType<RT>) {
+// 转换 columns 分离出 editCol 与 tableCol
+export default function useFormatColumn<RT extends object = any>(
+	columns: EditableColumnsType<RT>,
+	action: RefObject<EditableTableRef<RT> | undefined>
+) {
 	return useMemo(() => {
 		const tableCol: any[] = [];
-		const formCol: any[] = [];
+		const editCol: any[] = [];
 		for (let i = 0; i < columns.length; i++) {
 			const item = columns[i] as EditableColumnType<RT>;
 			// TODO: 处理 group
@@ -22,7 +25,7 @@ export default function useFormatColumn<RT extends object = any>(columns: Editab
 					...$props,
 					...(edit.props as any),
 				};
-				formCol.push(cloneElement(edit, props));
+				editCol.push(cloneElement(edit, props));
 			}
 			if (hideInTable) continue;
 
@@ -31,7 +34,7 @@ export default function useFormatColumn<RT extends object = any>(columns: Editab
 				...rest,
 				render: (value, record, index) => {
 					const dom = cloneElement(readElement, { text: value });
-					if (render) return render(dom, value, record, index);
+					if (render) return render(dom, record, index, action.current!);
 					return dom;
 				},
 				onCell: (record, index) => {
@@ -45,6 +48,6 @@ export default function useFormatColumn<RT extends object = any>(columns: Editab
 			};
 			tableCol.push(colItem);
 		}
-		return [tableCol, formCol] as const;
-	}, [columns]);
+		return [tableCol, editCol] as const;
+	}, [action, columns]);
 }

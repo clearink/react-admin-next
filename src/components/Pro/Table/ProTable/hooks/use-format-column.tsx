@@ -1,12 +1,16 @@
-import { isUndefined } from "@/utils/ValidateType";
+import TitleTip from "@/components/Pro/TitleTip";
+import { isObject, isUndefined } from "@/utils/ValidateType";
 import { Tooltip } from "antd";
 import { ColumnsType, ColumnType } from "antd/lib/table";
 import { FilterValue, SorterResult } from "antd/lib/table/interface";
-import React, { cloneElement, isValidElement } from "react";
+import React, { cloneElement, isValidElement, RefObject } from "react";
 import TableText from "../../components/TableText";
-import { ProColumnsType, ProColumnType } from "../interface";
+import { ProColumnsType, ProColumnType, ProTableRef } from "../interface";
 
-export default function useFormatColumn<T extends object = any>(columns: ProColumnsType<T> = []) {
+export default function useFormatColumn<T extends object = any>(
+	columns: ProColumnsType<T> = [],
+	action: RefObject<ProTableRef<T> | undefined>
+) {
 	const tableCol: ColumnsType<T> = [];
 	const formCol: JSX.Element[] = [];
 	const filters: Record<string, FilterValue | null> = {};
@@ -14,17 +18,23 @@ export default function useFormatColumn<T extends object = any>(columns: ProColu
 	for (let i = 0; i < columns.length; i++) {
 		const item = columns[i] as ProColumnType<T>;
 
-		const { search, read, render, hideInForm, hideInTable, label, props: $props, ...rest } = item;
-		const { dataIndex, title } = item;
+		const { search, read, render, hideInForm, hideInTable, props: $props, ...rest } = item;
+		const { dataIndex, title: $title } = item;
+		const title = (() => {
+			if (isValidElement($title)) return $title;
+			if (isObject($title)) return <TitleTip title={$title} />;
+			return $title;
+		})();
 		if (!hideInForm && isValidElement(search)) {
 			// TODO: 处理 ProGroupColumn
 			const props = {
-				label: label ?? title,
+				label: title,
 				name: dataIndex,
 				key: dataIndex ?? i,
 				...$props,
 				...(search.props as any),
 			};
+			// TODO: formCol 排序
 			formCol.push(cloneElement(search, props));
 		}
 		if (hideInTable) continue;
@@ -38,16 +48,18 @@ export default function useFormatColumn<T extends object = any>(columns: ProColu
 		const readElement = read ?? <TableText />;
 		const colItem: ColumnType<T> = {
 			...rest,
+			title,
 			render: (value, record, index) => {
 				let dom = cloneElement(readElement, { text: value });
 				// 如果使用省略 默认包裹一层 tooltip
 				if (dom.props.ellipsis) {
 					dom = <Tooltip title={value}>{dom}</Tooltip>;
 				}
-				if (render) return render(dom, value, record, index);
+				if (render) return render(dom, record, index, action.current!);
 				return dom;
 			},
 		};
+		// TODO: tableCol 排序
 		tableCol.push(colItem);
 	}
 	return [tableCol, formCol, filters, sorter] as const;

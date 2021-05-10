@@ -86,11 +86,7 @@ function ProTable<RecordType extends object = any>(
 		try {
 			setLoading({ delay: 50 });
 			// 请求参数
-			const params = {
-				...formValue,
-				...$params,
-				...GetValue(state.pagination, ["current", "pageSize"]),
-			};
+			const params = { ...formValue, ...$params, ...state.pagination };
 			const result = await request(params, state.filters, state.sorter);
 
 			if (result) {

@@ -2,7 +2,6 @@ import { cloneElement, isValidElement, RefObject, useMemo } from "react";
 import { ColumnType } from "antd/lib/table";
 import { EditableColumnsType, EditableColumnType, EditableTableRef } from "../interface";
 import TableText from "../../components/TableText";
-import { EditableCellProps } from "../components/EditRowCell/interface";
 
 // 转换 columns 分离出 editCol 与 tableCol
 export default function useFormatColumn<RT extends object = any>(
@@ -36,14 +35,6 @@ export default function useFormatColumn<RT extends object = any>(
 					const dom = cloneElement(readElement, { text: value });
 					if (render) return render(dom, record, index, action.current!);
 					return dom;
-				},
-				onCell: (record, index) => {
-					return {
-						edit,
-						value: record[`${dataIndex}`],
-						name: dataIndex,
-						...rest.onCell?.(record, index),
-					} as EditableCellProps;
 				},
 			};
 			tableCol.push(colItem);

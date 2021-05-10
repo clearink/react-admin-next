@@ -120,9 +120,12 @@ export default function PageConfig() {
 							dataSource
 								.map((item) => {
 									const hasParams = !!item.params;
-									return `export const ${kebabToCamel(item.key)} = (${
-										hasParams ? "params:any" : ""
-									}) => http.${item.type}("${item.url}"${hasParams ? ", params" : ""})`;
+									const fnStr = `(${hasParams ? "params:any" : ""}) => http.${item.type}("${
+										item.url
+									}"${hasParams ? ", params" : ""})`;
+									return `export const ${kebabToCamel(item.key)} = createFetcher("${
+										item.key
+									}",${fnStr})`;
 								})
 								.forEach((item) => console.log(item));
 						}}
@@ -136,6 +139,7 @@ export default function PageConfig() {
 					dataSource={dataSource}
 					onDataChange={(list) => {
 						setDataSource(list);
+						return true;
 					}}
 				/>
 				<CodePreview />

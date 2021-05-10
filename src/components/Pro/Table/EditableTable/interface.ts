@@ -7,7 +7,7 @@ import { ModalFormProps } from "../../Form/ModalForm/interface";
 import { TitleTipProps } from "../../TitleTip";
 import { ColumnTitle } from "antd/lib/table/interface";
 
-export declare type EditType = "row" | "modal" | "drawer";
+export declare type EditType = "modal" | "drawer";
 export interface EditableTableProps<RT extends object = any>
 	extends Omit<TableProps<RT>, "columns" | "onChange"> {
 	columns?: EditableColumnsType<RT>;
@@ -18,7 +18,7 @@ export interface EditableTableProps<RT extends object = any>
 	type?: EditType;
 
 	/** table数据改变时触发 */
-	onDataChange?: (recordList: RT[], record: RT, type: DatChangeType) => void;
+	onDataChange?: (recordList: RT[], record: RT, type: DatChangeType) => boolean | Promise<boolean>;
 
 	/** 新增标题 */
 	addTitle?: TitleTipProps["title"];

@@ -115,13 +115,14 @@ export interface GetInitStateProps {
  * toolbar: 当前第几页 actionBar
  * table
  */
-export interface ProTableRef<RecordType = unknown> {
-	state: ReturnType<typeof getInitState>;
+export interface ProTableRef<RT = unknown> {
+	state: ReturnType<typeof getInitState> & { dataSource: RT[] };
 	reload: (reset?: boolean) => void;
 	clearSelected: () => void;
 	setPagination: (config: Record<"current" | "pageSize", number>) => void;
 	setFilters: (filters: Record<string, FilterValue | null>) => void;
-	setSorter: (sorter: SorterResult<RecordType> | SorterResult<RecordType>[]) => void;
+	setSorter: (sorter: SorterResult<RT> | SorterResult<RT>[]) => void;
+	setDataSource: (dataSource: RT[]) => void;
 	// TODO: 支持 startEditable, cancelEditable
 }
 /**

@@ -3,9 +3,10 @@ import PageHeaderWrap from "@/components/PageHeaderWrap";
 import { FieldAvatar, FieldStatus, FieldText } from "@/components/Pro/Field";
 import { ProFormInput, ProFormSelect } from "@/components/Pro/FormItem";
 import { ProTable } from "@/components/Pro/Table";
-import { ProColumnsType } from "@/components/Pro/Table/ProTable/interface";
+import { ProColumnsType, ProTableRef } from "@/components/Pro/Table/ProTable/interface";
 import useTitle from "@/hooks/ui/use-title";
 import { GetNurseLevel, UserList } from "@/http/api/user";
+import { useRef } from "react";
 
 const columns: ProColumnsType<any> = [
 	{
@@ -81,16 +82,23 @@ const columns: ProColumnsType<any> = [
 ];
 export default function ProTablePage() {
 	useTitle("增强表格");
+	const tableRef = useRef<ProTableRef<any>>(null);
 	return (
 		<div className='min-h-full flex flex-col'>
 			<PageHeaderWrap title='增强表格' />
 			<main className='flex-auto bg-white mt-10'>
 				<ProTable
+					ref={tableRef}
 					tableTitle={{ title: "护工管理", tip: "护工人员管理" }}
 					columns={columns}
 					onCreate={() => {
 						console.log("create");
 					}}
+					dataSource={Array.from({ length: 100 }, (_, i) => ({
+						id: i,
+						avatar:`1231--${i}`,
+						name:`1231--${i}`,
+					}))}
 					request={async (params) => {
 						const { current, ...rest } = params;
 						const { result } = await UserList({

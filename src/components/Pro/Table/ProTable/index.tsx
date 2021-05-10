@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
 	cloneElement,
 	forwardRef,
@@ -79,7 +80,7 @@ function ProTable<RecordType extends object = any>(
 	const mountedRef = useMountedRef();
 	// 当正在执行请求时, 直接return      添加防抖 避免重复请求
 	const handleRequest = useDebounceCallback(50, async () => {
-		if (!isFunction(request) || requestLock.current) return;
+		if (!isFunction(request) || requestLock.current || usePropData) return;
 		requestLock.current = true;
 		const formValue = form.getFieldsValue();
 		try {
@@ -178,16 +179,23 @@ function ProTable<RecordType extends object = any>(
 			dispatch(actions.setSorter(sorter));
 		}
 	);
-
+	const handleSetDataSource = useRefCallback((data: RecordType[]) => {
+		if (!usePropData) {
+			setDataSource(data);
+		} else {
+			console.error("dataSource is controlled, this action is invalid");
+		}
+	});
 	// 暴露的方法
-	const tableAction = useMemo(
+	const tableAction = useMemo<ProTableRef<RecordType>>(
 		() => ({
-			state,
+			state: { ...state, dataSource: dataSource as RecordType[] },
 			reload: handleReload,
 			clearSelected: handleClearSelected,
 			setPagination: handleSetPagination,
 			setFilters: handleSetFilters,
 			setSorter: handleSetSorter,
+			setDataSource: handleSetDataSource,
 		}),
 		[
 			state,
@@ -196,6 +204,7 @@ function ProTable<RecordType extends object = any>(
 			handleSetPagination,
 			handleSetFilters,
 			handleSetSorter,
+			handleSetDataSource,
 		]
 	);
 	useEffect(() => {
@@ -296,6 +305,12 @@ function ProTable<RecordType extends object = any>(
 		return defaultConfig as SubmitterProps;
 	}, [handleRequest, loading, search]);
 
+	// 如果 datasource 是外部受控 则不会 干预 current 与 pageSize
+	const pagination = useMemo(() => {
+		if (usePropData) return $pagination;
+		return { ...$pagination, ...state.pagination, total: state.total };
+	}, [$pagination, state.pagination, state.total, usePropData]);
+
 	return (
 		<div className={styles.pro_table_wrap}>
 			{/* 没有form col 就不要显示了 */}
@@ -325,7 +340,7 @@ function ProTable<RecordType extends object = any>(
 				columns={tableCol}
 				loading={loading}
 				rowSelection={rowSelection}
-				pagination={{ ...$pagination, ...state.pagination, total: state.total }}
+				pagination={pagination}
 				dataSource={dataSource}
 				onChange={handleTableChange}
 				className={classNames(styles.table_content, rest.className)}

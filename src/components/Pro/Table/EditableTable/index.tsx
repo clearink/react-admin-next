@@ -24,7 +24,6 @@ import {
 	EditableTableType,
 } from "./interface";
 import styles from "./style.module.scss";
-import { EditableCell, EditableRow } from "./components/EditRowCell";
 
 // TODO: shouldCellUpdate 优化 table
 // 可编辑表格
@@ -59,9 +58,10 @@ function EditableTable<RT extends object = any>(
 
 	/* ---------------------------------方法 start ---------------------------------------- */
 	const handleChange = async (newData: RT[], record: RT, type: DatChangeType) => {
+		let ret = true;
 		if (!onDataChange) setDataSource(newData);
-		else await onDataChange?.(newData, record, type);
-		return true;
+		else ret = await onDataChange?.(newData, record, type);
+		return ret;
 	};
 
 	// 新增数据
@@ -117,27 +117,11 @@ function EditableTable<RT extends object = any>(
 
 	useImperativeHandle(ref, () => tableAction, [tableAction]);
 
-	/* ---------------------------------属性扩展 start ---------------------------------------- */
-	const handleOnRow = useRefCallback((record: RT, index: number) => {
-		const $ret = rest.onRow?.(record, index);
-		const $extend = type === "row" && { form: formProps, record, handleEdit };
-		return { ...$ret, ...$extend };
-	});
-	/* ---------------------------------属性扩展 end ---------------------------------------- */
-
 	/* ----------------------------------暴露的方法 end--------------------------------------- */
-	const components = useMemo(() => {
-		if (type === "row") return { body: { row: EditableRow, cell: EditableCell } };
-	}, [type]);
+
 	return (
 		<div className={styles.editable_table_wrap}>
-			<Table<RT>
-				{...rest}
-				columns={tableCol}
-				components={components}
-				onRow={handleOnRow as any}
-				dataSource={dataSource}
-			/>
+			<Table<RT> {...rest} columns={tableCol} dataSource={dataSource} />
 
 			{/* 新增form */}
 			<ColumnForm<RT>
@@ -169,5 +153,5 @@ function EditableTable<RT extends object = any>(
 
 export default withDefaultProps(forwardRef(EditableTable), {
 	rowKey: "key",
-	type: "row",
+	type: "modal",
 }) as EditableTableType;

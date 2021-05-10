@@ -129,6 +129,7 @@ export default function List() {
 					editTitle='编辑数据'
 					onDataChange={(records) => {
 						setData(records);
+						return true;
 					}}
 				/>
 			</main>

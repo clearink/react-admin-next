@@ -15,11 +15,8 @@ import { DeleteOutlined, PlusOutlined, ReloadOutlined } from "@ant-design/icons"
 import classNames from "classnames";
 import { FilterForm } from "@/components/Pro/Form";
 import useRefCallback from "@/hooks/state/use-ref-callback";
-import { isFunction, isUndefined } from "@/utils/ValidateType";
-import useMountedRef from "@/hooks/state/use-mounted-ref";
-import useDeepEffect from "@/hooks/state/use-deep-effect";
+import { isUndefined } from "@/utils/ValidateType";
 import { GetValue } from "@/utils/Value";
-import { useDebounceCallback } from "@/hooks/state/use-debounce";
 import withDefaultProps from "@/hocs/withDefaultProps";
 import TitleTip from "../../TitleTip";
 import TableInfo from "./components/TableInfo";
@@ -29,7 +26,8 @@ import { ProTableProps, ProTableRef, ProTableType } from "./interface";
 import { getButtonLoading, getInitState } from "./utils";
 import styles from "./style.module.scss";
 import { SubmitterProps } from "../../Form/Submitter";
-import { FilterValue, SorterResult } from "antd/lib/table/interface";
+import useProTableAction from "./hooks/use-proTable-action";
+import useProTableRequest from "./hooks/use-proTable-request";
 /**
  * 组件内部维护的数据 外部不可控制
  * 必要时只能通过ref去控制
@@ -71,50 +69,19 @@ function ProTable<RecordType extends object = any>(
 
 	const initState = { pagination: $pagination, filters: $filters, sorter: $sorter };
 	const [state, dispatch] = useReducer(reducer, initState, getInitState);
-	// dataSource
+	// dataSource is controlled ?
 	const usePropData = !isUndefined($dataSource);
 	const [_dataSource, setDataSource] = useState(() => $dataSource);
 	const dataSource = usePropData ? $dataSource : _dataSource;
 
-	const requestLock = useRef(false);
-	const mountedRef = useMountedRef();
-	// 当正在执行请求时, 直接return      添加防抖 避免重复请求
-	const handleRequest = useDebounceCallback(50, async () => {
-		if (!isFunction(request) || requestLock.current || usePropData) return;
-		requestLock.current = true;
-		const formValue = form.getFieldsValue();
-		try {
-			setLoading({ delay: 50 });
-			// 请求参数
-			const params = {
-				...formValue,
-				...$params,
-				...GetValue(state.pagination, ["current", "pageSize"]),
-			};
-			const result = await request(params, state.filters, state.sorter);
-
-			if (result) {
-				const { dataSource, total } = result;
-				setDataSource(dataSource);
-				dispatch(actions.setTotal(total ?? dataSource.length));
-			}
-		} finally {
-			if (mountedRef.current) {
-				requestLock.current = false;
-				setLoading(false);
-			}
-		}
+	const handleRequest = useProTableRequest<RecordType>([state, dispatch], {
+		request,
+		usePropData,
+		form,
+		$params,
+		setLoading,
+		setDataSource,
 	});
-
-	// 外部 params 改变 应当回到第一页处理
-	useDeepEffect(() => {
-		dispatch(actions.setCurrent(1));
-		handleRequest();
-	}, [$params, handleRequest]);
-	// state 变化会导致 request 函数执行
-	useDeepEffect(() => {
-		handleRequest();
-	}, [handleRequest, state.pagination, state.filters, state.sorter]);
 
 	type TableChange = Required<ProTableProps<RecordType>>["onChange"];
 	const handleTableChange = useRefCallback<TableChange>(async (...args) => {
@@ -142,10 +109,7 @@ function ProTable<RecordType extends object = any>(
 				{ ...$pagination, ...state.pagination, current: 1 },
 				state.filters,
 				state.sorter,
-				{
-					currentDataSource: dataSource as RecordType[],
-					action: "paginate",
-				}
+				{ currentDataSource: dataSource as RecordType[], action: "paginate" }
 			);
 			dispatch(actions.setCurrent(1));
 		}
@@ -155,58 +119,14 @@ function ProTable<RecordType extends object = any>(
 		}
 	});
 
-	// 暴露出的ref事件
-	const handleSetPagination = useRefCallback((config: Record<"current" | "pageSize", number>) => {
-		dispatch(actions.setPagination(config));
-	});
-
-	const handleReload = useRefCallback((reset?: boolean) => {
-		if (reset) {
-			form.resetFields();
-			dispatch(actions.setCurrent(1));
-			// TODO: 如何 初始化 filters 与 sorters ?
-		}
-		handleRequest();
-	});
-	const handleClearSelected = useRefCallback(() => {
-		dispatch(actions.setKeys([]));
-	});
-	const handleSetFilters = useRefCallback((filters: Record<string, FilterValue | null>) => {
-		dispatch(actions.setFilters(filters));
-	});
-	const handleSetSorter = useRefCallback(
-		(sorter: SorterResult<RecordType> | SorterResult<RecordType>[]) => {
-			dispatch(actions.setSorter(sorter));
-		}
-	);
-	const handleSetDataSource = useRefCallback((data: RecordType[]) => {
-		if (!usePropData) {
-			setDataSource(data);
-		} else {
-			console.error("dataSource is controlled, this action is invalid");
-		}
-	});
 	// 暴露的方法
-	const tableAction = useMemo<ProTableRef<RecordType>>(
-		() => ({
-			state: { ...state, dataSource: dataSource as RecordType[] },
-			reload: handleReload,
-			clearSelected: handleClearSelected,
-			setPagination: handleSetPagination,
-			setFilters: handleSetFilters,
-			setSorter: handleSetSorter,
-			setDataSource: handleSetDataSource,
-		}),
-		[
-			state,
-			handleReload,
-			handleClearSelected,
-			handleSetPagination,
-			handleSetFilters,
-			handleSetSorter,
-			handleSetDataSource,
-		]
-	);
+	const tableAction = useProTableAction<RecordType>([state, dispatch], {
+		form,
+		handleRequest,
+		usePropData,
+		setDataSource,
+		dataSource,
+	});
 	useEffect(() => {
 		actionRef.current = tableAction;
 	}, [tableAction]);
@@ -241,7 +161,7 @@ function ProTable<RecordType extends object = any>(
 				count={state.keys.length}
 				total={state.total}
 				current={state.pagination.current}
-				onClear={handleClearSelected}
+				onClear={tableAction.clearSelected}
 			/>
 		);
 		if (renderTableInfo) return renderTableInfo(tableInfo, tableAction);
@@ -305,7 +225,7 @@ function ProTable<RecordType extends object = any>(
 		return defaultConfig as SubmitterProps;
 	}, [handleRequest, loading, search]);
 
-	// 如果 datasource 是外部受控 则不会 干预 current 与 pageSize
+	// 如果 dataSource 是外部受控 则不会 干预 current 与 pageSize
 	const pagination = useMemo(() => {
 		if (usePropData) return $pagination;
 		return { ...$pagination, ...state.pagination, total: state.total };

@@ -31,8 +31,11 @@ export default function useFormatColumn<T extends object = any>(
 				label: title,
 				name: dataIndex,
 				key: dataIndex ?? i,
-				...$props,
 				...(search.props as any),
+				field: {
+					...$props,
+					...(search.props as any).field,
+				},
 			};
 			// TODO: formCol 排序
 			formCol.push(cloneElement(search, props));
@@ -50,7 +53,7 @@ export default function useFormatColumn<T extends object = any>(
 			...rest,
 			title,
 			render: (value, record, index) => {
-				let dom = cloneElement(readElement, { text: value });
+				let dom = cloneElement(readElement, {...$props, text: value });
 				// 如果使用省略 默认包裹一层 tooltip
 				if (dom.props.ellipsis) {
 					dom = <Tooltip title={value}>{dom}</Tooltip>;

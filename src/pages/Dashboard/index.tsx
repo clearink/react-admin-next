@@ -1,10 +1,14 @@
 import { GetNurseLevel } from "@/http/api/user";
 import { ProFormSelect } from "@/components/Pro/FormItem";
-import { Button, Form, Input, Table } from "antd";
+import { Button } from "antd";
 import { ProForm } from "@/components/Pro/Form";
-import { mutate } from "swr";
+import { useState } from "react";
+import usePrevious from "@/hooks/state/use-previous"
 
 export default function DashBoard() {
+	const [a, b] = useState(0);
+	const prevA = usePrevious(a);
+	console.log("now prev", a, prevA);
 	return (
 		<div>
 			<ProForm onFinish={console.log}>
@@ -44,23 +48,15 @@ export default function DashBoard() {
 						},
 					}}
 				/>
-			</ProForm> 
+			</ProForm>
 			<Button
 				className='mt-5'
 				onClick={() => {
-					console.log(`mutate--- ${GetNurseLevel.key}`);
-					mutate(GetNurseLevel.key);
+					b((p) => p + 1);
 				}}
 			>
-				mutate
+				change
 			</Button>
-			<Table
-				columns={[
-					{
-						title: "123",
-					},
-				]}
-			/>
 		</div>
 	);
 }

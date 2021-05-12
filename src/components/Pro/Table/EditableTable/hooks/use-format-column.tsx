@@ -21,8 +21,11 @@ export default function useFormatColumn<RT extends object = any>(
 					label: title,
 					name: dataIndex,
 					key: dataIndex ?? i,
-					...$props,
 					...(edit.props as any),
+					field: {
+						...$props,
+						...(edit.props as any).field,
+					},
 				};
 				editCol.push(cloneElement(edit, props));
 			}
@@ -32,7 +35,7 @@ export default function useFormatColumn<RT extends object = any>(
 			const colItem: ColumnType<RT> = {
 				...rest,
 				render: (value, record, index) => {
-					const dom = cloneElement(readElement, { text: value });
+					const dom = cloneElement(readElement, { ...$props, text: value });
 					if (render) return render(dom, record, index, action.current!);
 					return dom;
 				},

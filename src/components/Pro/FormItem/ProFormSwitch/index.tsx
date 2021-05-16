@@ -9,4 +9,6 @@ function ProFormSwitch(props: ProFormSwitchProps, ref: Ref<HTMLElement>) {
 	if (render) return render(DOM, props);
 	return DOM;
 }
-export default withFormItem(forwardRef(ProFormSwitch), { defaultChecked: false });
+export default withFormItem(forwardRef(ProFormSwitch), {
+	defaultChecked: false,
+});

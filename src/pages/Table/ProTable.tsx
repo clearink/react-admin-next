@@ -46,7 +46,7 @@ const columns: ProColumnsType<any> = [
 		read: (
 			<FieldStatus
 				type='tag'
-				colorRange={["#2c3e50", "#f39c12"]}
+				color={["#2c3e50", "#f39c12"]}
 				params={GetNurseLevel.key}
 				request={async () => {
 					const { result } = await GetNurseLevel();
@@ -97,11 +97,6 @@ export default function ProTablePage() {
 					onCreate={() => {
 						console.log("create");
 					}}
-					// dataSource={Array.from({ length: 100 }, (_, i) => ({
-					// 	id: i,
-					// 	avatar: `1231--${i}`,
-					// 	name: `1231--${i}`,
-					// }))}
 					request={async (params) => {
 						const { current, ...rest } = params;
 						const { result } = await UserList({

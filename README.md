@@ -30,3 +30,5 @@ type ProComponentType = <T extends other >(
 		ref?:Ref<SomeRef>
 	}
 ```
+
+### 对于 valueEnum 的 color 字段 可能需要一个函数 传入 colorRange 然后去循环整个 valueEnum

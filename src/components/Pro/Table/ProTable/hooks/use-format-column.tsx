@@ -1,4 +1,5 @@
 import TitleTip from "@/components/Pro/TitleTip";
+import merge from "lodash/merge";
 import { isObject, isUndefined } from "@/utils/ValidateType";
 import { Tooltip } from "antd";
 import { ColumnsType, ColumnType } from "antd/lib/table";
@@ -27,16 +28,11 @@ export default function useFormatColumn<T extends object = any>(
 		})();
 		if (!hideInForm && isValidElement(search)) {
 			// TODO: 处理 ProGroupColumn
-			const props = {
-				label: title,
-				name: dataIndex,
-				key: dataIndex ?? i,
-				...(search.props as any),
-				field: {
-					...$props,
-					...(search.props as any).field,
-				},
-			};
+			const props = merge(
+				{ label: title, name: dataIndex, key: dataIndex ?? i },
+				{ field: $props },
+				search.props
+			);
 			// TODO: formCol 排序
 			formCol.push(cloneElement(search, props));
 		}
@@ -53,7 +49,7 @@ export default function useFormatColumn<T extends object = any>(
 			...rest,
 			title,
 			render: (value, record, index) => {
-				let dom = cloneElement(readElement, {...$props, text: value });
+				let dom = cloneElement(readElement, { ...$props, text: value });
 				// 如果使用省略 默认包裹一层 tooltip
 				if (dom.props.ellipsis) {
 					dom = <Tooltip title={value}>{dom}</Tooltip>;

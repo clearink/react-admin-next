@@ -15,7 +15,7 @@ export function getProFormItemStyle(width?: ProFormItemSize) {
 	if (isArray(width)) return [{ labelCol: width[0], wrapperCol: width[1] }, undefined] as const;
 	// 返回的是 style
 	if (isUndefined(width)) return [undefined, undefined] as const;
-	if (isNumber(width)) return [undefined, width];
+	if (isNumber(width)) return [undefined, width] as const;
 	const size = WIDTH_SIZE_ENUM[width] ?? WIDTH_SIZE_ENUM["m"];
-	return [undefined, size];
+	return [undefined, size] as const;
 }

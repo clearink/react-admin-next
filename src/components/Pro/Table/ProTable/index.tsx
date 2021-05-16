@@ -70,7 +70,7 @@ function ProTable<RecordType extends object = any>(
 	const initState = { pagination: $pagination, filters: $filters, sorter: $sorter };
 	const [state, dispatch] = useReducer(reducer, initState, getInitState);
 	// dataSource is controlled ?
-	const usePropData = !isUndefined($dataSource);
+	const usePropData = props.hasOwnProperty("dataSource");
 	const [_dataSource, setDataSource] = useState(() => $dataSource);
 	const dataSource = usePropData ? $dataSource : _dataSource;
 	const handleRequest = useProTableRequest<RecordType>([state, dispatch], {
@@ -150,7 +150,7 @@ function ProTable<RecordType extends object = any>(
 
 	/**----------------------- UI相关 --------------------------- */
 
-	const usePropLoading = !isUndefined($loading);
+	const usePropLoading = props.hasOwnProperty("loading");
 	const loading = usePropLoading ? $loading : _loading;
 
 	// 以下 二者皆应在不同的业务去声明

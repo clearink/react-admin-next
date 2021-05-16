@@ -1,7 +1,8 @@
-import React, { CSSProperties } from "react";
+import React from "react";
 import { Form } from "antd";
 import { WithFormItemProps } from "../interface";
 import { getProFormItemStyle, getRequiredRule } from "../utils";
+import merge from "lodash/merge";
 
 // P 是例如 ProFormInputProps之类的类型
 export default function withFormItem<P>(Field: React.ComponentType<P>, defaultProps?: Partial<P>) {
@@ -19,13 +20,13 @@ export default function withFormItem<P>(Field: React.ComponentType<P>, defaultPr
 		}
 
 		/** 解决 Field 报错的问题 */
-		const fieldStyle: CSSProperties = {
-			...(defaultProps as any)?.style,
-			...(field as any)?.style,
-		};
+
+		const formItemProps = merge(itemProps, { style: { width: itemWidth } }, rest);
+		const fieldProps = merge(defaultProps, field);
+
 		return (
-			<Form.Item {...itemProps} {...rest} style={{ width: itemWidth, ...rest.style }}>
-				<Field {...defaultProps} {...field!} style={fieldStyle} />
+			<Form.Item {...formItemProps}>
+				<Field {...fieldProps} />
 			</Form.Item>
 		);
 	};

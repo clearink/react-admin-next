@@ -2,6 +2,7 @@ import { cloneElement, isValidElement, RefObject, useMemo } from "react";
 import { ColumnType } from "antd/lib/table";
 import { EditableColumnsType, EditableColumnType, EditableTableRef } from "../interface";
 import TableText from "../../components/TableText";
+import merge from "lodash/merge";
 
 // 转换 columns 分离出 editCol 与 tableCol
 export default function useFormatColumn<RT extends object = any>(
@@ -17,16 +18,11 @@ export default function useFormatColumn<RT extends object = any>(
 			const { props: $props, read, render, edit, hideInForm, hideInTable, ...rest } = item;
 			const { dataIndex, title } = item;
 			if (!hideInForm && isValidElement(edit)) {
-				const props = {
-					label: title,
-					name: dataIndex,
-					key: dataIndex ?? i,
-					...(edit.props as any),
-					field: {
-						...$props,
-						...(edit.props as any).field,
-					},
-				};
+				const props = merge(
+					{ label: title, name: dataIndex, key: dataIndex ?? i },
+					{ field: $props },
+					edit.props
+				);
 				editCol.push(cloneElement(edit, props));
 			}
 			if (hideInTable) continue;

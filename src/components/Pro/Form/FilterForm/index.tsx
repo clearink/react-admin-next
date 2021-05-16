@@ -36,7 +36,7 @@ function FilterForm<Values = any>(props: FilterFormProps<Values>) {
 	const span = useBreakpoint(colSpan) || FULL_SCREEN_SPAN;
 
 	// 为了与外部同步
-	const useProp = !isUndefined($collapsed);
+	const useProp = props.hasOwnProperty("collapsed");
 	const collapsed = useProp ? $collapsed : __collapsed;
 
 	const handleCollapsed = useRefCallback(() => {

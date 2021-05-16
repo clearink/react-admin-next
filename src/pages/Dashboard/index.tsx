@@ -1,31 +1,14 @@
-import { GetNurseLevel } from "@/http/api/user";
-import { ProFormSelect } from "@/components/Pro/FormItem";
-import { Button } from "antd";
+import { ProFormDatePicker, ProFormSelect } from "@/components/Pro/FormItem";
 import { ProForm } from "@/components/Pro/Form";
-import { useState } from "react";
-import usePrevious from "@/hooks/state/use-previous"
-
+import React from "react";
 export default function DashBoard() {
-	const [a, b] = useState(0);
-	const prevA = usePrevious(a);
-	console.log("now prev", a, prevA);
 	return (
 		<div>
 			<ProForm onFinish={console.log}>
+				<ProFormDatePicker label='123' />
 				<ProFormSelect
-					name='sex'
-					label='性别'
-					field={{
-						valueEnum: [
-							{ label: "男", value: "male" },
-							{ label: "女", value: "female" },
-						],
-					}}
-				/>
-				<ProFormSelect
-					name='status'
-					width='m'
-					label='状态'
+					name='as12'
+					label=''
 					field={{
 						valueEnum: [
 							{ label: "正常", value: true },
@@ -33,30 +16,7 @@ export default function DashBoard() {
 						],
 					}}
 				/>
-				<ProFormSelect
-					name='level'
-					label='职务'
-					field={{
-						params: GetNurseLevel.key,
-						request: async () => {
-							const { result } = await GetNurseLevel();
-							const ret = (result as any[]).map((item: any) => ({
-								label: item.text,
-								value: item.value,
-							}));
-							return ret;
-						},
-					}}
-				/>
 			</ProForm>
-			<Button
-				className='mt-5'
-				onClick={() => {
-					b((p) => p + 1);
-				}}
-			>
-				change
-			</Button>
 		</div>
 	);
 }

@@ -8,6 +8,7 @@ function fillStrColor(str: string) {
 	}, []);
 }
 
+// 颜色渐变
 export function gradientColor(colorRange: string[], maxLevel = 2) {
 	const reg = /^#([\da-fA-F]{3}|[\da-fA-F]{6})$/;
 	const len = colorRange.length;

@@ -34,9 +34,8 @@ export function valueRange(value: number, _min: number, _max: number) {
 	const max = Math.max(_min, _max);
 	return Math.min(Math.max(value, min), max);
 }
-
 // 对象重命名
-// TODO: Record<K, string> 使用  infer 
+// TODO: Record<K, string> 使用  infer
 export function RenameValue<T, K extends keyof T>(obj: T, rename: Record<K, string>) {
 	for (let [key, value] of Object.entries(obj)) {
 		const newKey = rename[key];
@@ -44,5 +43,5 @@ export function RenameValue<T, K extends keyof T>(obj: T, rename: Record<K, stri
 		obj[newKey] = value;
 		delete obj[key];
 	}
-	return obj;
+	return obj as Record<string, any>;
 }

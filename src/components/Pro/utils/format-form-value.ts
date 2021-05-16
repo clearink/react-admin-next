@@ -13,14 +13,3 @@ export function formatFormValue(values: any, timeFormat: string = "YYYY-MM-DD"):
 	}
 	return result;
 }
-
-// 合并值时去除 value = undefined 的情况
-export function mergeValue<V, T>(obj1: V, obj2: T, noUndefined = false): V & T {
-	if (!noUndefined) return { ...obj1, ...obj2 };
-	const ret = { ...obj1, ...obj2 };
-	const keys = Object.keys(ret);
-	for (let k of keys) {
-		ret[k] = obj2[k] ?? obj1[k];
-	}
-	return ret;
-}

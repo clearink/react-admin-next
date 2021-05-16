@@ -12,7 +12,7 @@ type VariableType =
 	| "BigInt"
 	| "AsyncFunction"
 	| "Map"
-const validateType = (obj: any, type: VariableType) =>
+export const validateType = (obj: any, type: VariableType) =>
 	Object.prototype.toString.call(obj) === `[object ${type}]`
 
 export const isObject = (obj: any): obj is object => validateType(obj, "Object")

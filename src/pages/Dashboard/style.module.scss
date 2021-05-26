@@ -1,0 +1,42 @@
+.overflow_wrap {
+	$height: 1.5em;
+	@mixin ellipsis {
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	@keyframes move {
+		to {
+			transform: translateX(-50%);
+		}
+	}
+
+	line-height: 1.5;
+	height: $height;
+	overflow: hidden;
+
+	&__text {
+		display: block;
+	}
+	&__title {
+		position: relative;
+		top: $height * -2;
+		display: block;
+		@include ellipsis();
+	}
+
+	&.overflow__animate {
+		.overflow_wrap__title {
+			&::after {
+				content: attr(data-title);
+				display: inline-block;
+				padding: 0 5em;
+			}
+			&:hover {
+				display: inline-block;
+				animation: move 10s 0.3s linear infinite;
+			}
+		}
+	}
+}

@@ -1,0 +1,15 @@
+.collapse_wrap {
+	.collapse__header {
+		padding: 12px 16px;
+		cursor: pointer;
+		background-color: gray;
+	}
+	.collapse__content {
+		overflow: hidden;
+		box-sizing: border-box;
+		transition: max-height 0.3s ease-in-out;
+		.collapse__content_box {
+			padding: 16px;
+		}
+	}
+}

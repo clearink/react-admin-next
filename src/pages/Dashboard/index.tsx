@@ -1,27 +1,87 @@
-import { ProFormDatePicker, ProFormSelect } from "@/components/Pro/FormItem";
 import { ProForm } from "@/components/Pro/Form";
-import React from "react";
-import TextOverFlow from "./TextOverFlow";
+import { ProFormInput } from "@/components/Pro/FormItem";
+import { ProTable } from "@/components/Pro/Table";
+import { ProColumnsType } from "@/components/Pro/Table/ProTable/interface";
+import useModalAction from "@/hooks/action/use-modal-action";
+import { Button } from "antd";
+import { useState } from "react";
+import "@/components/Pro/utils/merge-value";
+interface Item {
+	id: string | number;
+	name: string;
+	age: string;
+	content: string;
+}
+
+function A(props: { a: number; c: string }) {
+	console.log("props", props);
+	return (
+		<ProForm<Item>
+			labelCol={{ span: 3 }}
+			onFinish={async (values) => {
+				console.log(values);
+				return false;
+			}}
+		>
+			<ProFormInput label='name' name='name' />
+			<ProFormInput label='age' name='age' />
+			<ProFormInput label='content' name='content' />
+		</ProForm>
+	);
+}
+
 export default function DashBoard() {
+	const [FormAddModal, handleOpen] = useModalAction(A);
+	const columns: ProColumnsType<Item> = [
+		{
+			title: { title: "123", tip: "11212" },
+			dataIndex: "name",
+			search: <ProFormInput label={false} />,
+			width: 200,
+		},
+		{
+			title: "age",
+			dataIndex: "age",
+			width: 200,
+		},
+		{
+			title: "content",
+			dataIndex: "content",
+		},
+		{
+			title: "action",
+			key: "action",
+			render: (dom, record, index, action) => {
+				return [
+					<Button
+						type='link'
+						size='small'
+						key='edit'
+						onClick={() => {
+							handleOpen({ c: record.content });
+						}}
+					>
+						edit
+					</Button>,
+					<Button type='link' size='small' key='delete'>
+						delete
+					</Button>,
+				];
+			},
+		},
+	];
+	const [data, setData] = useState<Item[]>(() =>
+		Array.from({ length: 30 }, (_, i) => ({
+			id: i,
+			name: `name-${i}`,
+			age: `age-${i}`,
+			content: Math.random().toString(16).slice(2),
+		}))
+	);
 	return (
 		<div>
-			<ProForm onFinish={console.log}>
-				<ProFormDatePicker label='123' />
-				<ProFormSelect
-					name='as12'
-					label=''
-					field={{
-						valueEnum: [
-							{ label: "正常", value: true },
-							{ label: "禁止", value: false },
-						],
-					}}
-				/>
-			</ProForm>
-			<div className='h-10'></div>
-			<TextOverFlow backgroundColor='#f0f2f5' animate>
-				ask等哈就是暗杀计划的奥斯卡哈萨克计划静安寺阿萨就啊是多久啊是速度加速度和是的海景房士大夫士大夫撒旦飞洒地方扣税的法国士大夫士大夫十大
-			</TextOverFlow>
+			<ProTable columns={columns} dataSource={data} />
+			<FormAddModal title='测试' />
 		</div>
 	);
 }

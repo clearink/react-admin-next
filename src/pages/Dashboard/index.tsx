@@ -3,7 +3,7 @@ import { ProFormInput } from "@/components/Pro/FormItem";
 import { ProTable } from "@/components/Pro/Table";
 import { ProColumnsType } from "@/components/Pro/Table/ProTable/interface";
 import useModalAction from "@/hooks/action/use-modal-action";
-import { Button } from "antd";
+import { Button, Modal } from "antd";
 import { useState } from "react";
 import "@/components/Pro/utils/merge-value";
 interface Item {
@@ -32,6 +32,7 @@ function A(props: { a: number; c: string }) {
 
 export default function DashBoard() {
 	const [FormAddModal, handleOpen] = useModalAction(A);
+	const [a, setA] = useState(0);
 	const columns: ProColumnsType<Item> = [
 		{
 			title: { title: "123", tip: "11212" },
@@ -82,6 +83,7 @@ export default function DashBoard() {
 		<div>
 			<ProTable columns={columns} dataSource={data} />
 			<FormAddModal title='测试' />
+			<button onClick={() => setA(a + 1)}>add</button>
 		</div>
 	);
 }

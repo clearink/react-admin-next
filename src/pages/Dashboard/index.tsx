@@ -65,7 +65,7 @@ interface Item {
 }
 
 function A(props: { a: number; c: string }) {
-	console.log("props", props);
+	console.log("A props", props);
 	return (
 		<ProForm<Item>
 			labelCol={{ span: 3 }}
@@ -134,7 +134,21 @@ export default function DashBoard() {
 			<ProTable columns={columns} dataSource={data} />
 			<FormAddModal
 				title='测试'
-				onOk={async () => {
+				field-props={{
+					a: 3,
+				}}
+				onOpen={async (field) => {
+					console.log("onOpen", field);
+					await sleep(1000);
+					return true;
+				}}
+				onCancel={async (field) => {
+					console.log("onCancel", field);
+					await sleep(1000);
+					return true;
+				}}
+				onOk={async (field) => {
+					console.log("onOk", field);
 					await sleep(1000);
 					return true;
 				}}
@@ -146,7 +160,6 @@ export default function DashBoard() {
 			>
 				add--{a}
 			</button>
-			<button onClick={() => setA(a + 1)}>add</button>
 		</div>
 	);
 }

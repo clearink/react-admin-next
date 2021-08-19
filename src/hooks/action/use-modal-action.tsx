@@ -1,6 +1,5 @@
 import { useCallback, memo, ComponentType } from "react";
 import { Modal, ModalProps } from "antd";
-import TitleTip from "@/components/Pro/TitleTip";
 import mergeValue from "@/components/Pro/utils/merge-value";
 import { isUndefined } from "@/utils/ValidateType";
 import { useState } from "react";
@@ -40,5 +39,5 @@ export default function useModalAction<P = {}>(
 			</Modal>
 		);
 	});
-	return [memo(WrapperModalComponent), handleOpenClick, handleCloseClick] as const;
+	return [WrapperModalComponent, handleOpenClick, handleCloseClick] as const;
 }

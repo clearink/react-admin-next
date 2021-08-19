@@ -52,7 +52,6 @@ import { ProForm } from "@/components/Pro/Form";
 import { ProFormInput } from "@/components/Pro/FormItem";
 import { ProTable } from "@/components/Pro/Table";
 import { ProColumnsType } from "@/components/Pro/Table/ProTable/interface";
-import useModalAction from "@/hooks/action/use-modal-form";
 import useModalForm from "@/hooks/action/use-modal-form";
 import { useState } from "react";
 import { Button } from "antd";
@@ -83,7 +82,7 @@ function A(props: { a: number; c: string }) {
 }
 export default function DashBoard() {
 	const [FormAddModal, handleOpen] = useModalForm(A);
-	const [a, setA] = useState(1);
+	const [a, setA] = useState(0);
 	const columns: ProColumnsType<Item> = [
 		{
 			title: { title: "123", tip: "11212" },
@@ -147,6 +146,7 @@ export default function DashBoard() {
 			>
 				add--{a}
 			</button>
+			<button onClick={() => setA(a + 1)}>add</button>
 		</div>
 	);
 }

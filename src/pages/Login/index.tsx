@@ -4,11 +4,11 @@ import { ProFormCaptcha, ProFormInput } from "@/components/Pro/FormItem";
 import { GetCaptcha, UserLogin } from "@/http/api/user";
 import LoginUtil from "@/utils/LoginUtil";
 import { cloneElement } from "react";
-import styles from "./style.module.scss";
+import "./style.module.scss";
 export default function Login(props: any) {
 	const handleSubmit = async (values: any) => {
 		console.log(values);
-		const {result} = await UserLogin({ ...values, type: "admin" });
+		const { result } = await UserLogin({ ...values, type: "admin" });
 		LoginUtil.setToken(result.token);
 	};
 	return (

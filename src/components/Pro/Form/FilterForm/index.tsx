@@ -10,7 +10,6 @@ import useBreakpoint from "./hooks/use-breakpoint";
 import { FULL_SCREEN_SPAN } from "./constant";
 import styles from "./style.module.scss";
 import withDefaultProps from "@/hocs/withDefaultProps";
-import { isUndefined } from "@/utils/ValidateType";
 
 /**
  *

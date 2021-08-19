@@ -1,14 +1,14 @@
 import React, { useRef, useState } from "react";
 import { REQUEST_TYPE_CONST } from "@/assets/constant/request-type";
 import PageHeaderWrap from "@/components/PageHeaderWrap";
-import { FieldStatus, FieldText } from "@/components/Pro/Field";
-import { ProFormInput, ProFormSelect, ProFormSwitch } from "@/components/Pro/FormItem";
+import { FieldText } from "@/components/Pro/Field";
+import { ProFormInput, ProFormSelect } from "@/components/Pro/FormItem";
 import { EditableTable } from "@/components/Pro/Table";
 import {
 	EditableColumnsType,
 	EditableTableRef,
 } from "@/components/Pro/Table/EditableTable/interface";
-import { Button, Popconfirm, Switch } from "antd";
+import { Button, Popconfirm } from "antd";
 import CodePreview from "@/components/Company/CodePreview";
 
 interface ApiItem {

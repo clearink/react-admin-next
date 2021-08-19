@@ -4,6 +4,9 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.5.0",
+    "@formily/antd": "^2.0.0-rc.1",
+    "@formily/core": "^2.0.0-rc.1",
+    "@formily/react": "^2.0.0-rc.1",
     "@reduxjs/toolkit": "^1.5.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
@@ -26,7 +29,6 @@
     "react-redux": "^7.2.2",
     "react-router-dom": "^6.0.0-beta.0",
     "react-scripts": "4.0.3",
-    "rxjs": "^6.6.7",
     "sass": "^1.32.8",
     "swr": "^0.4.2",
     "typescript": "^4.1.2",

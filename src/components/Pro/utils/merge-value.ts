@@ -1,5 +1,5 @@
 import { isNullUndefined, isPlainObject } from "@/utils/ValidateType";
-import merge from "lodash/merge";
+// import merge from "lodash/merge";
 // 模仿 lodash 的 merge 去除 value = undefined
 export default function mergeValue<R = any>(target: any, ...sourceList: any[]): R {
 	if (isNullUndefined(target)) target = sourceList[0];

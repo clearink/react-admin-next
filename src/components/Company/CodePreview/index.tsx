@@ -4,7 +4,6 @@ import "codemirror/mode/xml/xml";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/mode/clike/clike";
 import "./style.scss";
-import { CodePreviewProps } from "./interface";
 
 // 代码预览
 export default function CodePreview(props: any) {

@@ -1,5 +1,5 @@
-import React, { ComponentType, Fragment, lazy, useMemo } from "react";
-import { PageBaseProps, RouteItemConfig } from "@/@types/route";
+import React, { lazy, useMemo } from "react";
+import { RouteItemConfig } from "@/@types/route";
 import withLazyLoad from "@/hocs/withLazyLoad";
 import { isArray } from "@/utils/ValidateType";
 import { Route, Navigate } from "react-router-dom";

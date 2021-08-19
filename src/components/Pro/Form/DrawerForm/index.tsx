@@ -2,7 +2,6 @@ import React, {
 	cloneElement,
 	forwardRef,
 	isValidElement,
-	ReactElement,
 	Ref,
 	useImperativeHandle,
 	useMemo,

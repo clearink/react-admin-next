@@ -4,9 +4,8 @@ import { ModalFormRef } from "@/components/Pro/Form/ModalForm/interface";
 import { ProFormInput } from "@/components/Pro/FormItem";
 import { ProTable } from "@/components/Pro/Table";
 import { ProColumnsType } from "@/components/Pro/Table/ProTable/interface";
-import { Button, Space } from "antd";
+import { Button } from "antd";
 import { useRef, useState } from "react";
-import { async } from "rxjs";
 
 interface Item {
 	id: string | number;
@@ -55,7 +54,7 @@ export default function BaseTable() {
 			},
 		},
 	];
-	const [data, setData] = useState<Item[]>(() =>
+	const [data] = useState<Item[]>(() =>
 		Array.from({ length: 30 }, (_, i) => ({
 			id: i,
 			name: `name-${i}`,

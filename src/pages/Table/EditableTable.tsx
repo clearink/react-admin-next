@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import PageHeaderWrap from "@/components/PageHeaderWrap";
-import { Button, Descriptions, Popconfirm, Select, Space } from "antd";
+import { Button, Descriptions, Popconfirm, Select } from "antd";
 
 import EditableTable from "@/components/Pro/Table/EditableTable";
 import {

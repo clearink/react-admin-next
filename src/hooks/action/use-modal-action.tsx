@@ -12,7 +12,7 @@ export default function useModalAction<P = {}>(
 	WrappedComponent: ComponentType<P>,
 	$config?: UseModalActionProps
 ) {
-	const { resetOnClose } = mergeValue<UseModalActionProps>({ resetOnClose: true, ...$config });
+	const { resetOnClose } = mergeValue<UseModalActionProps>({ resetOnClose: true }, $config);
 
 	const [visible, setVisible] = useState(false);
 	const [props, setProps] = useState<Partial<P>>();
@@ -27,15 +27,16 @@ export default function useModalAction<P = {}>(
 		setVisible(false);
 	}, [resetOnClose]);
 
-	type WrapperProps = ModalProps & { field?: Partial<P> };
+	type WrapperProps = ModalProps & { "field-props"?: Partial<P> };
+
 	const WrapperModalComponent = useRefCallback((injectProps: WrapperProps) => {
-		const { field, title, ...rest } = injectProps;
+		const { "field-props": field, ...rest } = injectProps;
 		const handleCancel = (e: React.MouseEvent<HTMLElement>) => {
 			handleCloseClick();
 			rest.onCancel?.(e);
 		};
 		return (
-			<Modal {...rest} title={<TitleTip title={title} />} visible={visible} onCancel={handleCancel}>
+			<Modal {...rest} visible={visible} onCancel={handleCancel}>
 				<WrappedComponent {...(field as P)} {...props} />
 			</Modal>
 		);

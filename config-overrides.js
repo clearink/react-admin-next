@@ -18,6 +18,11 @@ module.exports = override(
     libraryDirectory: "es",
     style: "css",
   }),
+  fixBabelImports("@formily/antd", {
+    libraryName: "@formily/antd",
+    libraryDirectory: "esm",
+    style: true,
+  }),
   setWebpackOptimizationSplitChunks({
     cacheGroups: {
       commons: {

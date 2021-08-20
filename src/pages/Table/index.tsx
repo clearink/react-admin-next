@@ -6,7 +6,6 @@ import { ProTable } from "@/components/Pro/Table";
 import { ProColumnsType } from "@/components/Pro/Table/ProTable/interface";
 import { Button, Space } from "antd";
 import { useRef, useState } from "react";
-import { async } from "rxjs";
 
 interface Item {
 	id: string | number;

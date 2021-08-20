@@ -29,7 +29,7 @@ function ProForm<Values = any>(props: ProFormProps<Values>) {
 				{submitConfig !== false && (
 					<>
 						<Submitter {...submitConfig} />
-						<button key='submit-btn' type='submit' hidden></button>,
+						<button key='submit-btn' type='submit' hidden></button>
 					</>
 				)}
 			</Form>

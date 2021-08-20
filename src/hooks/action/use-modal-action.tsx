@@ -39,5 +39,5 @@ export default function useModalAction<P = {}>(
 			</Modal>
 		);
 	});
-	return [memo(WrapperModalComponent), handleOpenClick, handleCloseClick] as const;
+	return [WrapperModalComponent, handleOpenClick, handleCloseClick] as const;
 }

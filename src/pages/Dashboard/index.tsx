@@ -2,8 +2,8 @@ import { ProForm } from "@/components/Pro/Form";
 import { ProFormInput } from "@/components/Pro/FormItem";
 import { ProTable } from "@/components/Pro/Table";
 import { ProColumnsType } from "@/components/Pro/Table/ProTable/interface";
-import useModalAction from "@/hooks/action/use-modal-action";
-import { Button, Modal } from "antd";
+import useModalForm from "@/hooks/action/use-modal-form";
+import { Button } from "antd";
 import { useState } from "react";
 import "@/components/Pro/utils/merge-value";
 interface Item {
@@ -31,7 +31,7 @@ function A(props: { a: number; c: string }) {
 }
 
 export default function DashBoard() {
-	const [FormAddModal, handleOpen] = useModalAction(A);
+	const [FormAddModal, handleOpen] = useModalForm(A);
 	const [a, setA] = useState(0);
 	const columns: ProColumnsType<Item> = [
 		{

@@ -6,7 +6,7 @@ import { WithFormItemProps } from "../interface";
 export interface ProFormSelectProps<VT>
 	extends ProComponentRequest,
 		Omit<SelectProps<VT>, "options"> {
-	render?: ProComponentRender<ProFormSelectProps<VT>>;
+	render?: ProComponentRender<ProFormSelectProps<ProSelectValue>>;
 	ref?: Ref<RefSelectProps>;
 }
 
@@ -18,7 +18,7 @@ export interface ProLabeledValue {
 	color?: string;
 	key?: string;
 }
-
+// export declare type SelectValue = RawValue | RawValue[] | LabeledValue | LabeledValue[] | undefined;
 export declare type ProSelectValue =
 	| ProRawValue
 	| ProRawValue[]

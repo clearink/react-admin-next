@@ -1,5 +1,5 @@
 // import merge from "lodash/merge";
-import { isNullUndefined, isObject, isPlainObject } from "@/utils/ValidateType";
+import { isNullUndefined, isPlainObject } from "@/utils/ValidateType";
 import merge from "lodash/merge";
 // 模仿 lodash 的 merge 去除 value = undefined
 export default function mergeValue<R = any>(target: any, ...sourceList: any[]): R {
@@ -11,10 +11,9 @@ export default function mergeValue<R = any>(target: any, ...sourceList: any[]): 
 		for (let [key, value] of Object.entries(source)) {
 			const validate = Object.prototype.toString;
 			// 如果 类型不同 直接覆盖 // 这里需要处理
-			if (validate.call(target[key]) !== validate.call(value)) {
+			if (value !== undefined && validate.call(target[key]) !== validate.call(value)) {
 				target[key] = value;
-			} else if (isObject(value)) {
-				console.log("key", key, target[key], value);
+			} else if (isPlainObject(value)) {
 				// 是对象或者数组
 				target[key] = mergeValue(target[key], value);
 			} else if (target[key] !== value) {

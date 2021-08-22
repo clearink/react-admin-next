@@ -1,17 +1,19 @@
 import { Dispatch, SetStateAction, useState, ComponentType, useEffect, useMemo } from "react";
 import { createPortal } from "react-dom";
-import { ButtonProps, Form, Modal } from "antd";
+import { Button, ButtonProps, Drawer, Form } from "antd";
 import TitleTip from "@/components/Pro/TitleTip";
 import useRefCallback from "@/hooks/state/use-ref-callback";
 import merge from "lodash/merge";
 import { isBoolean, isObject } from "@/utils/ValidateType";
 import { formatFormValue } from "@/components/Pro/utils/format-form-value";
-import { UseModalActionProps, WrapperModalFormProps } from "./interface";
-import useDeepMemo from "../state/use-deep-memo";
+import useDeepMemo from "@/hooks/state/use-deep-memo";
+import styles from "./style.module.scss";
+import { UseDrawerActionProps, WrapperDrawerFormProps } from "./interface";
+import withDefaultProps from "@/hocs/withDefaultProps";
 
-export function CreateModalForm<P = {}, V = any>(
+export function CreateDrawerForm<P = {}, V = any>(
 	WrappedComponent: ComponentType<P>,
-	$config?: UseModalActionProps
+	$config?: UseDrawerActionProps
 ) {
 	// 基础配置
 	const {
@@ -23,8 +25,8 @@ export function CreateModalForm<P = {}, V = any>(
 	// 回调 or 数值
 	let innerSetVisible: null | Dispatch<SetStateAction<boolean>> = null;
 	let innerSetWrappedProps: null | Dispatch<SetStateAction<Partial<P> | undefined>> = null;
-	let innerOnOpen: null | WrapperModalFormProps["onOpen"] = null;
-	let innerField: WrapperModalFormProps["fieldProps"] = undefined;
+	let innerOnOpen: null | WrapperDrawerFormProps["onOpen"] = null;
+	let innerField: WrapperDrawerFormProps["fieldProps"] = undefined;
 
 	// 回调锁
 	let handleLock = false;
@@ -52,7 +54,7 @@ export function CreateModalForm<P = {}, V = any>(
 		innerSetVisible?.(false);
 	};
 
-	const WrapperModalComponent = (injectProps: WrapperModalFormProps<P, V>) => {
+	const WrapperDrawerComponent = (injectProps: WrapperDrawerFormProps<P, V>) => {
 		const { fieldProps: field, title, formProps, onOpen, onOk, ...rest } = injectProps;
 
 		// 外部传入的 form
@@ -101,11 +103,17 @@ export function CreateModalForm<P = {}, V = any>(
 			shouldClose === true && handleCloseClick();
 		});
 
-		// 缓存值
-		const okButtonProps = useMemo(
-			() => merge(rest.okButtonProps, { loading }),
-			[rest.okButtonProps, loading]
-		);
+		// 渲染 footer
+		const renderFooter = useMemo(() => {
+			return (
+				<div className={styles.drawer_action__footer}>
+					<Button onClick={handleCancel}>取消</Button>
+					<Button type='primary' onClick={handleOk} loading={loading}>
+						确定
+					</Button>
+				</div>
+			);
+		}, [handleCancel, handleOk, loading]);
 
 		// 缓存组件
 		const WrappedMemorized = useMemo(
@@ -114,18 +122,17 @@ export function CreateModalForm<P = {}, V = any>(
 		);
 
 		const DOM = (
-			<Form name='modal-form' {...formProps} form={form} onFinish={handleOk}>
-				<Modal
+			<Form name='drawer-form' {...formProps} form={form} onFinish={handleOk}>
+				<Drawer
 					{...rest}
 					title={<TitleTip title={title} />}
 					visible={visible}
 					getContainer={false}
-					onOk={handleOk}
-					okButtonProps={okButtonProps}
-					onCancel={handleCancel}
+					footer={renderFooter}
+					onClose={handleCancel}
 				>
 					{WrappedMemorized}
-				</Modal>
+				</Drawer>
 				<button key='submit-btn' type='submit' hidden></button>
 			</Form>
 		);
@@ -133,12 +140,16 @@ export function CreateModalForm<P = {}, V = any>(
 		return createPortal(DOM, document.querySelector("body")!);
 	};
 
-	return [WrapperModalComponent, handleOpenClick, handleCloseClick] as const;
+	return [
+		withDefaultProps(WrapperDrawerComponent, { width: 720 }),
+		handleOpenClick,
+		handleCloseClick,
+	] as const;
 }
 
-export default function useModalForm<P = {}, V = any>(
+export default function useDrawerForm<P = {}, V = any>(
 	WrappedComponent: ComponentType<P>,
-	$config?: UseModalActionProps
+	$config?: UseDrawerActionProps
 ) {
-	return useDeepMemo(() => CreateModalForm<P, V>(WrappedComponent, $config), [$config]);
+	return useDeepMemo(() => CreateDrawerForm<P, V>(WrappedComponent, $config), [$config]);
 }

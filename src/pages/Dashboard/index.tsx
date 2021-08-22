@@ -1,60 +1,14 @@
-// export default function DashBoard() {
-// 	console.log("render");
-// 	const form = useMemo(() => createForm(), []);
-
-// 	return (
-// 		<div>
-// 			<FormProvider form={form}>
-// 				<FormLayout layout='vertical'>
-// 					<Field
-// 						name='input'
-// 						title='输入'
-// 						required
-// 						initialValue='hello world'
-// 						decorator={[FormItem]}
-// 						component={[Input]}
-// 					/>
-// 				</FormLayout>
-// 				<FormConsumer>{() => <span>{JSON.stringify(form.values)}</span>}</FormConsumer>
-// 				<FormButtonGroup>
-// 					<Submit onSubmit={console.log}>提交</Submit>
-// 				</FormButtonGroup>
-// 			</FormProvider>
-// 		</div>
-// 	);
-// }
-
-// const form = createForm({
-// 	validateFirst: true,
-// });
-
-// export default function DashBoard() {
-// 	return (
-// 		<div>
-// 			<Form form={form} layout='vertical' onAutoSubmit={console.log}>
-// 				<Field
-// 					name='phone'
-// 					title='手机号'
-// 					required
-// 					validator='phone'
-// 					decorator={[FormItem]}
-// 					component={[Input, { prefix: <PhoneOutlined /> }]}
-// 				/>
-// 				<Submit block size='large'>
-// 					登录
-// 				</Submit>
-// 			</Form>
-// 		</div>
-// 	);
-// }
-
-import { ProForm } from "@/components/Pro/Form";
+import { useState } from "react";
+import { Button, Drawer, message } from "antd";
 import { ProFormInput } from "@/components/Pro/FormItem";
 import { ProTable } from "@/components/Pro/Table";
 import { ProColumnsType } from "@/components/Pro/Table/ProTable/interface";
+import useModalAction from "@/hooks/action/use-modal-action";
+import useDrawerAction from "@/hooks/action/use-drawer-action";
+
+import { FieldText } from "@/components/Pro/Field";
 import useModalForm from "@/hooks/action/use-modal-form";
-import { useState } from "react";
-import { Button } from "antd";
+import useDrawerForm from "@/hooks/action/use-drawer-form";
 import { sleep } from "@/utils/Test";
 // import "@/components/Pro/utils/merge-value";
 interface Item {
@@ -67,22 +21,25 @@ interface Item {
 function A(props: { a: number; c: string }) {
 	console.log("A props", props);
 	return (
-		<ProForm<Item>
-			labelCol={{ span: 3 }}
-			onFinish={async (values) => {
-				console.log(values);
-				return false;
-			}}
-		>
-			<ProFormInput label='name' name='name' />
+		<>
+			<ProFormInput required label='name' name='name' />
 			<ProFormInput label='age' name='age' />
 			<ProFormInput label='content' name='content' />
-		</ProForm>
+		</>
+	);
+}
+function B(props: { a: number; c: string }) {
+	console.log("B props", props);
+	return (
+		<>
+			<FieldText text='121212' />
+		</>
 	);
 }
 export default function DashBoard() {
-	const [FormAddModal, handleOpen] = useModalForm(A);
-	const [a, setA] = useState(0);
+	// const [FormAddModal, handleOpen] = useModalAction(B);
+	const [FormAddModal, handleOpen] = useDrawerForm(A);
+
 	const columns: ProColumnsType<Item> = [
 		{
 			title: { title: "123", tip: "11212" },
@@ -107,12 +64,12 @@ export default function DashBoard() {
 					<Button
 						type='link'
 						size='small'
-						key='edit'
+						key='useModalForm'
 						onClick={() => {
 							handleOpen({ c: record.content });
 						}}
 					>
-						edit
+						open useModalForm
 					</Button>,
 					<Button type='link' size='small' key='delete'>
 						delete
@@ -132,34 +89,7 @@ export default function DashBoard() {
 	return (
 		<div>
 			<ProTable columns={columns} dataSource={data} />
-			<FormAddModal
-				title='测试'
-				field-props={{
-					a: 3,
-				}}
-				onOpen={async (field) => {
-					console.log("onOpen", field);
-					await sleep(1000);
-					return true;
-				}}
-				onCancel={async (field) => {
-					console.log("onCancel", field);
-					await sleep(1000);
-					return true;
-				}}
-				onOk={async (field) => {
-					console.log("onOk", field);
-					await sleep(1000);
-					return true;
-				}}
-			/>
-			<button
-				onClick={() => {
-					setA(a + 1);
-				}}
-			>
-				add--{a}
-			</button>
+			<FormAddModal title='测试 useDrawerForm' />
 		</div>
 	);
 }

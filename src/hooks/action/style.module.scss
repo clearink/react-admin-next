@@ -1,0 +1,9 @@
+.drawer_action__footer {
+	text-align: right;
+	:global {
+		.ant-btn + .ant-btn:not(.ant-dropdown-trigger) {
+			margin-bottom: 0;
+			margin-left: 8px;
+		}
+	}
+}

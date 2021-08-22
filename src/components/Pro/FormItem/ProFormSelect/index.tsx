@@ -5,7 +5,7 @@ import useRequest from "../../hooks/use-request";
 import withFormItem from "../hocs/withFormItem";
 import { ProFormSelectProps, ProFormSelectType } from "./interface";
 
-function $ProFormSelect<VT extends SelectValue = SelectValue>(
+function ProFormSelect<VT extends SelectValue = SelectValue>(
 	props: ProFormSelectProps<VT>,
 	ref: ProFormSelectProps<VT>["ref"]
 ) {
@@ -16,12 +16,11 @@ function $ProFormSelect<VT extends SelectValue = SelectValue>(
 	const valueEnum = useProp ? $valueEnum : _valueEnum;
 
 	const DOM = <Select ref={ref} loading={isValidating} {...rest} options={valueEnum as any[]} />;
-	if (render) return render(DOM, props);
+	if (render) return render(DOM, props as any);
 	return DOM;
 }
 
-const ProFormSelect = forwardRef($ProFormSelect) as any;
-export default withFormItem(ProFormSelect, {
+export default withFormItem(forwardRef(ProFormSelect) as any, {
 	allowClear: true,
 	placeholder: "请选择",
 }) as ProFormSelectType;

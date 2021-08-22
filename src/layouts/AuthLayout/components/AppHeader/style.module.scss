@@ -1,3 +1,4 @@
+@use "sass:math";
 @import "@/styles/index";
 $header_height: 48px;
 $collapsed_width: 48px;
@@ -16,7 +17,7 @@ $open_width: 200px;
 		$icon_height: 26px;
 		font-size: $icon_height;
 		cursor: pointer;
-		padding: ($header_height - $icon_height)/2;
+		padding: math.div($header_height - $icon_height, 2px);
 		color: rgba(black, 0.4);
 		transform: rotateY(0);
 		@include layout_fade {

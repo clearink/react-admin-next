@@ -1,14 +1,15 @@
 import { Dispatch, SetStateAction, useState, ComponentType, useEffect, useMemo } from "react";
-import { Modal } from "antd";
+import { Button, Drawer } from "antd";
 import merge from "lodash/merge";
 import TitleTip from "@/components/Pro/TitleTip";
 import useRefCallback from "@/hooks/state/use-ref-callback";
 import { isBoolean, isObject } from "@/utils/ValidateType";
-import { UseModalActionProps, WrapperModalActionProps } from "./interface";
-
-export function CreateModalAction<P = {}>(
+import withDefaultProps from "@/hocs/withDefaultProps";
+import { UseDrawerActionProps, WrapperDrawerActionProps } from "./interface";
+import styles from "./style.module.scss";
+export function CreateDrawerAction<P = {}>(
 	WrappedComponent: ComponentType<P>,
-	$config?: Pick<UseModalActionProps, "resetOnClose">
+	$config?: Pick<UseDrawerActionProps, "resetOnClose">
 ) {
 	// 基础配置
 	const { resetOnClose } = merge({ resetOnClose: true }, $config);
@@ -16,8 +17,8 @@ export function CreateModalAction<P = {}>(
 	// 回调 or 数值
 	let innerSetVisible: null | Dispatch<SetStateAction<boolean>> = null;
 	let innerSetWrappedProps: null | Dispatch<SetStateAction<Partial<P> | undefined>> = null;
-	let innerOnOpen: null | WrapperModalActionProps["onOpen"] = null;
-	let innerField: WrapperModalActionProps["fieldProps"] = undefined;
+	let innerOnOpen: null | WrapperDrawerActionProps["onOpen"] = null;
+	let innerField: WrapperDrawerActionProps["fieldProps"] = undefined;
 
 	// 回调锁
 	let handleLock = false;
@@ -45,7 +46,7 @@ export function CreateModalAction<P = {}>(
 		innerSetVisible?.(false);
 	};
 
-	const WrapperModalComponent = (injectProps: WrapperModalActionProps<P>) => {
+	const WrapperDrawerComponent = (injectProps: WrapperDrawerActionProps<P>) => {
 		const { fieldProps: field, title, onOpen, onOk, ...rest } = injectProps;
 
 		// 外部传入的 form
@@ -57,7 +58,7 @@ export function CreateModalAction<P = {}>(
 		innerField = field;
 		innerSetVisible = setVisible;
 		innerSetWrappedProps = setWrappedProps;
-		/** ====================== */
+		/** =================== */
 
 		// 点击确定时触发
 		const handleOk = useRefCallback(async () => {
@@ -78,34 +79,49 @@ export function CreateModalAction<P = {}>(
 			shouldClose === true && handleCloseClick();
 		});
 
+		// 渲染 footer
+		const renderFooter = useMemo(() => {
+			return (
+				<div className={styles.drawer_action__footer}>
+					<Button onClick={handleCancel}>取消</Button>
+					<Button type='primary' onClick={handleOk}>
+						确定
+					</Button>
+				</div>
+			);
+		}, [handleCancel, handleOk]);
 		// 缓存组件
 		const WrappedMemorized = useMemo(
 			() => <WrappedComponent {...(field as P)} {...wrappedProps} />,
 			[field, wrappedProps]
 		);
 		return (
-			<Modal
+			<Drawer
 				{...rest}
 				title={<TitleTip title={title} />}
 				visible={visible}
-				onOk={handleOk}
-				onCancel={handleCancel}
+				footer={renderFooter}
+				onClose={handleCancel}
 			>
 				{WrappedMemorized}
-			</Modal>
+			</Drawer>
 		);
 	};
 
-	return [WrapperModalComponent, handleOpenClick, handleCloseClick] as const;
+	return [
+		withDefaultProps(WrapperDrawerComponent, { width: 720 }),
+		handleOpenClick,
+		handleCloseClick,
+	] as const;
 }
 
-export default function useModalAction<P = {}>(
+export default function useDrawerAction<P = {}>(
 	WrappedComponent: ComponentType<P>,
-	$config?: Pick<UseModalActionProps, "resetOnClose">
+	$config?: Pick<UseDrawerActionProps, "resetOnClose">
 ) {
 	const { resetOnClose } = $config ?? {};
 	return useMemo(
-		() => CreateModalAction(WrappedComponent, { resetOnClose }),
+		() => CreateDrawerAction(WrappedComponent, { resetOnClose }),
 		[resetOnClose, WrappedComponent]
 	);
 }

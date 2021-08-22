@@ -1,17 +1,12 @@
-import { Button, ButtonProps, FormInstance, Space } from "antd";
-import { ProFormContainer } from "../ProForm/utils";
+import { Button, Space } from "antd";
 import useRefCallback from "@/hooks/state/use-ref-callback";
-import { ReactElement } from "react";
+import { ProFormContainer } from "./utils";
+import { SubmitterProps } from "./interface";
 
 /**
  *
  * 表单提交组件
  */
-export interface SubmitterProps {
-	onSubmit?: () => void;
-	onReset?: () => void;
-	render?: (dom: ReactElement<ButtonProps>[], form: FormInstance) => JSX.Element;
-}
 export default function Submitter(props: SubmitterProps) {
 	const { onReset, onSubmit, render } = props;
 	const { loading, form } = ProFormContainer.useContainer();
@@ -32,6 +27,6 @@ export default function Submitter(props: SubmitterProps) {
 			提交
 		</Button>,
 	];
-	if (render) return render(dom, form);
+	if (render) return <>{render(dom, form)}</>;
 	return <Space size={8}>{dom}</Space>;
 }

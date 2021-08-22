@@ -1,9 +1,10 @@
-import { FormProps, Form } from "antd";
-import { ReactElement } from "react";
-import { SubmitterProps } from "../Submitter";
+import { ReactElement, ReactNode } from "react";
+import { FormProps, Form, FormInstance, ButtonProps } from "antd";
 export interface ProFormProps<Values = any> extends FormProps<Values> {
 	children?: React.ReactNode;
-	submitConfig?: SubmitterProps | false;
+	onSubmit?: () => void;
+	onReset?: () => void;
+	renderSubmitter?: (dom: ReactElement<ButtonProps>[], form: FormInstance) => ReactNode;
 	/** 时间格式化字符串 */
 	timeFormat?: string;
 }
@@ -11,4 +12,11 @@ export interface ProFormProps<Values = any> extends FormProps<Values> {
 type InternalFormType = <V = any>(props: ProFormProps<V>) => ReactElement;
 export interface ProFormType extends InternalFormType {
 	Item: typeof Form.Item;
+}
+
+export interface SubmitterProps {
+	onSubmit?: () => void;
+	onReset?: () => void;
+	/** TODO: 优化下 props */
+	render?: (dom: ReactElement<ButtonProps>[], form: FormInstance, props?: any) => ReactNode;
 }

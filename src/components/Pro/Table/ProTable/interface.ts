@@ -18,7 +18,7 @@ export interface ProTableProps<RecordType extends object = any>
 	rowSelection?: false | TableProps<RecordType>["rowSelection"];
 
 	/** search form props */
-	search?: false | FilterFormProps<RecordType>;
+	searchProps?: false | FilterFormProps<RecordType>;
 
 	searchRef?: MutableRefObject<FormInstance | null | undefined>;
 

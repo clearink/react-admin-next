@@ -1,7 +1,8 @@
 import { isBoolean, isNullUndefined, isUndefined } from "@/utils/ValidateType";
 import { SpinProps } from "antd";
 import { FilterValue, SorterResult, TablePaginationConfig } from "antd/lib/table/interface";
-import { GetInitStateProps } from "./interface";
+import { createContext } from "react";
+import { GetInitStateProps, ProTableRef } from "./interface";
 
 // 获得 table 的 过滤字段
 export function getFilters(filters: Record<string, FilterValue | null | undefined>) {
@@ -45,6 +46,7 @@ export function getInitPagination(
 	};
 }
 
+// 初始总数
 export function getInitTotal(
 	pagination: TablePaginationConfig | false | undefined,
 	defaultValue: Record<"current" | "pageSize" | "total", number> = defaultPagination
@@ -57,10 +59,10 @@ export function getInitTotal(
 export function getInitState(props: GetInitStateProps) {
 	return {
 		keys: [] as React.Key[],
-		pagination: getInitPagination(props.pagination),
-		filters: getFilters(props.filters),
-		sorter: getSorter(props.sorter),
-		total: getInitTotal(props.pagination),
+		pagination: getInitPagination(props.pagination), // 分页
+		filters: getFilters(props.filters), // 过滤
+		sorter: getSorter(props.sorter), // 排序
+		total: getInitTotal(props.pagination), // 总数
 	};
 }
 
@@ -72,3 +74,6 @@ export function getButtonLoading(tableLoading?: boolean | SpinProps) {
 	}
 	return false;
 }
+
+// Context 数据共享
+export const ProTableContext = createContext<ProTableRef<any> | null>(null);

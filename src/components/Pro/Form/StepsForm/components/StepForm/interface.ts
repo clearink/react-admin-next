@@ -11,16 +11,15 @@ type TRenderSubmitter = (
 		handleNextStep: () => void;
 	}
 ) => JSX.Element;
-export interface StepFormProps<Values = any> extends Omit<ProFormProps<Values>, "submitConfig"> {
+export interface StepFormProps<Values = any> extends Omit<ProFormProps<Values>, "renderSubmitter"> {
 	name: string;
 	loading?: ButtonProps["loading"];
 	/** 不在 StepForm中起作用 */
 	stepProps?: StepProps;
-	renderSubmitter?: TRenderSubmitter | false;
+	renderSubmitter?: TRenderSubmitter;
 	isFirst?: boolean;
 	isLast?: boolean;
 }
-
 
 export type StepFormType = <V = any>(
 	props: StepFormProps<V>

@@ -69,22 +69,20 @@ function $ModalForm<Values = any>(props: ModalFormProps<Values>, ref: Ref<ModalF
 			form={form}
 			{...rest}
 			onFinish={handleFinish}
-			submitConfig={{
-				render: (dom) => (
-					<Modal
-						visible={visible}
-						title={<TitleTip title={title} />}
-						width={600}
-						{...modal}
-						getContainer={false}
-						onCancel={handleClose}
-						footer={renderFooter(dom)}
-						onOk={() => form.submit()}
-					>
-						{children}
-					</Modal>
-				),
-			}}
+			renderSubmitter={(dom) => (
+				<Modal
+					visible={visible}
+					title={<TitleTip title={title} />}
+					width={600}
+					{...modal}
+					getContainer={false}
+					onCancel={handleClose}
+					footer={renderFooter(dom)}
+					onOk={form.submit}
+				>
+					{children}
+				</Modal>
+			)}
 		/>
 	);
 	return (

@@ -22,10 +22,8 @@ function FilterForm<Values = any>(props: FilterFormProps<Values>) {
 		collapsed: $collapsed,
 		defaultCollapsed,
 		onCollapse,
-		ghost,
-		submitConfig: _submitConfig,
 		colSpan,
-		submitConfig,
+		renderSubmitter,
 		...rest
 	} = props;
 
@@ -43,52 +41,56 @@ function FilterForm<Values = any>(props: FilterFormProps<Values>) {
 		onCollapse?.(!collapsed);
 	});
 
-	const [children, otherSpan] = useMemo(() => {
-		const childCount = Children.count($children);
+	const childCount = Children.count($children);
+
+	const [maxSpan, otherSpan] = useMemo(() => {
 		const col = ~~(FULL_SCREEN_SPAN / span); // 多少列
 		let count = childCount;
 		// -1 是为了保留 submitter 的位置
 		if (collapsed) count = valueRange(count, 0, col - 1);
 		const otherSpan = (col - (count % col)) * span;
-		let max = Infinity; // 最多显示的数目
-		if (collapsed && span) max = Math.max(col - 1, 1);
-		const children = Children.map($children, (child, index) => {
-			const className = classNames(styles.filter_form__item, { [styles.hidden]: index >= max });
-			return (
-				<Col span={span} className={className}>
-					{child}
-				</Col>
-			);
-		});
-		return [children, otherSpan];
-	}, [$children, collapsed, span]);
+		let maxSpan = Infinity; // 最多显示的数目
+		if (collapsed && span) maxSpan = Math.max(col - 1, 1);
 
+		return [maxSpan, otherSpan];
+	}, [childCount, collapsed, span]);
+
+	const children = useMemo(
+		() =>
+			Children.map($children, (child, index) => {
+				const className = classNames(styles.filter_form__item, {
+					[styles.hidden]: index >= maxSpan,
+				});
+				return (
+					<Col span={span} className={className}>
+						{child}
+					</Col>
+				);
+			}),
+		[$children, maxSpan, span]
+	);
 	return (
 		<ProForm
 			{...rest}
 			className={classNames(rest.className, styles.filter_form)}
-			submitConfig={{
-				...submitConfig,
-				render: (dom, form) => {
-					let submitter: ReactNode = [dom[0], cloneElement(dom[1], { children: "查询" })];
-					if (submitConfig === false) submitter = null;
-					else if (submitConfig?.render) submitter = submitConfig.render(dom, form);
-					return (
-						<>
-							{children}
-							<Col span={otherSpan} className={styles.filter_form__submitter}>
-								{submitter}
-								{/* TODO: submitConfig 可以自定义以下内容 */}
-								<span className={styles.collapsed_trigger} onClick={handleCollapsed}>
-									{collapsed ? "展开" : "收起"}
-									<UpOutlined
-										className={classNames(styles.trigger_icon, { [styles.collapsed]: collapsed })}
-									/>
-								</span>
-							</Col>
-						</>
-					);
-				},
+			renderSubmitter={(dom, form) => {
+				let submitter: ReactNode = [dom[0], cloneElement(dom[1], { children: "查询" })];
+				if (renderSubmitter) submitter = renderSubmitter(dom, form);
+				return (
+					<>
+						{children}
+						<Col span={otherSpan} className={styles.filter_form__submitter}>
+							{submitter}
+							{/* TODO: 可以自定义以下内容 */}
+							<span className={styles.collapsed_trigger} onClick={handleCollapsed}>
+								{collapsed ? "展开" : "收起"}
+								<UpOutlined
+									className={classNames(styles.trigger_icon, { [styles.collapsed]: collapsed })}
+								/>
+							</span>
+						</Col>
+					</>
+				);
 			}}
 		/>
 	);

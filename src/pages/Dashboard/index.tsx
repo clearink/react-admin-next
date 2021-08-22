@@ -1,15 +1,9 @@
 import { useState } from "react";
-import { Button, Drawer, message } from "antd";
+import { Button } from "antd";
 import { ProFormInput } from "@/components/Pro/FormItem";
 import { ProTable } from "@/components/Pro/Table";
 import { ProColumnsType } from "@/components/Pro/Table/ProTable/interface";
-import useModalAction from "@/hooks/action/use-modal-action";
-import useDrawerAction from "@/hooks/action/use-drawer-action";
-
-import { FieldText } from "@/components/Pro/Field";
-import useModalForm from "@/hooks/action/use-modal-form";
 import useDrawerForm from "@/hooks/action/use-drawer-form";
-import { sleep } from "@/utils/Test";
 // import "@/components/Pro/utils/merge-value";
 interface Item {
 	id: string | number;
@@ -25,14 +19,6 @@ function A(props: { a: number; c: string }) {
 			<ProFormInput required label='name' name='name' />
 			<ProFormInput label='age' name='age' />
 			<ProFormInput label='content' name='content' />
-		</>
-	);
-}
-function B(props: { a: number; c: string }) {
-	console.log("B props", props);
-	return (
-		<>
-			<FieldText text='121212' />
 		</>
 	);
 }

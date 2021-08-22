@@ -17,6 +17,7 @@ interface UseProTableRequestProps<RT extends object = any> {
 	setDataSource: Dispatch<SetStateAction<readonly RT[] | undefined>>;
 }
 
+// proTable 数据请求 hooks
 export default function useProTableRequest<RT extends object = any>(
 	[state, dispatch]: [ReturnType<typeof getInitState>, Dispatch<any>],
 	props: UseProTableRequestProps<RT>

@@ -15,11 +15,9 @@ export default function Login(props: any) {
 		<ProForm
 			onFinish={handleSubmit}
 			className='w-1/2 flex flex-col'
-			submitConfig={{
-				render: (dom) => {
-					return <>{cloneElement(dom[1], { block: true, size: "large", children: "登录" })}</>;
-				},
-			}}
+			renderSubmitter={(dom) =>
+				cloneElement(dom[1], { block: true, size: "large", children: "登录" })
+			}
 		>
 			<ProFormInput
 				name='mobile'

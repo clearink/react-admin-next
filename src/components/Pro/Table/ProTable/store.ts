@@ -10,8 +10,7 @@ const initialState = {
 	filters: {},
 	sorter: {},
 	total: defaultPagination.total,
-	// 存放 选中列数据
-	keys: [],
+	keys: [], // 选中的 rowId
 } as ReturnType<typeof getInitState>;
 const slice = createSlice({
 	name: "pro-table",

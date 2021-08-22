@@ -69,21 +69,19 @@ function $DrawerForm<Values = any>(props: DrawerFormProps<Values>, ref: Ref<Draw
 			form={form}
 			{...rest}
 			onFinish={handleFinish}
-			submitConfig={{
-				render: (dom) => (
-					<Drawer
-						visible={visible}
-						title={<TitleTip title={title} />}
-						footer={renderFooter(dom)}
-						width={600}
-						{...drawer}
-						getContainer={false}
-						onClose={handleClose}
-					>
-						{children}
-					</Drawer>
-				),
-			}}
+			renderSubmitter={(dom) => (
+				<Drawer
+					visible={visible}
+					title={<TitleTip title={title} />}
+					footer={renderFooter(dom)}
+					width={600}
+					{...drawer}
+					getContainer={false}
+					onClose={handleClose}
+				>
+					{children}
+				</Drawer>
+			)}
 		/>
 	);
 	return (

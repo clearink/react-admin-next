@@ -74,7 +74,13 @@ export default function DashBoard() {
 	);
 	return (
 		<div>
-			<ProTable columns={columns} dataSource={data} />
+			<ProTable
+				columns={columns}
+				dataSource={data}
+				onCreate={() => {}}
+				onDelete={() => {}}
+				tableTitle={{ title: "123123", tip: "1212" }}
+			/>
 			<FormAddModal title='测试 useDrawerForm' />
 		</div>
 	);

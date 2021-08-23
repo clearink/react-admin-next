@@ -90,9 +90,6 @@ export default function ProTablePage() {
 				<ProTable
 					ref={tableRef}
 					tableTitle={{ title: "护工管理", tip: "护工人员管理" }}
-					pagination={{
-						defaultCurrent: 10,
-					}}
 					columns={columns}
 					onCreate={() => {
 						console.log("create");

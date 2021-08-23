@@ -39,8 +39,14 @@ export default function useProTableRequest<RT extends object = any>(
 			const params = { ...formValue, ...$params, ...state.pagination };
 			const result = await request(params, state.filters, state.sorter);
 
-			if (result) {
-				const { dataSource, total } = result;
+			if (!result) return;
+
+			const { dataSource, total } = result;
+
+			if (dataSource.length === 0 && state.pagination.current > 1) {
+				// 获取的是空的数组 且不是在第一页 将尝试获取上一页的数据
+				dispatch(actions.setCurrent(state.pagination.current - 1));
+			} else {
 				setDataSource(dataSource);
 				dispatch(actions.setTotal(total ?? dataSource.length));
 			}
@@ -53,8 +59,8 @@ export default function useProTableRequest<RT extends object = any>(
 	});
 
 	// state 与 params 变化会导致 request 函数执行
-  // 唯一不确定的是 params 改变和需不需要重置 current 
-  // 目前如果需要重置的话 可以使用 action 
+	// 唯一不确定的是 params 改变和需不需要重置 current
+	// 目前如果需要重置的话 可以使用 action
 	useDeepEffect(() => {
 		handleRequest();
 	}, [handleRequest, $params, state.pagination, state.filters, state.sorter]);

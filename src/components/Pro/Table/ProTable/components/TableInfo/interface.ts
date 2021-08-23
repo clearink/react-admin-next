@@ -1,12 +1,7 @@
-import { AlertProps } from "antd";
+import { ReactNode } from "react";
+import { ProTableRef } from "../../interface";
 
-export interface TableInfoProps extends Omit<AlertProps, "message"> {
-	/** 清空选中 */
-	onClear?: () => void;
-	/** 选中数目 */
-	count?: number;
-	/** 当前页 */
-	current?: number;
-	/** 总数量 */
-	total?: number;
+export interface TableInfoProps<RT extends object = any> {
+	render?: (dom: JSX.Element, actions: ProTableRef<RT>) => ReactNode;
+	className?: string;
 }

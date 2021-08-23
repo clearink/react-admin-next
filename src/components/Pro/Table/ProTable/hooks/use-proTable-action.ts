@@ -14,7 +14,7 @@ interface UseProTableActionProps<RecordType extends object = any> {
 	dataSource: readonly RecordType[] | undefined;
 }
 
-export default function useProTableAction<RecordType>(
+export default function useProTableAction<RecordType extends object = any>(
 	[state, dispatch]: [ReturnType<typeof getInitState>, Dispatch<any>],
 	props: UseProTableActionProps
 ) {

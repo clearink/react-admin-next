@@ -1,0 +1,19 @@
+@import "@/styles/index.scss";
+.title_toolbar {
+	display: flex;
+	align-items: center;
+	margin: 8px auto;
+	.title {
+		@include ellipsis();
+	}
+	.toolbar {
+		flex: auto;
+		display: flex;
+		align-items: center;
+		flex-direction: row-reverse;
+	}
+	.reload_icon {
+		cursor: pointer;
+		font-size: 16px;
+	}
+}

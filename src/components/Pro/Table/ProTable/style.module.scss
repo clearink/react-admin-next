@@ -11,26 +11,7 @@ $padding: 10px;
 		padding-right: $size - $padding;
 	}
 	.table_content {
-		padding: 0 $size;
-	}
-	.alert_wrap {
-		margin: 0 $size $padding;
-	}
-	.title_toolbar_wrap {
-		@extend .alert_wrap;
-		margin: $size-2 $size 0;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		flex-wrap: wrap;
-		.left,
-		.right {
-			margin-bottom: $size-2;
-		}
-	}
-	.reload_icon {
-		cursor: pointer;
-		font-size: 16px;
+		padding-top: $size-2 / 2;
 	}
 }
 .hidden {

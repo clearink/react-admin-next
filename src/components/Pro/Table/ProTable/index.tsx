@@ -1,5 +1,4 @@
 import React, {
-	cloneElement,
 	forwardRef,
 	Ref,
 	useEffect,
@@ -9,23 +8,23 @@ import React, {
 	useRef,
 	useState,
 } from "react";
-import { Space, Table, Form, Tooltip, Button } from "antd";
-import { DeleteOutlined, PlusOutlined, ReloadOutlined } from "@ant-design/icons";
+import { Table, Form } from "antd";
 import classNames from "classnames";
-import { FilterForm } from "@/components/Pro/Form";
 import useRefCallback from "@/hooks/state/use-ref-callback";
 import { GetValue } from "@/utils/Value";
 import withDefaultProps from "@/hocs/withDefaultProps";
-import TitleTip from "../../TitleTip";
+
 import TableInfo from "./components/TableInfo";
-import TableSearchForm from "./components/TableSearchForm";
+import TableSearch from "./components/TableSearch";
+import TableToolbar from "./components/TableToolbar";
 import useFormatColumn from "./hooks/use-format-column";
 import reducer, { actions } from "./store";
 import { ProTableProps, ProTableRef, ProTableType } from "./interface";
-import { getButtonLoading, getInitState, ProTableContext } from "./utils";
+import { getInitState, ProTableContext } from "./utils";
 import styles from "./style.module.scss";
 import useProTableAction from "./hooks/use-proTable-action";
 import useProTableRequest from "./hooks/use-proTable-request";
+
 /**
  * 组件内部维护的数据 外部不可控制
  * 必要时只能通过ref去控制
@@ -40,11 +39,12 @@ function ProTable<RecordType extends object = any>(
 ) {
 	const {
 		columns,
-		renderTableInfo,
+		renderFilterForm,
 		renderToolbar,
+		renderTableInfo,
 		tableTitle,
-		searchProps,
-		searchRef,
+		filterFormProps,
+		filterForm,
 		pagination: $pagination,
 		request,
 		loading: $loading,
@@ -57,8 +57,8 @@ function ProTable<RecordType extends object = any>(
 		...rest
 	} = props;
 
-	const [form] = Form.useForm(searchProps ? searchProps.form : undefined);
-	useImperativeHandle(searchRef, () => form, [form]); // 暴露出属性
+	const [form] = Form.useForm(filterFormProps ? filterFormProps?.form : undefined);
+	useImperativeHandle(filterForm, () => form, [form]); // 暴露出属性
 
 	const actionRef = useRef<ProTableRef<RecordType>>();
 	const [tableCol, formCol, $filters, $sorter] = useFormatColumn(columns, actionRef);
@@ -101,24 +101,6 @@ function ProTable<RecordType extends object = any>(
 		dispatch(actions.setSorter(_sorter)); // 设置排序
 	});
 
-	// 搜索事件
-	const handleFinish = useRefCallback(async (values: RecordType) => {
-		if (searchProps && searchProps.onFinish) {
-			await searchProps.onFinish(values);
-		}
-
-		// 如果本身在第一页 直接调用 handleRequest
-		// 否则的话需要 dispatch 去改变 pagination.current 然后由 useEffect 副作用自行调用
-		if (state.pagination.current === 1) handleRequest();
-		else {
-			// 受控时不应该重置 那么如何通知外部变化呢？
-			const pagination = { ...$pagination, ...state.pagination, current: 1 };
-			const extra = { currentDataSource: dataSource as RecordType[], action: "paginate" } as const;
-			$onChange?.(pagination, state.filters, state.sorter, extra);
-			dispatch(actions.setCurrent(1));
-		}
-	});
-
 	// 暴露的方法
 	const tableAction = useProTableAction<RecordType>([state, dispatch], {
 		form,
@@ -154,109 +136,37 @@ function ProTable<RecordType extends object = any>(
 	const usePropLoading = props.hasOwnProperty("loading");
 	const loading = usePropLoading ? $loading : _loading;
 
-	// 以下 二者皆应在不同的业务去声明
-	const tableInfo = useMemo(() => {
-		const tableInfo = (
-			<TableInfo
-				count={state.keys.length}
-				total={state.total}
-				current={state.pagination.current}
-				onClear={tableAction.clearSelected}
-			/>
-		);
-		if (renderTableInfo) return renderTableInfo(tableInfo, tableAction);
-		return tableInfo;
-	}, [renderTableInfo, state.keys.length, state.pagination, state.total, tableAction]);
-
-	const tableToolbar = useMemo(() => {
-		// 默认 只有一个刷新icon
-		const toolbar = [
-			<Tooltip title='刷新' key='reload-icon'>
-				<ReloadOutlined key='reload' className={styles.reload_icon} onClick={handleRequest} />
-			</Tooltip>,
-		];
-		if (onCreate)
-			toolbar.unshift(
-				<Button type='primary' icon={<PlusOutlined />} onClick={onCreate} key='add'>
-					新增
-				</Button>
-			);
-		if (onDelete)
-			toolbar.unshift(
-				<Button
-					type='primary'
-					danger
-					className={classNames({ [styles.hidden]: !state.keys.length })}
-					onClick={() => onDelete(state.keys)}
-					icon={<DeleteOutlined />}
-					key='delete'
-				>
-					删除
-				</Button>
-			);
-		if (renderToolbar) return renderToolbar(toolbar, tableAction);
-		return toolbar;
-	}, [handleRequest, onCreate, onDelete, renderToolbar, state.keys, tableAction]);
-
-	// 处理 submit config
-	// const searchSubmitConfig = useMemo(() => {
-	// 	if (searchProps && searchProps.submitConfig === false) return false;
-	// 	const defaultConfig: SubmitterProps = {
-	// 		...(searchProps && searchProps.submitConfig),
-	// 		onReset: () => {
-	// 			if (searchProps && searchProps.submitConfig && searchProps.submitConfig.onReset) {
-	// 				return searchProps.submitConfig.onReset();
-	// 			}
-	// 			handleRequest();
-	// 		},
-	// 		render: ($dom, form) => {
-	// 			// 处理 loading
-	// 			const btnLoading = getButtonLoading(loading);
-	// 			const dom = [
-	// 				cloneElement($dom[0], { disabled: !!btnLoading }),
-	// 				cloneElement($dom[1], { loading: btnLoading }),
-	// 			];
-	// 			if (searchProps && searchProps.submitConfig && searchProps.submitConfig.render) {
-	// 				return searchProps.submitConfig.render(dom, form);
-	// 			}
-	// 			return <>{dom}</>;
-	// 		},
-	// 	};
-	// 	return defaultConfig as SubmitterProps;
-	// }, [handleRequest, loading, searchProps]);
-
 	// 如果 dataSource 是外部受控 则不会 干预 current 与 pageSize
 	const pagination = useMemo(() => {
 		if (usePropData) return $pagination;
 		return { ...$pagination, ...state.pagination, total: state.total };
 	}, [$pagination, state.pagination, state.total, usePropData]);
-
 	return (
 		<ProTableContext.Provider value={tableAction}>
 			<div className={styles.pro_table_wrap}>
-				{/* 没有form col 就不要显示了 */}
-				<TableSearchForm {...searchProps} />
-				{/* <FilterForm<RecordType>
-					{...searchProps}
-					submitConfig={searchSubmitConfig}
+				{/* 筛选表单 */}
+				<TableSearch<RecordType>
+					usePropData={usePropData}
+					fetchLoading={loading}
+					className={styles.filter_form}
+					{...filterFormProps}
+					pagination={$pagination}
+					onTableChange={$onChange}
 					form={form}
-					className={classNames(searchProps && searchProps.className, styles.filter_form, {
-						[styles.hidden]: !formCol.length || searchProps === false,
-					})}
-					onFinish={handleFinish}
+					render={renderFilterForm}
 				>
 					{formCol}
-				</FilterForm> */}
-				{/* toolbar */}
-				<div className={styles.title_toolbar_wrap}>
-					<TitleTip className={styles.left} title={tableTitle} />
-					<Space className={styles.right} size={8}>
-						{tableToolbar}
-					</Space>
-				</div>
-				<div className={classNames(styles.alert_wrap, { [styles.hidden]: !tableInfo })}>
-					{tableInfo}
-				</div>
+				</TableSearch>
+				{/* 表格操作列 */}
+				<TableToolbar<RecordType>
+					title={tableTitle}
+					render={renderToolbar}
+					onCreate={onCreate}
+					onDelete={onDelete}
+				/>
+				{/* 表格一些详情 */}
+				<TableInfo<RecordType> className={styles.alert_wrap} render={renderTableInfo} />
+				{/* 表格本身 */}
 				<Table
 					{...rest}
 					columns={tableCol}

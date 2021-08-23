@@ -17,16 +17,21 @@ export interface ProTableProps<RecordType extends object = any>
 	 */
 	rowSelection?: false | TableProps<RecordType>["rowSelection"];
 
-	/** search form props */
-	searchProps?: false | FilterFormProps<RecordType>;
+	/** 筛选表单 props */
+	filterFormProps?: false | FilterFormProps<RecordType>;
 
-	searchRef?: MutableRefObject<FormInstance | null | undefined>;
+	filterForm?: MutableRefObject<FormInstance | null | undefined>;
+	/** 渲染筛选表单 */
+	renderFilterForm?: (dom: JSX.Element) => ReactNode;
 
 	/** table 上方的 title */
 	tableTitle?: TitleTipProps["title"];
 
 	/** render 右侧操作栏 */
-	renderToolbar?: (dom: JSX.Element[], actions: ProTableRef<RecordType>) => JSX.Element[];
+	renderToolbar?: (
+		dom: { title: TitleTipProps["title"]; toolbar: (JSX.Element | undefined)[] },
+		actions: ProTableRef<RecordType>
+	) => ReactNode;
 
 	/** render tableInfo 渲染table信息 */
 	renderTableInfo?: (dom: JSX.Element, actions: ProTableRef<RecordType>) => ReactNode;
@@ -64,13 +69,13 @@ type ProColumnTitle<RT> =
 	| TitleTipProps["title"]
 	| ((props: ColumnTitle<RT>) => ReactNode);
 // 扩展的 render
-type ProColumnRender<T = unknown> = (
+type ProColumnRender<T extends object = any> = (
 	dom: ReactNode,
 	record: T,
 	index: number,
 	action: ProTableRef<T>
 ) => React.ReactNode | RenderedCell<T>;
-export interface ProColumnType<RecordType = unknown>
+export interface ProColumnType<RecordType extends object = any>
 	extends Omit<ColumnType<RecordType>, "render"> {
 	/** 文本显示字段  */
 	read?: JSX.Element;
@@ -94,11 +99,11 @@ export interface ProColumnType<RecordType = unknown>
 	props?: any;
 }
 
-export type ProColumnsType<RecordType = unknown> = Array<
+export type ProColumnsType<RecordType extends object = any> = Array<
 	ProColumnType<RecordType> | ProColumnGroupType<RecordType>
 >;
 
-export interface ProColumnGroupType<RecordType>
+export interface ProColumnGroupType<RecordType extends object = any>
 	extends Omit<ProColumnType<RecordType>, "dataIndex"> {
 	children: ProColumnsType<RecordType>;
 }
@@ -115,7 +120,7 @@ export interface GetInitStateProps {
  * toolbar: 当前第几页 actionBar
  * table
  */
-export interface ProTableRef<RT = unknown> {
+export interface ProTableRef<RT extends object = any> {
 	state: ReturnType<typeof getInitState> & { dataSource: RT[] };
 	reload: (reset?: boolean) => void;
 	clearSelected: () => void;

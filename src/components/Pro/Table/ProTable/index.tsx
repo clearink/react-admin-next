@@ -60,12 +60,13 @@ function ProTable<RecordType extends object = any>(
 	const [form] = Form.useForm(filterFormProps ? filterFormProps?.form : undefined);
 	useImperativeHandle(filterForm, () => form, [form]); // 暴露出属性
 
-	const actionRef = useRef<ProTableRef<RecordType>>();
+	const actionRef = useRef<ProTableRef<RecordType>>(); // 保存 action
+	// 格式化 columns
 	const [tableCol, formCol, $filters, $sorter] = useFormatColumn(columns, actionRef);
 
-	const [_loading, setLoading] = useState<ProTableProps["loading"]>(false);
+	const [_loading, setLoading] = useState<ProTableProps["loading"]>(false); // 表格的loading
 
-	// 初始值
+	// store 的 初始值
 	const initState = { pagination: $pagination, filters: $filters, sorter: $sorter };
 	const [state, dispatch] = useReducer(reducer, initState, getInitState);
 
@@ -84,6 +85,17 @@ function ProTable<RecordType extends object = any>(
 		setDataSource,
 	});
 
+	// 暴露的方法
+	const tableAction = useProTableAction<RecordType>([state, dispatch], {
+		form,
+		handleRequest,
+		usePropData,
+		setDataSource,
+		dataSource,
+	});
+	actionRef.current = tableAction;
+	useImperativeHandle(ref, () => tableAction, [tableAction]);
+
 	// tableChange 事件
 	type TableChange = Required<ProTableProps<RecordType>>["onChange"];
 	const handleTableChange = useRefCallback<TableChange>(async (...args) => {
@@ -100,20 +112,6 @@ function ProTable<RecordType extends object = any>(
 		dispatch(actions.setFilters(_filters)); // 设置 筛选
 		dispatch(actions.setSorter(_sorter)); // 设置排序
 	});
-
-	// 暴露的方法
-	const tableAction = useProTableAction<RecordType>([state, dispatch], {
-		form,
-		handleRequest,
-		usePropData,
-		setDataSource,
-		dataSource,
-	});
-	useEffect(() => {
-		actionRef.current = tableAction;
-	}, [tableAction]);
-
-	useImperativeHandle(ref, () => tableAction, [tableAction]);
 
 	// 多选
 	type Selection = ProTableProps<RecordType>["rowSelection"];

@@ -24,9 +24,9 @@ export default function useProTableRequest<RT extends object = any>(
 ) {
 	const { request, usePropData, form, setLoading, $params, setDataSource } = props;
 
-	const requestLock = useRef(false);
+	const requestLock = useRef(false); // 请求锁 防止多次请求
 
-	const mountedRef = useMountedRef();
+	const mountedRef = useMountedRef(); // 是否挂载
 
 	// 当正在执行请求时, 直接return      添加防抖 避免重复请求
 	const handleRequest = useDebounceCallback(50, async () => {

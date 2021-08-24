@@ -122,7 +122,7 @@ export interface GetInitStateProps {
  */
 export interface ProTableRef<RT extends object = any> {
 	state: ReturnType<typeof getInitState> & { dataSource: RT[] };
-	reload: (reset?: boolean) => void;
+	reload: (resetCurrent?: boolean, resetForm?: boolean) => void;
 	clearSelected: () => void;
 	setPagination: (config: Record<"current" | "pageSize", number>) => void;
 	setFilters: (filters: Record<string, FilterValue | null>) => void;

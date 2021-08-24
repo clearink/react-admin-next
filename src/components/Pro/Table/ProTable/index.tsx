@@ -72,7 +72,7 @@ function ProTable<RecordType extends object = any>(
 
 	// 是否使用外部的 dataSource
 	const usePropData = props.hasOwnProperty("dataSource");
-	const [_dataSource, setDataSource] = useState(() => $dataSource);
+	const [_dataSource, setDataSource] = useState<RecordType[]>([]);
 	const dataSource = usePropData ? $dataSource : _dataSource;
 
 	// 处理数据请求

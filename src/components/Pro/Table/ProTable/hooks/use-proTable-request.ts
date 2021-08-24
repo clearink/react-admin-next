@@ -14,7 +14,7 @@ interface UseProTableRequestProps<RT extends object = any> {
 	form: FormInstance;
 	$params: any;
 	setLoading: Dispatch<SetStateAction<ProTableProps["loading"]>>;
-	setDataSource: Dispatch<SetStateAction<readonly RT[] | undefined>>;
+	setDataSource: Dispatch<SetStateAction<RT[]>>;
 }
 
 // proTable 数据请求 hooks

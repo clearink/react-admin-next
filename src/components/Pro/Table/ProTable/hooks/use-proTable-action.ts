@@ -10,7 +10,7 @@ interface UseProTableActionProps<RecordType extends object = any> {
 	form: FormInstance;
 	handleRequest: () => Promise<void>;
 	usePropData: boolean;
-	setDataSource: Dispatch<SetStateAction<readonly RecordType[] | undefined>>;
+	setDataSource: Dispatch<SetStateAction<RecordType[]>>;
 	dataSource: readonly RecordType[] | undefined;
 }
 

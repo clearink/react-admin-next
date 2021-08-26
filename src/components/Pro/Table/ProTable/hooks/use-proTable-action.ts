@@ -19,11 +19,13 @@ export default function useProTableAction<RecordType extends object = any>(
 	props: UseProTableActionProps
 ) {
 	const { form, handleRequest, usePropData, setDataSource, dataSource } = props;
-	// 暴露出的ref事件
+
+	// 设置分页值
 	const handleSetPagination = useRefCallback((config: Record<"current" | "pageSize", number>) => {
 		dispatch(actions.setPagination(config));
 	});
 
+	// 重新加载数据
 	const handleReload = useRefCallback((resetCurrent?: boolean, resetForm?: boolean) => {
 		if (resetForm) form.resetFields();
 
@@ -34,20 +36,24 @@ export default function useProTableAction<RecordType extends object = any>(
 		handleRequest();
 	});
 
+	// 清除选中
 	const handleClearSelected = useRefCallback(() => {
 		dispatch(actions.setKeys([]));
 	});
 
+	// 设置筛选值
 	const handleSetFilters = useRefCallback((filters: Record<string, FilterValue | null>) => {
 		dispatch(actions.setFilters(filters));
 	});
 
+	// 设置排序值
 	const handleSetSorter = useRefCallback(
 		(sorter: SorterResult<RecordType> | SorterResult<RecordType>[]) => {
 			dispatch(actions.setSorter(sorter));
 		}
 	);
 
+	// 设置数据源
 	const handleSetDataSource = useRefCallback((data: RecordType[]) => {
 		if (!usePropData) {
 			setDataSource(data);

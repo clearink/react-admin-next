@@ -3,7 +3,7 @@ import { Button } from "antd";
 import { ProFormInput } from "@/components/Pro/FormItem";
 import { ProTable } from "@/components/Pro/Table";
 import { ProColumnsType } from "@/components/Pro/Table/ProTable/interface";
-import useDrawerForm from "@/hooks/action/use-drawer-form";
+import { CreateModalForm } from "@/hooks/action/use-modal-form";
 // import "@/components/Pro/utils/merge-value";
 interface Item {
 	id: string | number;
@@ -12,7 +12,7 @@ interface Item {
 	content: string;
 }
 
-function A(props: { a: number; c: string }) {
+function ComponentA(props: { a: number; c: string; name: string }) {
 	console.log("A props", props);
 	return (
 		<>
@@ -22,9 +22,10 @@ function A(props: { a: number; c: string }) {
 		</>
 	);
 }
+const [FormModalA, handleOpenA] = CreateModalForm(ComponentA);
+const [FormModalB, handleOpenB] = CreateModalForm(ComponentA);
 export default function DashBoard() {
 	// const [FormAddModal, handleOpen] = useModalAction(B);
-	const [FormAddModal, handleOpen] = useDrawerForm(A);
 
 	const columns: ProColumnsType<Item> = [
 		{
@@ -37,10 +38,12 @@ export default function DashBoard() {
 			title: "age",
 			dataIndex: "age",
 			width: 200,
+			search: <ProFormInput label={false} />,
 		},
 		{
 			title: "content",
 			dataIndex: "content",
+			search: <ProFormInput label={false} />,
 		},
 		{
 			title: "action",
@@ -50,12 +53,22 @@ export default function DashBoard() {
 					<Button
 						type='link'
 						size='small'
-						key='useModalForm'
+						key='ModalFormA'
 						onClick={() => {
-							handleOpen({ c: record.content });
+							handleOpenA({ c: record.content, name: "a" });
 						}}
 					>
-						open useModalForm
+						open ModalFormA
+					</Button>,
+					<Button
+						type='link'
+						size='small'
+						key='ModalFormB'
+						onClick={() => {
+							handleOpenB({ c: record.content, name: "b" });
+						}}
+					>
+						open ModalFormB
 					</Button>,
 					<Button type='link' size='small' key='delete'>
 						delete
@@ -81,7 +94,8 @@ export default function DashBoard() {
 				onDelete={() => {}}
 				tableTitle={{ title: "123123", tip: "1212" }}
 			/>
-			<FormAddModal title='测试 useDrawerForm' />
+			<FormModalA title='测试 FormModalA' />
+			<FormModalB title='测试 FormModalB' />
 		</div>
 	);
 }

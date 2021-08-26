@@ -28,10 +28,7 @@ export interface ProTableProps<RecordType extends object = any>
 	tableTitle?: TitleTipProps["title"];
 
 	/** render 右侧操作栏 */
-	renderToolbar?: (
-		dom: { title: TitleTipProps["title"]; toolbar: (JSX.Element | undefined)[] },
-		actions: ProTableRef<RecordType>
-	) => ReactNode;
+	renderToolbar?: (dom: (JSX.Element | undefined)[], actions: ProTableRef<RecordType>) => ReactNode;
 
 	/** render tableInfo 渲染table信息 */
 	renderTableInfo?: (dom: JSX.Element, actions: ProTableRef<RecordType>) => ReactNode;

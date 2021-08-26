@@ -69,6 +69,7 @@ function FilterForm<Values = any>(props: FilterFormProps<Values>) {
 			}),
 		[$children, maxSpan, span]
 	);
+	console.log("maxSpan, childCount", maxSpan, childCount);
 	return (
 		<ProForm
 			{...rest}
@@ -76,13 +77,20 @@ function FilterForm<Values = any>(props: FilterFormProps<Values>) {
 			renderSubmitter={(dom, form) => {
 				let submitter: ReactNode = [dom[0], cloneElement(dom[1], { children: "查询" })];
 				if (renderSubmitter) submitter = renderSubmitter(dom, form);
+				// 是否能够占满一行
 				return (
 					<>
 						{children}
 						<Col span={otherSpan} className={styles.filter_form__submitter}>
 							{submitter}
 							{/* TODO: 可以自定义以下内容 */}
-							<span className={styles.collapsed_trigger} onClick={handleCollapsed}>
+							{/* 子组件的数量 小于等于 最大能够容纳的数量 且此时处于收起状态时将隐藏指示器 */}
+							<span
+								className={classNames(styles.collapsed_trigger, {
+									hidden: childCount <= maxSpan && collapsed,
+								})}
+								onClick={handleCollapsed}
+							>
 								{collapsed ? "展开" : "收起"}
 								<UpOutlined
 									className={classNames(styles.trigger_icon, { [styles.collapsed]: collapsed })}

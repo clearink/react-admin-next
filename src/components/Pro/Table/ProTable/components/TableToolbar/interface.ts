@@ -4,10 +4,7 @@ import { ProTableRef } from "../../interface";
 
 export interface TableToolbarProps<RT extends object = any> {
 	className?: string;
-	render?: (
-		dom: { toolbar: (JSX.Element | undefined)[]; title: TitleTipProps["title"] },
-		actions: ProTableRef<RT>
-	) => ReactNode;
+	render?: (dom: (JSX.Element | undefined)[], actions: ProTableRef<RT>) => ReactNode;
 	title?: TitleTipProps["title"];
 	onCreate?: () => void;
 	onDelete?: (keys: Key[]) => void;

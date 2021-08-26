@@ -1,13 +1,13 @@
-import { useContext, useMemo } from "react";
+import { useContext, useMemo, useCallback } from "react";
 import { Button, Space, Tooltip } from "antd";
 import classNames from "classnames";
+import useRefCallback from "@/hooks/state/use-ref-callback";
+import { isFunction } from "@/utils/ValidateType";
 import TitleTip from "@/components/Pro/TitleTip";
 import { ProTableContext } from "../../utils";
 import { TableToolbarProps } from "./interface";
 import styles from "./style.module.scss";
 import { DeleteOutlined, PlusOutlined, ReloadOutlined } from "@ant-design/icons";
-import { useCallback } from "react";
-import useRefCallback from "@/hooks/state/use-ref-callback";
 
 // 表格的操作列
 function TableToolbar<RT extends object = any>(props: TableToolbarProps<RT>) {
@@ -48,13 +48,11 @@ function TableToolbar<RT extends object = any>(props: TableToolbarProps<RT>) {
 			),
 		];
 	}, [handleDelete, handleReload, onCreate, onDelete, selectedLength]);
-	if (render) return <>{render({ title, toolbar }, tableAction)}</>;
+	const action = render ? render(toolbar, tableAction) : toolbar;
 	return (
 		<div className={classNames(className, styles.title_toolbar)}>
 			<TitleTip className={styles.title} title={title} />
-			<Space className={styles.toolbar} size={8}>
-				{toolbar}
-			</Space>
+			<div className={styles.toolbar}>{action}</div>
 		</div>
 	);
 }

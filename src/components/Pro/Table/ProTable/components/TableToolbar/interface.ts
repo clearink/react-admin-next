@@ -6,6 +6,4 @@ export interface TableToolbarProps<RT extends object = any> {
 	className?: string;
 	render?: (dom: (JSX.Element | undefined)[], actions: ProTableRef<RT>) => ReactNode;
 	title?: TitleTipProps["title"];
-	onCreate?: () => void;
-	onDelete?: (keys: Key[]) => void;
 }

@@ -91,9 +91,6 @@ export default function ProTablePage() {
 					ref={tableRef}
 					tableTitle={{ title: "护工管理", tip: "护工人员管理" }}
 					columns={columns}
-					onCreate={() => {
-						console.log("create");
-					}}
 					request={async (params) => {
 						const { current, ...rest } = params;
 						const { result } = await UserList({

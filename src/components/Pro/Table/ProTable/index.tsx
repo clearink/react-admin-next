@@ -1,7 +1,6 @@
 import React, {
 	forwardRef,
 	Ref,
-	useEffect,
 	useImperativeHandle,
 	useMemo,
 	useReducer,
@@ -52,8 +51,6 @@ function ProTable<RecordType extends object = any>(
 		onChange: $onChange,
 		dataSource: $dataSource,
 		rowSelection: $rowSelection,
-		onCreate,
-		onDelete,
 		...rest
 	} = props;
 
@@ -156,12 +153,7 @@ function ProTable<RecordType extends object = any>(
 					{formCol}
 				</TableSearch>
 				{/* 表格操作列 */}
-				<TableToolbar<RecordType>
-					title={tableTitle}
-					render={renderToolbar}
-					onCreate={onCreate}
-					onDelete={onDelete}
-				/>
+				<TableToolbar<RecordType> title={tableTitle} render={renderToolbar} />
 				{/* 表格一些详情 */}
 				<TableInfo<RecordType> className={styles.alert_wrap} render={renderTableInfo} />
 				{/* 表格本身 */}

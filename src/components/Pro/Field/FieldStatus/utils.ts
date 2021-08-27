@@ -1,3 +1,5 @@
+import createContainer from "@/utils/ContextUtils";
+
 function fillStrColor(str: string) {
 	const noPrefix = str.replace(/#/, "").split("");
 	if (noPrefix.length === 3) return noPrefix.map((item) => `0x${item}${item}`);
@@ -37,3 +39,6 @@ export function gradientColor(colorRange: string[], maxLevel = 2) {
 
 	return ret;
 }
+
+// 颜色枚举值
+export const statusColorContainer = createContainer((colorEnum: string[]) => colorEnum);

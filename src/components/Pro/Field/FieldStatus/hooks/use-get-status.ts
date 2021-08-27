@@ -1,9 +1,7 @@
 import { useMemo } from "react";
-import configs from "@/configs";
 import { StatusEnumItem } from "../interface";
 import { BadgeProps } from "antd";
-
-const defaultColorEnum = (configs as any).colorEnum;
+import { statusColorContainer } from "../utils";
 
 export default function useGetStatus(
 	text?: string,
@@ -11,7 +9,7 @@ export default function useGetStatus(
 	$color?: BadgeProps["color"][]
 ): Partial<StatusEnumItem> {
 	return useMemo(() => {
-		const colorEnum = defaultColorEnum?.length ? defaultColorEnum : $color;
+		const colorEnum = statusColorContainer.useContainer() ?? $color; // pro component 一些配置属性
 
 		const matchIndex = (valueEnum || []).findIndex((item) => item.value === text);
 		if (!valueEnum || matchIndex === -1) {

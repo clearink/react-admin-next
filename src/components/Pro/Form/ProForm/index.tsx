@@ -9,17 +9,28 @@ import Submitter from "./Submitter";
 import { ProFormProps, ProFormType } from "./interface";
 
 function ProForm<Values = any>(props: ProFormProps<Values>) {
-	const { form: $form, onFinish, onSubmit, onReset, renderSubmitter, timeFormat, ...rest } = props;
+	const {
+		form: $form,
+		onFinish,
+		onSubmit,
+		onReset,
+		renderSubmitter,
+		timeFormat,
+		loading: $loading,
+		...rest
+	} = props;
 	const [form] = Form.useForm($form);
 	const mountedRef = useMountedRef();
-	const [loading, setLoading] = useState<ButtonProps["loading"]>(false);
+	const [_loading, setLoading] = useState<ButtonProps["loading"]>(false);
+	const usePropLoading = !!props.hasOwnProperty("loading");
+	const loading = usePropLoading ? $loading : _loading;
 
 	const handleFinish = useRefCallback(async (values: Values) => {
 		try {
-			setLoading({ delay: 50 });
+			!usePropLoading && setLoading({ delay: 50 });
 			await onFinish?.(formatFormValue(values, timeFormat));
 		} finally {
-			if (mountedRef.current) setLoading(false);
+			if (mountedRef.current && !usePropLoading) setLoading(false);
 		}
 	});
 	return (

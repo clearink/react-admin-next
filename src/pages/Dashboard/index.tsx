@@ -4,6 +4,8 @@ import { ProFormInput } from "@/components/Pro/FormItem";
 import { ProTable } from "@/components/Pro/Table";
 import { ProColumnsType } from "@/components/Pro/Table/ProTable/interface";
 import { CreateModalForm } from "@/hooks/action/use-modal-form";
+import { useCallback } from "react";
+import http from "@/http";
 // import "@/components/Pro/utils/merge-value";
 interface Item {
 	id: string | number;
@@ -23,26 +25,34 @@ function ComponentA(props: { a: number; c: string; name: string }) {
 	);
 }
 const [FormModalA, handleOpenA] = CreateModalForm(ComponentA);
-const [FormModalB, handleOpenB] = CreateModalForm(ComponentA);
 export default function DashBoard() {
 	// const [FormAddModal, handleOpen] = useModalAction(B);
 
 	const columns: ProColumnsType<Item> = [
 		{
-			title: { title: "123", tip: "11212" },
-			dataIndex: "name",
+			title: { title: "标题", tip: "标题过长会收缩" },
+			dataIndex: "title",
 			search: <ProFormInput label={false} />,
 			width: 200,
 		},
 		{
-			title: "age",
-			dataIndex: "age",
+			title: "状态",
+			dataIndex: "state",
 			width: 200,
 			search: <ProFormInput label={false} />,
 		},
 		{
-			title: "content",
-			dataIndex: "content",
+			title: "标签",
+			dataIndex: "labels",
+			search: <ProFormInput label={false} />,
+			render: () => {
+				return <div>123</div>;
+			},
+		},
+		{
+			title: "创建时间",
+			dataIndex: "created_at",
+			sorter: true,
 			search: <ProFormInput label={false} />,
 		},
 		{
@@ -60,16 +70,6 @@ export default function DashBoard() {
 					>
 						open ModalFormA
 					</Button>,
-					<Button
-						type='link'
-						size='small'
-						key='ModalFormB'
-						onClick={() => {
-							handleOpenB({ c: record.content, name: "b" });
-						}}
-					>
-						open ModalFormB
-					</Button>,
 					<Button type='link' size='small' key='delete'>
 						delete
 					</Button>,
@@ -85,17 +85,25 @@ export default function DashBoard() {
 			content: Math.random().toString(16).slice(2),
 		}))
 	);
+	const handleRequest = useCallback(async (params, filters, sorters) => {
+		console.log("params,filters, sorters", params, filters, sorters);
+		const result = await http.get("https://proapi.azurewebsites.net/github/issues", {
+			current: params.current,
+			pageSize: params.pageSize,
+			...sorters,
+		});
+		console.log(result);
+		return { dataSource: result.data, total: result.total };
+	}, []);
 	return (
 		<div>
 			<ProTable
 				columns={columns}
-				dataSource={data}
-				onCreate={() => {}}
-				onDelete={() => {}}
-				tableTitle={{ title: "123123", tip: "1212" }}
+				tableTitle='高级表格'
+				request={handleRequest}
+				pagination={{ defaultPageSize: 5 }}
 			/>
 			<FormModalA title='测试 FormModalA' />
-			<FormModalB title='测试 FormModalB' />
 		</div>
 	);
 }

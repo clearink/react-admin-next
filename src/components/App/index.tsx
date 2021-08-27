@@ -9,6 +9,7 @@ import routes from "@/routes";
 import store from "@/store";
 import useRenderRoutes from "./hooks/use-render-routes";
 import ErrorBoundary from "../ErrorBoundary";
+import { statusColorContainer } from "../Pro/Field/FieldStatus/utils";
 function App() {
 	const element = useRenderRoutes(routes);
 	return (
@@ -16,9 +17,11 @@ function App() {
 			<Provider store={store}>
 				<ConfigProvider locale={zhCN}>
 					<SWRConfig value={{ errorRetryCount: 0 }}>
-						<Router>
-							<Routes>{element}</Routes>
-						</Router>
+						<statusColorContainer.Provider>
+							<Router>
+								<Routes>{element}</Routes>
+							</Router>
+						</statusColorContainer.Provider>
 					</SWRConfig>
 				</ConfigProvider>
 			</Provider>

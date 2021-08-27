@@ -22,7 +22,7 @@ export interface ProTableProps<RecordType extends object = any>
 
 	filterForm?: MutableRefObject<FormInstance | null | undefined>;
 	/** 渲染筛选表单 */
-	renderFilterForm?: (dom: JSX.Element) => ReactNode;
+	renderFilterForm?: (dom: JSX.Element, actions: ProTableRef<RecordType>) => ReactNode;
 
 	/** table 上方的 title */
 	tableTitle?: TitleTipProps["title"];
@@ -32,10 +32,6 @@ export interface ProTableProps<RecordType extends object = any>
 
 	/** render tableInfo 渲染table信息 */
 	renderTableInfo?: (dom: JSX.Element, actions: ProTableRef<RecordType>) => ReactNode;
-
-	// 添加几个常用的默认事件吧 不设置 则不显示
-	onCreate?: () => void;
-	onDelete?: (ids: React.Key[]) => void;
 
 	/**
 	 * table 数据请求函数
@@ -48,17 +44,13 @@ export interface ProTableProps<RecordType extends object = any>
 	ref?: Ref<ProTableRef>;
 }
 
+// 搜索函数满足的要求
+type RequestResponse<T> = { dataSource: T[]; total?: number };
 export type ProTableRequest<RecordType extends object = any> = (
 	params: Partial<RecordType> & Record<"current" | "pageSize", number> & Record<string, any>,
 	filter: ReturnType<typeof getFilters>,
 	sort: ReturnType<typeof getSorter>
-) => Promise<
-	| {
-			dataSource: RecordType[];
-			total?: number;
-	  }
-	| undefined
->;
+) => Promise<RequestResponse<RecordType> | undefined | void>;
 
 // 扩展的 title
 type ProColumnTitle<RT> =

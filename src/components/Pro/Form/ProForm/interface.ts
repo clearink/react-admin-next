@@ -7,6 +7,7 @@ export interface ProFormProps<Values = any> extends FormProps<Values> {
 	renderSubmitter?: (dom: ReactElement<ButtonProps>[], form: FormInstance) => ReactNode;
 	/** 时间格式化字符串 */
 	timeFormat?: string;
+	loading?: ButtonProps["loading"]; // 外部的loading状态
 }
 
 type InternalFormType = <V = any>(props: ProFormProps<V>) => ReactElement;

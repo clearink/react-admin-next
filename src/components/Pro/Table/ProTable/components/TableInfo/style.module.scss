@@ -1,3 +1,4 @@
+@use "sass:math";
 @import "@/styles/index.scss";
 $size: 24px;
 $padding: 10px;
@@ -16,7 +17,7 @@ $padding: 10px;
 	margin-right: $padding;
 }
 .info_strong_value {
-	margin: 0 $padding / 2;
+	margin: 0 math.div($padding, 2);
 	color: $primary_color;
 	font-weight: bold;
 }

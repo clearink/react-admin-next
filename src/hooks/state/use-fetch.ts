@@ -1,15 +1,16 @@
 import { useMemo } from "react";
-import useSWR, { keyInterface } from "swr";
-import { ConfigInterface, fetcherFn, responseInterface } from "swr/dist/types";
+import useSWR from "swr";
+import { ValueKey, Fetcher, SWRResponse, SWRConfiguration } from "swr/dist/types";
 
 const REQUEST = new Map();
 const MAX = 1000;
+// <Data = any, Error = any>(...args: readonly [Key] | readonly [Key, Fetcher<Data> | null] | readonly [Key, SWRConfiguration<Data, Error> | undefined] | readonly [Key, Fetcher<Data> | null, SWRConfiguration<Data, Error> | undefined]) => SWRResponse<Data, Error>;
 
 function useFetch<Data = any, Error = any>(
-	key: keyInterface,
-	fn?: fetcherFn<Data>,
-	config?: ConfigInterface<Data, Error>
-): responseInterface<Data, Error> {
+	key: ValueKey,
+	fn: Fetcher<Data> | null = null,
+	config?: SWRConfiguration<Data, Error>
+): SWRResponse<Data, Error> {
 	// 保证调用相同的 useFetch 只会发送一次请求
 	const swrKey = useMemo(() => {
 		const mapKey = JSON.stringify(key);
@@ -19,6 +20,6 @@ function useFetch<Data = any, Error = any>(
 		}
 		return REQUEST.get(mapKey); // 只能从map中获取才能保证都是同一个
 	}, [key]);
-	return useSWR(swrKey, fn, config);
+	return useSWR<Data, Error>(swrKey, fn, config);
 }
 export default useFetch;

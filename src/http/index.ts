@@ -65,12 +65,12 @@ class Http {
 				return Promise.reject(response);
 			},
 			(error: AxiosError) => {
-				// this.errorHandle(error.response);
-				// this.log("响应拦截器error callback", error);
-				// return Promise.reject(error);
 				if (!Axios.isCancel(error)) {
 					this.log("响应拦截器", error.response?.data);
 					// http code !== 200 的错误
+					console.log("响应拦截器", error);
+					console.log("响应拦截器", Object.keys(error));
+					console.log("响应拦截器", error.response);
 					const response = error.response ?? {
 						data: { code: error.code!, message: httpErrorMap(error.code!) },
 					};

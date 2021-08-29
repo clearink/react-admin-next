@@ -1,43 +1,92 @@
-import { cloneElement, isValidElement, RefObject, useMemo } from "react";
-import { ColumnType } from "antd/lib/table";
-import { EditableColumnsType, EditableColumnType, EditableTableRef } from "../interface";
-import TableText from "../../components/TableText";
+import { cloneElement, isValidElement, MutableRefObject, useCallback, useMemo } from "react";
+import { Typography } from "antd";
+import { ColumnsType } from "antd/lib/table";
 import merge from "lodash/merge";
+import TitleTip from "@/components/Pro/TitleTip";
+import { isObject } from "@/utils/ValidateType";
+import { FilterValue as PickValue } from "@/utils/Value";
+import { EditableColumnsType, EditableColumnType, EditableTableRef } from "../interface";
 
 // 转换 columns 分离出 editCol 与 tableCol
-export default function useFormatColumn<RT extends object = any>(
-	columns: EditableColumnsType<RT>,
-	action: RefObject<EditableTableRef<RT> | undefined>
+const columnFilterProperty = [
+	"search",
+	"read",
+	"hideInSearch",
+	"hideInTable",
+	"props",
+	"copyable",
+	"searchSort",
+	"tableSort",
+	"ellipsis",
+] as any;
+export default function useFormatColumn<T extends object = any>(
+	columns: EditableColumnsType<T> = [],
+	actions: MutableRefObject<EditableTableRef<T> | undefined>
 ) {
-	return useMemo(() => {
-		const tableCol: any[] = [];
-		const editCol: any[] = [];
-		for (let i = 0; i < columns.length; i++) {
-			const item = columns[i] as EditableColumnType<RT>;
-			// TODO: 处理 group
-			const { props: $props, read, render, edit, hideInForm, hideInTable, ...rest } = item;
-			const { dataIndex, title } = item;
-			if (!hideInForm && isValidElement(edit)) {
-				const props = merge(
-					{ label: title, name: dataIndex, key: dataIndex ?? i },
-					{ field: $props },
-					edit.props
+	// 获得 title
+	const getTitle = useCallback((title: EditableColumnType<T>["title"]) => {
+		if (isValidElement(title)) return title;
+		if (isObject(title)) return <TitleTip title={title} />;
+		return title;
+	}, []);
+
+	// 追加筛选表单项
+	const appendEditCol = useCallback((array: JSX.Element[], item: EditableColumnType<T>) => {
+		const { hideInForm, title, dataIndex, props: $props, edit } = item;
+		if (hideInForm || !isValidElement(edit)) return;
+
+		// TODO: 处理 ProGroupColumn
+		const props = merge(
+			{ label: title, name: dataIndex, key: dataIndex },
+			{ field: $props },
+			edit.props
+		);
+		array.push(cloneElement(edit, props));
+	}, []);
+
+	// 重写 columns.render 属性
+	const overrideRender = useCallback(
+		(item: EditableColumnType<T>) => {
+			const { props, ellipsis, copyable, render, read } = item;
+			return (value: any, record: T, index: number) => {
+				const dom = (
+					<Typography.Text
+						className='w-full m-0 p-0'
+						ellipsis={ellipsis ? { tooltip: value } : false}
+						copyable={copyable ? { tooltips: false } : false}
+					>
+						{read ? cloneElement(read, { text: value, ...props, ...read.props }) : value ?? "-"}
+					</Typography.Text>
 				);
-				editCol.push(cloneElement(edit, props));
-			}
+				if (render) return render(dom, record, index, actions.current!);
+				return dom;
+			};
+		},
+		[actions]
+	);
+	// 追加 table column
+	const appendColumn = useCallback(
+		(array: ColumnsType<T>, item: EditableColumnType<T>) => {
+			const props = PickValue(item, columnFilterProperty);
+			array.push({ ...props, render: overrideRender(item) });
+		},
+		[overrideRender]
+	);
+
+	return useMemo(() => {
+		const tableCol: ColumnsType<T> = [];
+		const editCol: JSX.Element[] = [];
+		for (let i = 0; i < columns.length; i++) {
+			const item = columns[i] as EditableColumnType<T>;
+			// TODO: 处理 group
+			const { hideInTable, title: $title } = item;
+			const title = getTitle($title);
+			appendEditCol(editCol, { ...item, title }); // 追加表单项
+
 			if (hideInTable) continue;
 
-			const readElement = read ?? <TableText />;
-			const colItem: ColumnType<RT> = {
-				...rest,
-				render: (value, record, index) => {
-					const dom = cloneElement(readElement, { ...$props, text: value });
-					if (render) return render(dom, record, index, action.current!);
-					return dom;
-				},
-			};
-			tableCol.push(colItem);
+			appendColumn(tableCol, { ...item, title }); // 追加 column 项
 		}
 		return [tableCol, editCol] as const;
-	}, [action, columns]);
+	}, [appendEditCol, appendColumn, columns, getTitle]);
 }

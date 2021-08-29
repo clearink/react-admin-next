@@ -9,7 +9,6 @@ import LoginUtil from "@/utils/LoginUtil";
 class Http {
 	private axios = Axios.create();
 	private timer: undefined | number = undefined;
-	private toastInstance: any;
 
 	public constructor() {
 		const { axios } = this;
@@ -68,11 +67,12 @@ class Http {
 				if (!Axios.isCancel(error)) {
 					this.log("响应拦截器", error.response?.data);
 					// http code !== 200 的错误
-					console.log("响应拦截器", error);
-					console.log("响应拦截器", Object.keys(error));
-					console.log("响应拦截器", error.response);
+					// console.log("响应拦截器", error);
+					// console.log("响应拦截器", JSON.stringify(error));
+					// console.log("响应拦截器", error.response);
+					// 如果依然返回了数据则使用返回的数据 否则使用本身的
 					const response = error.response ?? {
-						data: { code: error.code!, message: httpErrorMap(error.code!) },
+						data: { code: error.code, message: httpErrorMap(error.code!) },
 					};
 					this.errorHandle(response as AxiosResponse<CommonServerData>);
 				}
@@ -94,10 +94,9 @@ class Http {
 	// 错误提示
 	private errorToast(error?: CommonServerData) {
 		window.clearTimeout(this.timer);
-		this.toastInstance?.();
 		this.timer = window.setTimeout(() => {
 			const content = error?.message || "访问出错";
-			this.toastInstance = message.error({ key: "error", content });
+			message.error({ key: "error", content });
 		}, 300);
 	}
 

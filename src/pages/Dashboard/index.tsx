@@ -1,16 +1,16 @@
-import { useState } from "react";
+import { useCallback } from "react";
 import { Button } from "antd";
 import { ProFormInput } from "@/components/Pro/FormItem";
 import { ProTable } from "@/components/Pro/Table";
 import { ProColumnsType } from "@/components/Pro/Table/ProTable/interface";
-import { CreateModalForm } from "@/hooks/action/use-modal-form";
-import { useCallback } from "react";
+import useModalForm from "@/hooks/action/use-modal-form";
 import http from "@/http";
 // import "@/components/Pro/utils/merge-value";
 interface Item {
 	id: string | number;
 	name: string;
 	age: string;
+	title: string;
 	content: string;
 }
 
@@ -24,21 +24,25 @@ function ComponentA(props: { a: number; c: string; name: string }) {
 		</>
 	);
 }
-const [FormModalA, handleOpenA] = CreateModalForm(ComponentA);
+
 export default function DashBoard() {
-	// const [FormAddModal, handleOpen] = useModalAction(B);
+	const [FormModal, handleOpen] = useModalForm(ComponentA);
 
 	const columns: ProColumnsType<Item> = [
 		{
-			title: { title: "标题", tip: "标题过长会收缩" },
+			title: {
+				title: "标题过长会收缩标题过长会收缩标题过长会收缩标题过长会收缩",
+				tip: "标题过长会收缩",
+			},
 			dataIndex: "title",
 			search: <ProFormInput label={false} />,
-			width: 200,
+			ellipsis: true,
+			copyable: true,
+			width: 300,
 		},
 		{
 			title: "状态",
 			dataIndex: "state",
-			width: 200,
 			search: <ProFormInput label={false} />,
 		},
 		{
@@ -52,6 +56,7 @@ export default function DashBoard() {
 		{
 			title: "创建时间",
 			dataIndex: "created_at",
+			width: 200,
 			sorter: true,
 			search: <ProFormInput label={false} />,
 		},
@@ -65,7 +70,7 @@ export default function DashBoard() {
 						size='small'
 						key='ModalFormA'
 						onClick={() => {
-							handleOpenA({ c: record.content, name: "a" });
+							handleOpen({ c: record.content, name: "a" });
 						}}
 					>
 						open ModalFormA
@@ -77,20 +82,13 @@ export default function DashBoard() {
 			},
 		},
 	];
-	const [data] = useState<Item[]>(() =>
-		Array.from({ length: 30 }, (_, i) => ({
-			id: i,
-			name: `name-${i}`,
-			age: `age-${i}`,
-			content: Math.random().toString(16).slice(2),
-		}))
-	);
+
 	const handleRequest = useCallback(async (params, filters, sorters) => {
 		console.log("params,filters, sorters", params, filters, sorters);
 		const result = await http.get("https://proapi.azurewebsites.net/github/issues", {
 			current: params.current,
 			pageSize: params.pageSize,
-			...sorters,
+			sorter: sorters,
 		});
 		console.log(result);
 		return { dataSource: result.data, total: result.total };
@@ -103,7 +101,7 @@ export default function DashBoard() {
 				request={handleRequest}
 				pagination={{ defaultPageSize: 5 }}
 			/>
-			<FormModalA title='测试 FormModalA' />
+			<FormModal title='测试 FormModalA' />
 		</div>
 	);
 }

@@ -8,9 +8,8 @@ export default function useGetStatus(
 	valueEnum?: StatusEnumItem[],
 	$color?: BadgeProps["color"][]
 ): Partial<StatusEnumItem> {
+	const colorEnum = statusColorContainer.useContainer() ?? $color; // pro component 一些配置属性
 	return useMemo(() => {
-		const colorEnum = statusColorContainer.useContainer() ?? $color; // pro component 一些配置属性
-
 		const matchIndex = (valueEnum || []).findIndex((item) => item.value === text);
 		if (!valueEnum || matchIndex === -1) {
 			return { label: text, value: text };
@@ -20,5 +19,5 @@ export default function useGetStatus(
 		const color = colorEnum[matchIndex % colorEnum.length];
 
 		return { ...matchItem, color: matchItem.color ?? color };
-	}, [$color, text, valueEnum]);
+	}, [colorEnum, text, valueEnum]);
 }

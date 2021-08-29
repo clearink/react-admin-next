@@ -2,88 +2,81 @@ import React, {
 	forwardRef,
 	Ref,
 	useCallback,
-	useEffect,
 	useImperativeHandle,
 	useMemo,
 	useRef,
 	useState,
 } from "react";
-import { Table } from "antd";
+import { FormInstance, Table } from "antd";
 import { isUndefined } from "@/utils/ValidateType";
 import withDefaultProps from "@/hocs/withDefaultProps";
 import useRefCallback from "@/hooks/state/use-ref-callback";
 import useFormatColumn from "./hooks/use-format-column";
-
-import ColumnForm from "./components/ColumnForm";
-import { ColumnFormRef } from "./components/ColumnForm/interface";
-
 import {
 	DatChangeType,
 	EditableTableProps,
 	EditableTableRef,
 	EditableTableType,
 } from "./interface";
-import styles from "./style.module.scss";
 
-// TODO: shouldCellUpdate 优化 table
+import EditableTableForm, { EditableTableFormRef } from "./components/EditableTableForm";
+import { useEffect } from "react";
+
 // 可编辑表格
-
 function EditableTable<RT extends object = any>(
 	props: EditableTableProps<RT>,
 	ref: Ref<EditableTableRef<RT>>
 ) {
 	const {
 		dataSource: $dataSource,
-		columns: $columns,
+		columns,
 		onDataChange,
 		rowKey,
-		type,
+		editType,
 		addTitle,
 		editTitle,
-		formProps,
+		editFormProps,
 		...rest
 	} = props;
 
-	const actionRef = useRef<EditableTableRef<RT> | undefined>(undefined);
-	const [tableCol, editCol] = useFormatColumn($columns ?? [], actionRef);
-
-	const addRef = useRef<ColumnFormRef>(null); // 新增 form
-	const editRef = useRef<ColumnFormRef>(null); // 编辑 form
-
-	const [editRecord, setEditRecord] = useState<RT | null>(null); // 记录当前修改的数据项
+	const actionRef = useRef<EditableTableRef<RT>>();
+	const addRef = useRef<EditableTableFormRef<RT>>(null);
+	const editRef = useRef<EditableTableFormRef<RT>>(null);
+	const [tableCol, editCol] = useFormatColumn(columns, actionRef);
 
 	const [_dataSource, setDataSource] = useState<readonly RT[]>([]); // 内部 dataSource
 
 	const dataSource = $dataSource ?? _dataSource;
 
 	/* ---------------------------------方法 start ---------------------------------------- */
-	const handleChange = async (newData: RT[], record: RT, type: DatChangeType) => {
-		let ret = true;
-		if (!onDataChange) setDataSource(newData);
-		else ret = await onDataChange?.(newData, record, type);
-		return ret;
-	};
+	const handleChange = useCallback(
+		async (newData: RT[], record: RT, type: DatChangeType) => {
+			let ret = true;
+			if (!onDataChange) setDataSource(newData);
+			else ret = await onDataChange?.(newData, record, type);
+			return ret;
+		},
+		[onDataChange]
+	);
 
 	// 新增数据
-	const handleCreate = useRefCallback(async (values) => {
-		const record = { [rowKey!]: Date.now(), ...values };
+	const handleCreate = useRefCallback(async (props?: any, values?: any, form?: FormInstance) => {
+		const record = { [rowKey!]: Date.now(), ...values! };
 		await handleChange(dataSource.concat(record), record, "add");
-		addRef.current?.form.resetFields();
 		return true;
 	});
 
 	// 修改数据
-	const handleEdit = useRefCallback(async (values: RT) => {
-		const record = { ...editRecord, ...values };
+	const handleEdit = useRefCallback(async ($record?: any, values?: any) => {
+		const record = { ...$record, ...values };
 		const newData = dataSource.map((item) => {
 			if (isUndefined(rowKey) || record[rowKey] !== item[rowKey]) return item;
 			return { ...item, ...record };
 		});
-		await handleChange(newData, record, "edit");
+		await handleChange(newData, record as RT, "edit");
 		return true;
 	});
 
-	// 删除数据
 	// 删除
 	const handleDelete = useRefCallback((record: RT) => {
 		const newData = dataSource.filter((item) => record[rowKey!] !== item[rowKey!]);
@@ -92,66 +85,67 @@ function EditableTable<RT extends object = any>(
 	/* ---------------------------------方法 end ---------------------------------------- */
 	/* ----------------------------------暴露的方法 start--------------------------------------- */
 
-	// 创建
-	const handleStartCreate = useCallback(() => {
-		addRef.current?.on();
-	}, []);
-
-	// 修改
-	const handleStartEdit = useRefCallback((record: RT) => {
-		editRef.current?.on();
-		if (record !== editRecord) {
-			editRef.current?.form.setFieldsValue(record);
-			setEditRecord(record);
-		}
-	});
-
-	const tableAction = useMemo<EditableTableRef<RT>>(
-		() => ({ add: handleStartCreate, edit: handleStartEdit, delete: handleDelete }),
-		[handleStartCreate, handleStartEdit, handleDelete]
-	);
-
+	// 暴露的方法
 	useEffect(() => {
-		actionRef.current = tableAction;
-	}, [tableAction]);
+		actionRef.current = {
+			add: addRef.current!,
+			edit: editRef.current!,
+			delete: handleDelete,
+		};
+	}, [handleDelete]);
 
-	useImperativeHandle(ref, () => tableAction, [tableAction]);
+	// 暴露的事件
+	useImperativeHandle(
+		ref,
+		() => ({ add: addRef.current!, edit: editRef.current!, delete: handleDelete }),
+		[handleDelete]
+	);
+	const tableLayout = useMemo(() => {
+		if (props.tableLayout) return props.tableLayout;
+		return columns?.some((item) => item.ellipsis) ? "fixed" : "auto";
+	}, [props.tableLayout, columns]);
 
 	/* ----------------------------------暴露的方法 end--------------------------------------- */
 
 	return (
-		<div className={styles.editable_table_wrap}>
-			<Table<RT> {...rest} columns={tableCol} dataSource={dataSource} />
-
-			{/* 新增form */}
-			<ColumnForm<RT>
-				type={type}
+		<>
+			<Table<RT> {...rest} tableLayout={tableLayout} columns={tableCol} dataSource={dataSource} />
+			{/* 新增 form */}
+			<EditableTableForm<RT>
+				add
+				type={editType}
 				ref={addRef}
 				title={addTitle}
-				name={`editable-add-form-${addTitle}`}
-				{...formProps}
-				onFinish={handleCreate}
+				formProps={{ name: `add-${addTitle}`, ...editFormProps }}
+				onOk={handleCreate}
 			>
 				{editCol}
-			</ColumnForm>
+			</EditableTableForm>
 			{/* 编辑form */}
-			<ColumnForm<RT>
-				type={type}
+			<EditableTableForm<RT>
+				type={editType}
 				ref={editRef}
 				title={editTitle}
-				name={`editable-edit-form-${editTitle}`}
-				{...formProps}
-				onFinish={handleEdit}
+				onOpen={(record: any, form) => {
+					form.setFieldsValue(record);
+					return Promise.resolve(true);
+				}}
+				onOk={handleEdit}
+				formProps={{ name: `edit-${editTitle}`, ...editFormProps }}
 			>
 				{editCol}
-			</ColumnForm>
-		</div>
+			</EditableTableForm>
+		</>
 	);
 }
 
 // TODO 泛型组件使用withDefaultProps后丢失了泛型功能 后期修正
 
 export default withDefaultProps(forwardRef(EditableTable), {
+	size: "middle",
+	bordered: true,
 	rowKey: "key",
-	type: "modal",
+	editType: "modal",
+	addTitle: "新增数据",
+	editTitle: "编辑数据",
 }) as EditableTableType;

@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useState, ComponentType, useMemo } from "react";
 import { createPortal } from "react-dom";
-import { Button, ButtonProps, Drawer, Form } from "antd";
+import { Button, ButtonProps, Drawer, Form, FormInstance } from "antd";
 import TitleTip from "@/components/Pro/TitleTip";
 import useRefCallback from "@/hooks/state/use-ref-callback";
 import merge from "lodash/merge";
@@ -16,17 +16,13 @@ export function CreateDrawerForm<P = {}, V = any>(
 	$config?: UseDrawerActionProps
 ) {
 	// 基础配置
-	const {
-		resetOnClose,
-		form: $form,
-		timeFormat,
-	} = merge({ resetOnClose: true, autoSubmit: true, timeFormat: "YYYY-MM-DD" }, $config);
-
+	const { resetOnClose = true, form: $form, timeFormat = "YYYY-MM-DD" } = $config ?? {};
 	// 回调 or 数值
 	let innerSetVisible: null | Dispatch<SetStateAction<boolean>> = null;
 	let innerSetWrappedProps: null | Dispatch<SetStateAction<Partial<P> | undefined>> = null;
 	let innerOnOpen: null | WrapperDrawerFormProps["onOpen"] = null;
 	let innerField: WrapperDrawerFormProps["fieldProps"] = undefined;
+	let innerForm: FormInstance<V> | undefined = undefined;
 
 	// 回调锁
 	let handleLock = false;
@@ -36,7 +32,7 @@ export function CreateDrawerForm<P = {}, V = any>(
 		if (handleLock) return;
 		handleLock = true;
 		const props = { ...innerField, ...openProps };
-		const shouldOpen = (await innerOnOpen?.(props, innerSetWrappedProps)) ?? true;
+		const shouldOpen = (await innerOnOpen?.(props, innerForm!)) ?? true;
 		handleLock = false;
 		if (isBoolean(shouldOpen) && shouldOpen) {
 			innerSetWrappedProps?.(openProps);
@@ -50,12 +46,15 @@ export function CreateDrawerForm<P = {}, V = any>(
 
 	// 关闭事件
 	const handleCloseClick = () => {
-		if (resetOnClose) innerSetWrappedProps?.(undefined);
+		if (resetOnClose) {
+			innerSetWrappedProps?.(undefined);
+			innerForm?.resetFields();
+		}
 		innerSetVisible?.(false);
 	};
 
 	const WrapperDrawerComponent = (injectProps: WrapperDrawerFormProps<P, V>) => {
-		const { fieldProps: field, title, formProps, onOpen, onOk, ...rest } = injectProps;
+		const { fieldProps: field, title, formProps, onOpen, onOk, children, ...rest } = injectProps;
 
 		// 外部传入的 form
 		const [form] = Form.useForm<V>($form);
@@ -66,6 +65,7 @@ export function CreateDrawerForm<P = {}, V = any>(
 		/** 保存回调/数值供外部使用 */
 		innerOnOpen = onOpen;
 		innerField = field;
+		innerForm = form;
 		innerSetVisible = setVisible;
 		innerSetWrappedProps = setWrappedProps;
 		/** ====================== */
@@ -80,7 +80,7 @@ export function CreateDrawerForm<P = {}, V = any>(
 				setLoading({ delay: 50 });
 				const props = { ...field, ...wrappedProps };
 				const values = formatFormValue(form.getFieldsValue(), timeFormat);
-				const shouldOpen = (await onOk?.(props, form, values)) ?? true;
+				const shouldOpen = (await onOk?.(props, values, form)) ?? true;
 				// 返回 true 且 submit 成功 则关闭
 
 				if (!!shouldOpen) {
@@ -116,10 +116,9 @@ export function CreateDrawerForm<P = {}, V = any>(
 		}, [handleCancel, handleOk, loading]);
 
 		// 缓存组件
-		const WrappedMemorized = useMemo(
-			() => <WrappedComponent {...(field as P)} {...wrappedProps} />,
-			[field, wrappedProps]
-		);
+		const WrappedMemorized = useMemo(() => {
+			return <WrappedComponent {...(field as P)} {...wrappedProps} />;
+		}, [field, wrappedProps]);
 
 		const DOM = (
 			<Form name='drawer-form' {...formProps} form={form} onFinish={handleOk}>
@@ -131,6 +130,7 @@ export function CreateDrawerForm<P = {}, V = any>(
 					footer={renderFooter}
 					onClose={handleCancel}
 				>
+					{children}
 					{WrappedMemorized}
 				</Drawer>
 				<button key='submit-btn' type='submit' hidden></button>

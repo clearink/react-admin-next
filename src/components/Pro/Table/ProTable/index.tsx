@@ -23,6 +23,7 @@ import { getInitState, ProTableContext } from "./utils";
 import styles from "./style.module.scss";
 import useProTableAction from "./hooks/use-proTable-action";
 import useProTableRequest from "./hooks/use-proTable-request";
+import { useEffect } from "react";
 
 /**
  * 组件内部维护的数据 外部不可控制
@@ -51,10 +52,11 @@ function ProTable<RecordType extends object = any>(
 		onChange: $onChange,
 		dataSource: $dataSource,
 		rowSelection: $rowSelection,
+		className,
 		...rest
 	} = props;
 
-	const [form] = Form.useForm(filterFormProps ? filterFormProps?.form : undefined);
+	const [form] = Form.useForm(filterFormProps?.form);
 	useImperativeHandle(filterForm, () => form, [form]); // 暴露出属性
 
 	const actionRef = useRef<ProTableRef<RecordType>>(); // 保存 action
@@ -90,7 +92,11 @@ function ProTable<RecordType extends object = any>(
 		setDataSource,
 		dataSource,
 	});
-	actionRef.current = tableAction;
+
+	useEffect(() => {
+		actionRef.current = tableAction;
+	}, [tableAction]);
+
 	useImperativeHandle(ref, () => tableAction, [tableAction]);
 
 	// tableChange 事件
@@ -136,36 +142,49 @@ function ProTable<RecordType extends object = any>(
 		if (usePropData) return $pagination;
 		return { ...$pagination, ...state.pagination, total: state.total };
 	}, [$pagination, state.pagination, state.total, usePropData]);
+
+	const tableLayout = useMemo(() => {
+		if (props.tableLayout) return props.tableLayout;
+		return columns?.some((item) => item.ellipsis) ? "fixed" : "auto";
+	}, [props.tableLayout, columns]);
+
 	return (
 		<ProTableContext.Provider value={tableAction}>
-			<div className={styles.pro_table_wrap}>
-				{/* 筛选表单 */}
-				<TableSearch<RecordType>
-					usePropData={usePropData}
-					fetchLoading={loading}
-					className={styles.filter_form}
-					{...filterFormProps}
-					pagination={$pagination}
-					onTableChange={$onChange}
-					form={form}
-					render={renderFilterForm}
-				>
-					{formCol}
-				</TableSearch>
+			<div className={classNames(styles.pro_table_wrap, className)}>
+				{/* 筛选表单 false 时 */}
+				{renderFilterForm !== false && (
+					<TableSearch<RecordType>
+						usePropData={usePropData}
+						fetchLoading={loading}
+						className={styles.filter_form}
+						{...filterFormProps}
+						pagination={$pagination}
+						onTableChange={$onChange}
+						form={form}
+						render={renderFilterForm}
+					>
+						{formCol}
+					</TableSearch>
+				)}
 				{/* 表格操作列 */}
-				<TableToolbar<RecordType> title={tableTitle} render={renderToolbar} />
+				{renderToolbar !== false && (
+					<TableToolbar<RecordType> title={tableTitle} render={renderToolbar} />
+				)}
 				{/* 表格一些详情 */}
-				<TableInfo<RecordType> className={styles.alert_wrap} render={renderTableInfo} />
+				{renderTableInfo !== false && (
+					<TableInfo<RecordType> className={styles.alert_wrap} render={renderTableInfo} />
+				)}
 				{/* 表格本身 */}
 				<Table
 					{...rest}
+					tableLayout={tableLayout}
 					columns={tableCol}
 					loading={loading}
 					rowSelection={rowSelection}
 					pagination={pagination}
 					dataSource={dataSource}
 					onChange={handleTableChange}
-					className={classNames(styles.table_content, rest.className)}
+					className={styles.table_content}
 				/>
 			</div>
 		</ProTableContext.Provider>

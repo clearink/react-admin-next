@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 import { DrawerProps, FormInstance, ModalProps } from "antd";
 import { TitleTipProps } from "@/components/Pro/TitleTip";
 import { ProFormProps } from "@/components/Pro/Form/ProForm/interface";
@@ -14,7 +14,8 @@ export interface UseModalActionProps {
 
 export interface WrapperModalFormProps<P = {}, V = any>
 	extends Omit<ModalProps, "onOk" | "onCancel"> {
-	fieldProps?: Partial<P>;
+	children?: ReactNode;
+	fieldProps?: Omit<Partial<P>, "form">;
 	formProps?: Omit<ProFormProps<V>, "onFinish">;
 	title?: TitleTipProps["title"];
 	onOpen?: (
@@ -46,7 +47,8 @@ export interface UseDrawerActionProps {
 }
 
 export interface WrapperDrawerFormProps<P = {}, V = any> extends Omit<DrawerProps, "onClose"> {
-	fieldProps?: Partial<P>;
+	children?: ReactNode;
+	fieldProps?: Omit<Partial<P>, "form">;
 	formProps?: Omit<ProFormProps<V>, "onFinish">;
 	title?: TitleTipProps["title"];
 	onOpen?: (

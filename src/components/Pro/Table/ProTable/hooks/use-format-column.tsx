@@ -1,7 +1,7 @@
 import React, { cloneElement, isValidElement, RefObject, useCallback, useMemo } from "react";
 import { Typography } from "antd";
 import merge from "lodash/merge";
-import { ColumnsType, ColumnType, FilterValue, SorterResult } from "antd/lib/table/interface";
+import { ColumnType, FilterValue, SorterResult } from "antd/lib/table/interface";
 import TitleTip from "@/components/Pro/TitleTip";
 import { isObject, isUndefined } from "@/utils/ValidateType";
 import { ProColumnsType, ProColumnType, ProTableRef } from "../interface";

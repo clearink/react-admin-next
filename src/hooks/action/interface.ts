@@ -18,7 +18,7 @@ export interface UseModalActionProps {
 export interface WrapperModalFormProps<P = {}, V = any>
 	extends Omit<ModalProps, "onOk" | "onCancel"> {
 	children?: ReactNode;
-	fieldProps?: Partial<P>;
+	fieldProps?: Omit<Partial<P>, "form">;
 	formProps?: Omit<ProFormProps<V>, "onFinish">;
 	title?: TitleTipProps["title"];
 	onOpen?: (props: Partial<P>, form: FormInstance<V>) => Promise<boolean | Partial<P>>;
@@ -48,7 +48,7 @@ export interface UseDrawerActionProps {
 
 export interface WrapperDrawerFormProps<P = {}, V = any> extends Omit<DrawerProps, "onClose"> {
 	children?: ReactNode;
-	fieldProps?: Partial<P>;
+	fieldProps?: Omit<Partial<P>, "form">;
 	formProps?: Omit<ProFormProps<V>, "onFinish">;
 	title?: TitleTipProps["title"];
 	onOpen?: (props: Partial<P>, form: FormInstance<V>) => Promise<boolean | Partial<P>>;

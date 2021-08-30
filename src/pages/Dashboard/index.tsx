@@ -1,10 +1,12 @@
 import { useCallback } from "react";
-import { Button } from "antd";
+import { Button, FormInstance } from "antd";
 import { ProFormInput } from "@/components/Pro/FormItem";
 import { ProTable } from "@/components/Pro/Table";
 import { ProColumnsType } from "@/components/Pro/Table/ProTable/interface";
 import useModalForm from "@/hooks/action/use-modal-form";
 import http from "@/http";
+import { sleep } from "@/utils/Test";
+import useDrawerForm from "@/hooks/action/use-drawer-form";
 // import "@/components/Pro/utils/merge-value";
 interface Item {
 	id: string | number;
@@ -14,7 +16,7 @@ interface Item {
 	content: string;
 }
 
-function ComponentA(props: { a: number; c: string; name: string }) {
+function ComponentA(props: { form: FormInstance; a: number; c: string; name: string }) {
 	console.log("A props", props);
 	return (
 		<>
@@ -26,7 +28,7 @@ function ComponentA(props: { a: number; c: string; name: string }) {
 }
 
 export default function DashBoard() {
-	const [FormModal, handleOpen] = useModalForm(ComponentA);
+	const [FormModal, handleOpen] = useDrawerForm(ComponentA);
 
 	const columns: ProColumnsType<Item> = [
 		{
@@ -90,7 +92,6 @@ export default function DashBoard() {
 			pageSize: params.pageSize,
 			sorter: sorters,
 		});
-		console.log(result);
 		return { dataSource: result.data, total: result.total };
 	}, []);
 	return (
@@ -101,7 +102,15 @@ export default function DashBoard() {
 				request={handleRequest}
 				pagination={{ defaultPageSize: 5 }}
 			/>
-			<FormModal title='测试 FormModalA' />
+			<FormModal
+				onCancel={async () => {
+					console.log("onCancel");
+					await sleep(1000);
+					return true;
+				}}
+				title='测试 FormModalA'
+			/>
+			<button onClick={() => handleOpen()}>open</button>
 		</div>
 	);
 }

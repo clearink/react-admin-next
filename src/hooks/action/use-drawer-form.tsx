@@ -10,6 +10,7 @@ import useDeepMemo from "@/hooks/state/use-deep-memo";
 import styles from "./style.module.scss";
 import { UseDrawerActionProps, WrapperDrawerFormProps } from "./interface";
 import withDefaultProps from "@/hocs/withDefaultProps";
+import { useDebounceState, useDebounceValue } from "../state/use-debounce";
 
 export function CreateDrawerForm<P = {}, V = any>(
 	WrappedComponent: ComponentType<P>,
@@ -30,17 +31,20 @@ export function CreateDrawerForm<P = {}, V = any>(
 	// 打开事件
 	const handleOpenClick = async (openProps?: Partial<P>) => {
 		if (handleLock) return;
-		handleLock = true;
-		const props = { ...innerField, ...openProps };
-		const shouldOpen = (await innerOnOpen?.(props, innerForm!)) ?? true;
-		handleLock = false;
-		if (isBoolean(shouldOpen) && shouldOpen) {
-			innerSetWrappedProps?.(openProps);
-			innerSetVisible?.(true);
-		} else if (isObject(shouldOpen)) {
-			// 返回的是对象 则设置其为 props
-			innerSetWrappedProps?.(merge(openProps, shouldOpen));
-			innerSetVisible?.(true);
+		try {
+			handleLock = true;
+			const props = { ...innerField, ...openProps };
+			const shouldOpen = (await innerOnOpen?.(props, innerForm!)) ?? true;
+			if (isBoolean(shouldOpen) && shouldOpen) {
+				innerSetWrappedProps?.(openProps);
+				innerSetVisible?.(true);
+			} else if (isObject(shouldOpen)) {
+				// 返回的是对象 则设置其为 props
+				innerSetWrappedProps?.(merge(openProps, shouldOpen));
+				innerSetVisible?.(true);
+			}
+		} finally {
+			handleLock = false;
 		}
 	};
 
@@ -98,9 +102,13 @@ export function CreateDrawerForm<P = {}, V = any>(
 			if (handleLock) return;
 			handleLock = true;
 			const onCancel = rest.onCancel;
-			const shouldClose = (await onCancel?.({ ...field, ...wrappedProps })) ?? true;
-			handleLock = false;
-			shouldClose === true && handleCloseClick();
+			try {
+				const shouldClose = (await onCancel?.({ ...field, ...wrappedProps })) ?? true;
+				handleLock = false;
+				shouldClose === true && handleCloseClick();
+			} catch (error) {
+				handleLock = false;
+			}
 		});
 
 		// 渲染 footer
@@ -117,8 +125,8 @@ export function CreateDrawerForm<P = {}, V = any>(
 
 		// 缓存组件
 		const WrappedMemorized = useMemo(() => {
-			return <WrappedComponent {...(field as P)} {...wrappedProps} />;
-		}, [field, wrappedProps]);
+			return <WrappedComponent {...(field as P)} {...wrappedProps} form={form} />;
+		}, [field, form, wrappedProps]);
 
 		const DOM = (
 			<Form name='drawer-form' {...formProps} form={form} onFinish={handleOk}>

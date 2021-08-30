@@ -100,6 +100,7 @@ function EditableTable<RT extends object = any>(
 		() => ({ add: addRef.current!, edit: editRef.current!, delete: handleDelete }),
 		[handleDelete]
 	);
+
 	const tableLayout = useMemo(() => {
 		if (props.tableLayout) return props.tableLayout;
 		return columns?.some((item) => item.ellipsis) ? "fixed" : "auto";

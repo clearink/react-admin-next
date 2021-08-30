@@ -8,6 +8,9 @@ import { isBoolean, isObject } from "@/utils/ValidateType";
 import { formatFormValue } from "@/components/Pro/utils/format-form-value";
 import { UseModalActionProps, WrapperModalFormProps } from "./interface";
 import useDeepMemo from "../state/use-deep-memo";
+import { useDebounceValue } from "../state/use-debounce";
+import { useCallback } from "react";
+import withDefaultProps from "@/hocs/withDefaultProps";
 
 export function CreateModalForm<P = {}, V = any>(
 	WrappedComponent: ComponentType<P>,
@@ -19,8 +22,8 @@ export function CreateModalForm<P = {}, V = any>(
 	// 回调 or 数值
 	let innerSetVisible: null | Dispatch<SetStateAction<boolean>> = null;
 	let innerSetWrappedProps: null | Dispatch<SetStateAction<Partial<P> | undefined>> = null;
-	let innerOnOpen: null | WrapperModalFormProps["onOpen"] = null;
-	let innerField: WrapperModalFormProps["fieldProps"] = undefined;
+	let innerOnOpen: null | WrapperModalFormProps<P>["onOpen"] = null;
+	let innerField: WrapperModalFormProps<P>["fieldProps"] = undefined;
 	let innerForm: FormInstance<V> | undefined = undefined;
 
 	// 回调锁
@@ -97,10 +100,18 @@ export function CreateModalForm<P = {}, V = any>(
 			if (handleLock) return;
 			handleLock = true;
 			const onCancel = rest.onCancel;
-			const shouldClose = (await onCancel?.({ ...field, ...wrappedProps })) ?? true;
-			handleLock = false;
-			shouldClose === true && handleCloseClick();
+			try {
+				const shouldClose = (await onCancel?.({ ...field, ...wrappedProps })) ?? true;
+				shouldClose === true && handleCloseClick();
+			} catch (error) {
+				handleLock = false;
+			}
 		});
+
+		// 完全关闭后才设置 handleLock = false 避免重复触发
+		const handleAfterClose = useCallback(() => {
+			handleLock = false;
+		}, []);
 
 		// 缓存值
 		const okButtonProps = useMemo(
@@ -110,8 +121,8 @@ export function CreateModalForm<P = {}, V = any>(
 
 		// 缓存组件
 		const WrappedMemorized = useMemo(() => {
-			return <WrappedComponent {...(field as P)} {...wrappedProps} />;
-		}, [field, wrappedProps]);
+			return <WrappedComponent {...(field as P)} {...wrappedProps} form={form} />;
+		}, [field, form, wrappedProps]);
 
 		const DOM = (
 			<Form name='modal-form' {...formProps} form={form} onFinish={handleOk}>
@@ -124,6 +135,7 @@ export function CreateModalForm<P = {}, V = any>(
 					destroyOnClose={false}
 					onOk={handleOk}
 					okButtonProps={okButtonProps}
+					afterClose={handleAfterClose}
 					onCancel={handleCancel}
 				>
 					{children}
@@ -136,7 +148,11 @@ export function CreateModalForm<P = {}, V = any>(
 		return createPortal(DOM, document.querySelector("body")!);
 	};
 
-	return [WrapperModalComponent, handleOpenClick, handleCloseClick] as const;
+	return [
+		withDefaultProps(WrapperModalComponent, { width: 600 }),
+		handleOpenClick,
+		handleCloseClick,
+	] as const;
 }
 
 export default function useModalForm<P = {}, V = any>(

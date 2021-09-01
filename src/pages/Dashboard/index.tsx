@@ -1,12 +1,11 @@
 import { useCallback } from "react";
-import { Button, FormInstance } from "antd";
 import { ProFormInput } from "@/components/Pro/FormItem";
 import { ProTable } from "@/components/Pro/Table";
 import { ProColumnsType } from "@/components/Pro/Table/ProTable/interface";
-import useModalForm from "@/hooks/action/use-modal-form";
 import http from "@/http";
 import { sleep } from "@/utils/Test";
 import useDrawerForm from "@/hooks/action/use-drawer-form";
+import LinkButton from "@/components/Company/LinkButton";
 // import "@/components/Pro/utils/merge-value";
 interface Item {
 	id: string | number;
@@ -16,7 +15,7 @@ interface Item {
 	content: string;
 }
 
-function ComponentA(props: { form: FormInstance; a: number; c: string; name: string }) {
+function ComponentA(props: { a: number; c: string; name: string }) {
 	console.log("A props", props);
 	return (
 		<>
@@ -40,7 +39,6 @@ export default function DashBoard() {
 			search: <ProFormInput label={false} />,
 			ellipsis: true,
 			copyable: true,
-			width: 300,
 		},
 		{
 			title: "状态",
@@ -65,22 +63,20 @@ export default function DashBoard() {
 		{
 			title: "action",
 			key: "action",
+			width: 300,
 			render: (dom, record, index, action) => {
-				return [
-					<Button
-						type='link'
-						size='small'
-						key='ModalFormA'
-						onClick={() => {
-							handleOpen({ c: record.content, name: "a" });
-						}}
-					>
-						open ModalFormA
-					</Button>,
-					<Button type='link' size='small' key='delete'>
-						delete
-					</Button>,
-				];
+				return (
+					<>
+						<LinkButton
+							onClick={() => {
+								handleOpen();
+							}}
+						>
+							open formA
+						</LinkButton>
+						<LinkButton>delete</LinkButton>
+					</>
+				);
 			},
 		},
 	];
@@ -92,6 +88,7 @@ export default function DashBoard() {
 			pageSize: params.pageSize,
 			sorter: sorters,
 		});
+
 		return { dataSource: result.data, total: result.total };
 	}, []);
 	return (

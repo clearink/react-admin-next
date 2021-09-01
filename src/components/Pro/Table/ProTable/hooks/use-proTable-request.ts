@@ -7,6 +7,7 @@ import { ProTableProps } from "../interface";
 import { FormInstance } from "antd";
 import { getInitState } from "../utils";
 import { actions } from "../store";
+import { sleep } from "@/utils/Test";
 
 interface UseProTableRequestProps<RT extends object = any> {
 	request: ProTableProps<RT>["request"];
@@ -39,7 +40,7 @@ export default function useProTableRequest<RT extends object = any>(
 			const params = { ...formValue, ...$params, ...state.pagination };
 			const result = await request(params, state.filters, state.sorter);
 
-			if (!result) return;
+			if (!result || !mountedRef.current) return;
 
 			const { dataSource, total } = result;
 

@@ -24,9 +24,9 @@ const columns: EditableColumnsType<ApiItem> = [
 	{
 		title: "名称",
 		dataIndex: "name",
-		width: 200,
-		read: <FieldText copyable ellipsis />,
 		edit: <ProFormInput />,
+		ellipsis: true,
+		copyable: true,
 	},
 	{
 		title: "标识",

@@ -11,6 +11,7 @@ import {
 import { ProFormInput, ProFormSelect } from "@/components/Pro/FormItem";
 import { FieldStatus } from "@/components/Pro/Field";
 import styles from "./style.module.scss";
+import LinkButton from "@/components/Company/LinkButton";
 const __columns: EditableColumnsType<any> = [
 	{
 		title: "name",
@@ -44,20 +45,19 @@ const __columns: EditableColumnsType<any> = [
 	},
 	{
 		title: "action",
-		key: "action",
-		fixed: "right",
+		key: "action", 
 		width: 200,
 		render: (dom, record, index, actions) => {
-			return (
-				<>
-					<Button onClick={() => actions.edit(record)} className='mr-4'>
-						编辑
-					</Button>
-					<Popconfirm title='确定删除吗?' onConfirm={() => actions.delete(record)}>
-						<Button danger>删除</Button>
-					</Popconfirm>
-				</>
-			);
+			console.log(dom);
+			return <div>123</div>;
+			// return (
+			// 	<>
+			// 		<LinkButton onClick={() => actions.edit(record)}>编辑</LinkButton>
+			// 		<Popconfirm title='确定删除吗?' onConfirm={() => actions.delete(record)}>
+			// 			<LinkButton danger>删除</LinkButton>
+			// 		</Popconfirm>
+			// 	</>
+			// );
 		},
 	},
 ];

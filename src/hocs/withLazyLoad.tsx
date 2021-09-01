@@ -1,22 +1,22 @@
-import React, { ComponentType, PureComponent, Suspense } from "react";
+import React, { ComponentType, lazy, PureComponent, Suspense } from "react";
 import { Spin } from "antd";
 import { PageBaseProps } from "@/@types/route";
 import styles from "./style.module.scss";
-export default function withLazyLoad(WrappedComponent: ComponentType<any>) {
-  class Hoc extends PureComponent<PageBaseProps> {
-    render() {
-      return (
-        <Suspense
-          fallback={
-            <div className={styles.loading}>
-              <Spin size="large" />
-            </div>
-          }
-        >
-          <WrappedComponent {...this.props} />
-        </Suspense>
-      );
-    }
-  }
-  return Hoc;
+
+const fallback = (
+	<div className={styles.loading}>
+		<Spin size='large' />
+	</div>
+);
+export default function withLazyLoad(factory: () => Promise<{ default: ComponentType<any> }>) {
+	const WrappedComponent = lazy(factory);
+	return class Hoc extends PureComponent<PageBaseProps> {
+		render() {
+			return (
+				<Suspense fallback={fallback}>
+					<WrappedComponent {...this.props} />
+				</Suspense>
+			);
+		}
+	};
 }

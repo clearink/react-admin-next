@@ -4,6 +4,22 @@
 }
 :root {
 	font-size: 10px;
+	min-width: 960px;
+	/*滚动条整体样式*/
+	&::-webkit-scrollbar {
+		width: 6px;
+		height: 6px;
+	}
+	/*滚动条里面小方块*/
+	&::-webkit-scrollbar-thumb {
+		border-radius: 4px;
+		background-color: rgba($color: #1890ff, $alpha: 0.6);
+	}
+	/*滚动条里面轨道*/
+	&::-webkit-scrollbar-track {
+		border-radius: 4px;
+		background: rgba($color: #000000, $alpha: 0.1);
+	}
 }
 .scroll-body-effect {
 	touch-action: none;

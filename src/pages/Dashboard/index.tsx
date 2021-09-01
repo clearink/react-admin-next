@@ -26,6 +26,7 @@ function ComponentA(props: { a: number; c: string; name: string }) {
 	);
 }
 
+// 重写 复制与省略的功能 现有的性能太差了
 export default function DashBoard() {
 	const [FormModal, handleOpen] = useDrawerForm(ComponentA);
 
@@ -36,9 +37,9 @@ export default function DashBoard() {
 				tip: "标题过长会收缩",
 			},
 			dataIndex: "title",
-			search: <ProFormInput label={false} />,
-			ellipsis: true,
-			copyable: true,
+			search: <ProFormInput required label="标题" />,
+			// ellipsis: true,
+			// copyable: true,
 		},
 		{
 			title: "状态",

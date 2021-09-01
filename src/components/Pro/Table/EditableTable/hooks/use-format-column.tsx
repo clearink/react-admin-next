@@ -5,7 +5,7 @@ import merge from "lodash/merge";
 import TitleTip from "@/components/Pro/TitleTip";
 import { isObject } from "@/utils/ValidateType";
 import { FilterValue as PickValue } from "@/utils/Value";
-import { EditableColumnsType, EditableColumnType, EditableTableRef } from "../interface";
+import { EditableColumnsType, EditableColumnType, EditableTableRef, EditType } from "../interface";
 
 // 转换 columns 分离出 editCol 与 tableCol
 const columnFilterProperty = [
@@ -21,7 +21,8 @@ const columnFilterProperty = [
 ] as any;
 export default function useFormatColumn<T extends object = any>(
 	columns: EditableColumnsType<T> = [],
-	actions: MutableRefObject<EditableTableRef<T> | undefined>
+	actions: MutableRefObject<EditableTableRef<T> | undefined>,
+	editType: EditType = "modal" // 编辑模式 默认 弹窗
 ) {
 	// 获得 title
 	const getTitle = useCallback((title: EditableColumnType<T>["title"]) => {
@@ -67,10 +68,26 @@ export default function useFormatColumn<T extends object = any>(
 	// 追加 table column
 	const appendColumn = useCallback(
 		(array: ColumnsType<T>, item: EditableColumnType<T>) => {
+			const { edit, dataIndex, props: $props } = item;
 			const props = PickValue(item, columnFilterProperty);
-			array.push({ ...props, render: overrideRender(item) });
+			const columnItem = { ...props, render: overrideRender(item) };
+			if (editType === "cell" && isValidElement(edit)) {
+				const editElement = cloneElement(
+					item.edit!,
+					merge({ name: dataIndex }, { field: $props }, edit.props)
+				);
+				const handleCell = (record: T) => ({
+					record,
+					dataIndex,
+					edit: editElement,
+					title: undefined,
+					handleSave: () => {},
+				});
+				Object.assign(columnItem, { onCell: handleCell });
+			}
+			array.push(columnItem);
 		},
-		[overrideRender]
+		[overrideRender, editType]
 	);
 
 	return useMemo(() => {

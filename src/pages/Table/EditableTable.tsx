@@ -14,7 +14,7 @@ import styles from "./style.module.scss";
 import LinkButton from "@/components/Company/LinkButton";
 const __columns: EditableColumnsType<any> = [
 	{
-		title: "name",
+		title: { title: "name", tip: "name-tip" },
 		dataIndex: "name",
 		width: "30%",
 		edit: <ProFormInput required />,
@@ -26,7 +26,9 @@ const __columns: EditableColumnsType<any> = [
 		edit: (
 			<ProFormSelect
 				field={{
-					valueEnum: Array.from({ length: 30 }, (_, i) => ({ label: i, value: i })),
+					valueEnum: Array.from({ length: 30 }, (_, i) => {
+						return { label: i, value: i };
+					}),
 				}}
 			/>
 		),
@@ -40,33 +42,29 @@ const __columns: EditableColumnsType<any> = [
 	{
 		title: "address",
 		dataIndex: "address",
-		ellipsis: true,
-		copyable: true,
 	},
 	{
 		title: "action",
-		key: "action", 
+		key: "action",
 		width: 200,
 		render: (dom, record, index, actions) => {
-			console.log(dom);
-			return <div>123</div>;
-			// return (
-			// 	<>
-			// 		<LinkButton onClick={() => actions.edit(record)}>编辑</LinkButton>
-			// 		<Popconfirm title='确定删除吗?' onConfirm={() => actions.delete(record)}>
-			// 			<LinkButton danger>删除</LinkButton>
-			// 		</Popconfirm>
-			// 	</>
-			// );
+			return (
+				<>
+					<LinkButton onClick={() => actions.edit(record)}>编辑</LinkButton>
+					<Popconfirm title='确定删除吗?' onConfirm={() => actions.delete(record)}>
+						<LinkButton danger>删除</LinkButton>
+					</Popconfirm>
+				</>
+			);
 		},
 	},
 ];
 export default function List() {
 	const ref = useRef<EditableTableRef>(null);
 
-	const [type, setType] = useState<EditType>("modal");
+	const [type, setType] = useState<EditType>("cell");
 	const [data, setData] = useState(() =>
-		Array.from({ length: 30 }, (_, i) => ({
+		Array.from({ length: 1 }, (_, i) => ({
 			key: i,
 			time: "2021-3-14",
 			name: `"Edward King 0"${i}`,
@@ -74,7 +72,7 @@ export default function List() {
 			address: "London, Park Lane no. 0",
 		}))
 	);
-
+	console.log("render");
 	return (
 		<div className={styles.list_page_wrap}>
 			<PageHeaderWrap title='EditableTable介绍' className={styles.page_title} />
@@ -101,6 +99,7 @@ export default function List() {
 					columns={__columns}
 					dataSource={data}
 					ref={ref}
+					pagination={{ pageSize: 10 }}
 					onDataChange={(records) => {
 						setData(records);
 						return true;

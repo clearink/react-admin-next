@@ -21,6 +21,8 @@ import {
 
 import EditableTableForm, { EditableTableFormRef } from "./components/EditableTableForm";
 import { useEffect } from "react";
+import EditableRow from "./components/EditableRow";
+import EditableCell from "./components/EditableCell";
 
 // 可编辑表格
 function EditableTable<RT extends object = any>(
@@ -42,7 +44,7 @@ function EditableTable<RT extends object = any>(
 	const actionRef = useRef<EditableTableRef<RT>>();
 	const addRef = useRef<EditableTableFormRef<RT>>(null);
 	const editRef = useRef<EditableTableFormRef<RT>>(null);
-	const [tableCol, editCol] = useFormatColumn(columns, actionRef);
+	const [tableCol, editCol] = useFormatColumn(columns, actionRef, editType);
 
 	const [_dataSource, setDataSource] = useState<readonly RT[]>([]); // 内部 dataSource
 
@@ -108,9 +110,20 @@ function EditableTable<RT extends object = any>(
 
 	/* ----------------------------------暴露的方法 end--------------------------------------- */
 
+	// cell 编辑模式
+	const components = useMemo(() => {
+		if (editType !== "cell") return undefined;
+		return { body: { row: EditableRow, cell: EditableCell } };
+	}, [editType]);
 	return (
 		<>
-			<Table<RT> {...rest} tableLayout={tableLayout} columns={tableCol} dataSource={dataSource} />
+			<Table<RT>
+				{...rest}
+				tableLayout={tableLayout}
+				components={components}
+				columns={tableCol}
+				dataSource={dataSource}
+			/>
 			{/* 新增 form */}
 			<EditableTableForm<RT>
 				add

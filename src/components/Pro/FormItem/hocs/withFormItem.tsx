@@ -13,7 +13,7 @@ export default function withFormItem<P>(Field: React.ComponentType<P>, defaultPr
 		const [itemProps, itemWidth] = getProFormItemStyle(width);
 
 		// 扩展一些基本的rules
-		if (rest.required && rest.label) {
+		if (rest.required) {
 			const requiredRule = getRequiredRule(rest.label);
 			if (rest.rules) rest.rules = rest.rules.concat(requiredRule);
 			else rest.rules = requiredRule;

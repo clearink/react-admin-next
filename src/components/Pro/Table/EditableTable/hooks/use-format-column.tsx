@@ -46,7 +46,7 @@ export default function useFormatColumn<T extends object = any>(
 	}, []);
 
 	// 重写 columns.render 属性
-	const overrideRender = useCallback(
+	const columnRender = useCallback(
 		(item: EditableColumnType<T>) => {
 			const { props, ellipsis, copyable, render, read } = item;
 			return (value: any, record: T, index: number) => {
@@ -70,7 +70,7 @@ export default function useFormatColumn<T extends object = any>(
 		(array: ColumnsType<T>, item: EditableColumnType<T>) => {
 			const { edit, dataIndex, props: $props } = item;
 			const props = PickValue(item, columnFilterProperty);
-			const columnItem = { ...props, render: overrideRender(item) };
+			const columnItem = { ...props, render: columnRender(item) };
 			if (editType === "cell" && isValidElement(edit)) {
 				const editElement = cloneElement(
 					item.edit!,
@@ -87,7 +87,7 @@ export default function useFormatColumn<T extends object = any>(
 			}
 			array.push(columnItem);
 		},
-		[overrideRender, editType]
+		[columnRender, editType]
 	);
 
 	return useMemo(() => {

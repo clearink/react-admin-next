@@ -6,13 +6,7 @@ export const EditableRowForm = createContext<FormInstance | null>(null);
 function EditableRow(props: EditableRowProps) {
 	const [form] = Form.useForm();
 	return (
-		<Form
-			form={form}
-			component={false}
-			onFieldsChange={(updateField) => {
-				console.log(updateField);
-			}}
-		>
+		<Form form={form} component={false}>
 			<EditableRowForm.Provider value={form}>
 				<tr {...props} />
 			</EditableRowForm.Provider>

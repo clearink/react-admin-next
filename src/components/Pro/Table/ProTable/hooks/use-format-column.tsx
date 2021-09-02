@@ -49,7 +49,7 @@ export default function useFormatColumn<T extends object = any>(
 	);
 
 	// 重写 columns.render 属性
-	const overrideRender = useCallback(
+	const columnRender = useCallback(
 		(item: ProColumnType<T>) => {
 			const { props, ellipsis, copyable, render, read } = item;
 			return (value: any, record: T, index: number) => {
@@ -73,9 +73,9 @@ export default function useFormatColumn<T extends object = any>(
 	const appendColumn = useCallback(
 		(array: [ColumnType<T>, number][], item: ProColumnType<T>, index: number) => {
 			const props = PickValue(item, columnFilterProperty);
-			array.push([{ ...props, render: overrideRender(item) }, item.tableSort ?? index]);
+			array.push([{ ...props, render: columnRender(item) }, item.tableSort ?? index]);
 		},
-		[overrideRender]
+		[columnRender]
 	);
 
 	return useMemo(() => {

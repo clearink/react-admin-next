@@ -7,7 +7,6 @@ import useCountDown from "./hooks/use-count-down";
 import { ProFormContainer } from "../../Form/ProForm/utils";
 import withFormItem from "../hocs/withFormItem";
 import useRefCallback from "@/hooks/state/use-ref-callback";
-import useMountedRef from "@/hooks/state/use-mounted-ref";
 import { ProFormCaptchaProps } from "./interface";
 import styles from "./style.module.scss";
 
@@ -24,7 +23,6 @@ function ProFormCaptcha(props: ProFormCaptchaProps) {
 
 	const [loading, setLoading] = useState<ButtonProps["loading"]>(false);
 	const { form } = ProFormContainer.useContainer();
-	const mountedRef = useMountedRef();
 	const handleClick = useRefCallback(async () => {
 		if (typeof onGetCaptcha !== "function" || active) return;
 		try {
@@ -35,7 +33,7 @@ function ProFormCaptcha(props: ProFormCaptchaProps) {
 			const result = await onGetCaptcha(phoneValue);
 			if (result) start();
 		} finally {
-			if (mountedRef.current) setLoading(false);
+			setLoading(false);
 		}
 	});
 	const renderText = () => {

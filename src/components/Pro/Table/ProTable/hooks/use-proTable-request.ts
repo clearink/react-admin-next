@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction, useRef } from "react";
-import useMountedRef from "@/hooks/state/use-mounted-ref";
 import useDeepEffect from "@/hooks/state/use-deep-effect";
 import { useDebounceCallback } from "@/hooks/state/use-debounce";
 import { isFunction } from "@/utils/ValidateType";
@@ -7,7 +6,6 @@ import { ProTableProps } from "../interface";
 import { FormInstance } from "antd";
 import { getInitState } from "../utils";
 import { actions } from "../store";
-import { sleep } from "@/utils/Test";
 
 interface UseProTableRequestProps<RT extends object = any> {
 	request: ProTableProps<RT>["request"];
@@ -27,8 +25,6 @@ export default function useProTableRequest<RT extends object = any>(
 
 	const requestLock = useRef(false); // 请求锁 防止多次请求
 
-	const mountedRef = useMountedRef(); // 是否挂载
-
 	// 当正在执行请求时, 直接return      添加防抖 避免重复请求
 	const handleRequest = useDebounceCallback(50, async () => {
 		if (!isFunction(request) || requestLock.current || usePropData) return;
@@ -40,7 +36,7 @@ export default function useProTableRequest<RT extends object = any>(
 			const params = { ...formValue, ...$params, ...state.pagination };
 			const result = await request(params, state.filters, state.sorter);
 
-			if (!result || !mountedRef.current) return;
+			if (!result) return;
 
 			const { dataSource, total } = result;
 
@@ -52,10 +48,8 @@ export default function useProTableRequest<RT extends object = any>(
 				dispatch(actions.setTotal(total ?? dataSource.length));
 			}
 		} finally {
-			if (mountedRef.current) {
-				requestLock.current = false;
-				setLoading(false);
-			}
+			requestLock.current = false;
+			setLoading(false);
 		}
 	});
 

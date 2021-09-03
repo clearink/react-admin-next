@@ -7,7 +7,6 @@ import useRefCallback from "@/hooks/state/use-ref-callback";
 import classNames from "classnames";
 import { FormProviderProps } from "antd/lib/form/context";
 import { formatFormValue } from "../../utils/format-form-value";
-import useMountedRef from "@/hooks/state/use-mounted-ref";
 import { StepFormContainer } from "./utils";
 import { StepFormType } from "./components/StepForm/interface";
 
@@ -48,7 +47,6 @@ function StepsForm<V = any>(props: StepsFormProps<V>) {
 		return [formChildren, stepsChildren];
 	}, [children]);
 
-	const mountedRef = useMountedRef();
 	const handleFinish: FormProviderProps["onFormFinish"] = useRefCallback(
 		async (name, { values, forms }) => {
 			// 如果是最后一个form 调用onFinish
@@ -60,7 +58,7 @@ function StepsForm<V = any>(props: StepsFormProps<V>) {
 				const shouldNext = await onFinish?.(formatFormValue(values), { forms, name });
 				if (!isLast && shouldNext) handleNextStep();
 			} finally {
-				if (mountedRef.current) setLoading(false);
+				setLoading(false);
 			}
 		}
 	);

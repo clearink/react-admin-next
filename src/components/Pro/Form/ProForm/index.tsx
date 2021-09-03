@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { ButtonProps, Form } from "antd";
 import useRefCallback from "@/hooks/state/use-ref-callback";
 import { ProFormContainer } from "./utils";
-import useMountedRef from "@/hooks/state/use-mounted-ref";
 import { formatFormValue } from "@/components/Pro/utils/format-form-value";
 import withDefaultProps from "@/hocs/withDefaultProps";
 import Submitter from "./Submitter";
@@ -20,7 +19,7 @@ function ProForm<Values = any>(props: ProFormProps<Values>) {
 		...rest
 	} = props;
 	const [form] = Form.useForm($form);
-	const mountedRef = useMountedRef();
+
 	const [_loading, setLoading] = useState<ButtonProps["loading"]>(false);
 	const usePropLoading = !!props.hasOwnProperty("loading");
 	const loading = usePropLoading ? $loading : _loading;
@@ -30,7 +29,7 @@ function ProForm<Values = any>(props: ProFormProps<Values>) {
 			!usePropLoading && setLoading({ delay: 50 });
 			await onFinish?.(formatFormValue(values, timeFormat));
 		} finally {
-			if (mountedRef.current && !usePropLoading) setLoading(false);
+			if (!usePropLoading) setLoading(false);
 		}
 	});
 	return (

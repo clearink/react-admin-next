@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import PageHeaderWrap from "@/components/PageHeaderWrap";
-import { Button, Popconfirm, Select } from "antd";
+import { Button, Popconfirm, Select, Form, Input } from "antd";
 
 import EditableTable from "@/components/Pro/Table/EditableTable";
 import {
@@ -17,7 +17,7 @@ const __columns: EditableColumnsType<any> = [
 		title: { title: "name", tip: "name-tip" },
 		dataIndex: "name",
 		width: "30%",
-		edit: <ProFormInput required />,
+		edit: <ProFormInput required rules={[{ type: "email" }]} />,
 	},
 	{
 		title: "age",
@@ -105,6 +105,15 @@ export default function List() {
 						return true;
 					}}
 				/>
+				<Form>
+					<Form.Item
+						initialValue='12312'
+						name='title'
+						rules={[{ required: true }, { type: "email" }]}
+					>
+						<Input />
+					</Form.Item>
+				</Form>
 			</main>
 		</div>
 	);

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import classNames from "classnames";
+import cls from "classnames";
 import { Button, Input } from "antd";
 import { ButtonProps } from "antd/lib/button";
 import useCountDown from "./hooks/use-count-down";
@@ -43,7 +43,7 @@ function ProFormCaptcha(props: ProFormCaptchaProps) {
 	};
 	return (
 		<div className={styles.captcha_wrap}>
-			<Input {...rest} className={classNames(styles.input, rest.className)} />
+			<Input {...rest} className={cls(styles.input, rest.className)} />
 			{/* 获取验证码的 */}
 			<Button
 				size={rest.size}
@@ -51,7 +51,7 @@ function ProFormCaptcha(props: ProFormCaptchaProps) {
 				loading={loading}
 				disabled={active}
 				onClick={handleClick}
-				className={classNames(styles.trigger, trigger?.className)}
+				className={cls(styles.trigger, trigger?.className)}
 			>
 				{renderText()}
 			</Button>

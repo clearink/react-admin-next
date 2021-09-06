@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from "react";
-import classNames from "classnames";
+import cls from "classnames";
 import { ProTableContext } from "../../utils";
 import { TableInfoProps } from "./interface";
 import styles from "./style.module.scss";
@@ -14,12 +14,8 @@ export default function TableInfo<RT extends object = any>(props: TableInfoProps
 	}, [tableAction]);
 	const DOM = useMemo(
 		() => (
-			<div className={classNames(styles.table_info_wrap, className)}>
-				<div
-					className={classNames(styles.info_left, {
-						[styles.hidden]: !count,
-					})}
-				>
+			<div className={cls(styles.table_info_wrap, className)}>
+				<div className={cls(styles.info_left, !count && styles.hidden)}>
 					已选择<span className={styles.info_strong_value}>{count}</span>条
 					<span className={styles.info_clear} onClick={handleClear}>
 						清空

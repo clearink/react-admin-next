@@ -1,4 +1,4 @@
-import React, {
+import {
 	forwardRef,
 	Ref,
 	useCallback,
@@ -8,6 +8,7 @@ import React, {
 	useState,
 } from "react";
 import { FormInstance, Table } from "antd";
+import merge from "lodash/merge";
 import { isUndefined } from "@/utils/ValidateType";
 import withDefaultProps from "@/hocs/withDefaultProps";
 import useRefCallback from "@/hooks/state/use-ref-callback";
@@ -51,6 +52,7 @@ function EditableTable<RT extends object = any>(
 	const dataSource = $dataSource ?? _dataSource;
 
 	/* ---------------------------------方法 start ---------------------------------------- */
+	// table 数据更改
 	const handleChange = useCallback(
 		async (newData: RT[], record: RT, type: DatChangeType) => {
 			let ret = true;
@@ -61,6 +63,11 @@ function EditableTable<RT extends object = any>(
 		[onDataChange]
 	);
 
+	// 开始新增数据
+	const handleCreate2 = () => {};
+	// 开始编辑数据
+	const handleEdit2 = () => {};
+
 	// 新增数据
 	const handleCreate = useRefCallback(async (props?: any, values?: any, form?: FormInstance) => {
 		const record = { [rowKey!]: Date.now(), ...values! };
@@ -70,7 +77,7 @@ function EditableTable<RT extends object = any>(
 
 	// 修改数据
 	const handleEdit = useRefCallback(async ($record?: any, values?: any) => {
-		const record = { ...$record, ...values };
+		const record = merge($record, values);
 		const newData = dataSource.map((item) => {
 			if (isUndefined(rowKey) || record[rowKey] !== item[rowKey]) return item;
 			return { ...item, ...record };
@@ -152,8 +159,6 @@ function EditableTable<RT extends object = any>(
 		</>
 	);
 }
-
-// TODO 泛型组件使用withDefaultProps后丢失了泛型功能 后期修正
 
 export default withDefaultProps(forwardRef(EditableTable), {
 	size: "middle",

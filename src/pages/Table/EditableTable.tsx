@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import PageHeaderWrap from "@/components/PageHeaderWrap";
-import { Button, Popconfirm, Select, Form, Input } from "antd";
+import { Button, Popconfirm, Select } from "antd";
 
 import EditableTable from "@/components/Pro/Table/EditableTable";
 import {
@@ -15,9 +15,9 @@ import LinkButton from "@/components/Company/LinkButton";
 const __columns: EditableColumnsType<any> = [
 	{
 		title: { title: "name", tip: "name-tip" },
-		dataIndex: "name",
+		dataIndex: ["name", 0],
 		width: "30%",
-		edit: <ProFormInput required rules={[{ type: "email" }]} />,
+		edit: <ProFormInput rules={[{ required: true, message: "请输入name" }, { type: "email" }]} />,
 	},
 	{
 		title: "age",
@@ -67,12 +67,12 @@ export default function List() {
 		Array.from({ length: 1 }, (_, i) => ({
 			key: i,
 			time: "2021-3-14",
-			name: `"Edward King 0"${i}`,
+			name: [`"Edward King 0"${i}`],
 			age: i,
 			address: "London, Park Lane no. 0",
 		}))
 	);
-	console.log("render");
+
 	return (
 		<div className={styles.list_page_wrap}>
 			<PageHeaderWrap title='EditableTable介绍' className={styles.page_title} />
@@ -101,19 +101,11 @@ export default function List() {
 					ref={ref}
 					pagination={{ pageSize: 10 }}
 					onDataChange={(records) => {
+						console.log("onDataChange");
 						setData(records);
 						return true;
 					}}
 				/>
-				<Form>
-					<Form.Item
-						initialValue='12312'
-						name='title'
-						rules={[{ required: true }, { type: "email" }]}
-					>
-						<Input />
-					</Form.Item>
-				</Form>
 			</main>
 		</div>
 	);

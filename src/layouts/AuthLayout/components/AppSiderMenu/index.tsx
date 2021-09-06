@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Menu, Layout } from "antd";
-import classNames from "classnames";
+import cls from "classnames";
 import useTypedSelector from "@/hooks/redux/use-typed-selector";
 import useAppDispatch from "@/hooks/redux/use-app-dispatch";
 import { actions } from "@/store/reducers/menu";
@@ -39,25 +39,21 @@ function AppSiderMenu() {
 	const handleToggleMenu = (flag: boolean) => {
 		dispatch(actions.setCollapsed(flag));
 	};
+
+	const className = useMemo(() => {
+		return cls(collapsed && styles.collapsed, fixed && styles.fixed);
+	}, [collapsed, fixed]);
 	return (
 		<>
-			<div
-				className={classNames(styles.place_holder, {
-					[styles.fixed]: fixed,
-					[styles.collapsed]: collapsed,
-				})}
-			/>
+			<div className={cls(styles.place_holder, className)} />
 			<Layout.Sider
 				collapsible
 				collapsedWidth={COLLAPSED_WIDTH}
-				collapsed={collapsed} 
+				collapsed={collapsed}
 				trigger={null}
 				breakpoint='md'
 				onBreakpoint={handleToggleMenu}
-				className={classNames(styles.sider_menu, {
-					[styles.fixed]: fixed,
-					[styles.collapsed]: collapsed,
-				})}
+				className={cls(styles.sider_menu, className)}
 			>
 				<div className={styles.logo_title}>
 					<BulbFilled className={styles.logo} />

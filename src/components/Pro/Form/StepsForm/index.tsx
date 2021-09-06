@@ -4,7 +4,7 @@ import StepForm from "./components/StepForm";
 import { StepsFormProps } from "./interface";
 import styles from "./style.module.scss";
 import useRefCallback from "@/hooks/state/use-ref-callback";
-import classNames from "classnames";
+import cls from "classnames";
 import { FormProviderProps } from "antd/lib/form/context";
 import { formatFormValue } from "../../utils/format-form-value";
 import { StepFormContainer } from "./utils";
@@ -77,9 +77,10 @@ function StepsForm<V = any>(props: StepsFormProps<V>) {
 							return (
 								<div
 									key={child.key}
-									className={classNames(styles.steps_form__form, {
-										[styles["steps_form__form--active"]]: index === current,
-									})}
+									className={cls(
+										styles.steps_form__form,
+										index === current && styles["steps_form__form--active"]
+									)}
 								>
 									{cloneElement(child, { loading: active ? loading : false })}
 								</div>

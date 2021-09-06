@@ -9,7 +9,7 @@ class ErrorEventBus {
 	}
 
 	// 添加订阅事件
-	public on(type: Key | Key[], event: Function) {
+	public on(type: string, event: Function) {
 		const eventType = ([] as Key[]).concat(type).toString();
 		if (!this.eventMap.has(eventType)) {
 			// 没有该类型的事件
@@ -21,7 +21,7 @@ class ErrorEventBus {
 		return this;
 	}
 	// 发布事件
-	public emit<T extends any = any>(type: Key | Key[], ...params: T[]) {
+	public emit<T extends any = any>(type: string, ...params: T[]) {
 		const eventType = ([] as Key[]).concat(type).toString();
 		if (!this.eventMap.has(eventType)) return;
 		const eventList = this.eventMap.get(eventType)!;
@@ -32,7 +32,7 @@ class ErrorEventBus {
 	}
 
 	// 删除事件
-	public off(type: Key | Key[], event: Function) {
+	public off(type: string, event: Function) {
 		const eventType = ([] as Key[]).concat(type).toString();
 		if (!this.eventMap.has(eventType)) return;
 		const errorList = this.eventMap.get(eventType)!.filter((cb) => cb !== event);
@@ -41,7 +41,7 @@ class ErrorEventBus {
 	}
 
 	// 是否有该类型的事件
-	public has(type: Key | Key[]) {
+	public has(type: string) {
 		const eventType = ([] as Key[]).concat(type).toString();
 		const eventList = this.eventMap.get(eventType) ?? [];
 		return eventList.length > 0;

@@ -1,6 +1,6 @@
 import { useContext, useMemo, useCallback } from "react";
 import { Tooltip } from "antd";
-import classNames from "classnames";
+import cls from "classnames";
 import TitleTip from "@/components/Pro/TitleTip";
 import { ProTableContext } from "../../utils";
 import { TableToolbarProps } from "./interface";
@@ -26,7 +26,7 @@ function TableToolbar<RT extends object = any>(props: TableToolbarProps<RT>) {
 	}, [handleReload]);
 	const actionList = render ? render(initAction, tableAction) : initAction;
 	return (
-		<div className={classNames(className, styles.title_toolbar)}>
+		<div className={cls(className, styles.title_toolbar)}>
 			<TitleTip className={styles.title} title={title} />
 			<div className={styles.toolbar}>{actionList}</div>
 		</div>

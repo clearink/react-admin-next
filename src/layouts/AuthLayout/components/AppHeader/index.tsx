@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Layout } from "antd";
-import classNames from "classnames";
+import cls from "classnames";
 import { MenuFoldOutlined } from "@ant-design/icons";
 import useTypedSelector from "@/hooks/redux/use-typed-selector";
 import useAppDispatch from "@/hooks/redux/use-app-dispatch";
@@ -17,20 +17,13 @@ function AppHeader() {
 	const handleToggleMenu = () => {
 		dispatch(actions.toggle());
 	};
+	const className = useMemo(() => {
+		return cls(collapsed && styles.collapsed, fixed && styles.fixed);
+	}, [collapsed, fixed]);
 	return (
 		<>
-			<div
-				className={classNames(styles.place_holder, {
-					[styles.collapsed]: collapsed,
-					[styles.fixed]: fixed,
-				})}
-			></div>
-			<Layout.Header
-				className={classNames(styles.app_header, {
-					[styles.collapsed]: collapsed,
-					[styles.fixed]: fixed,
-				})}
-			>
+			<div className={cls(styles.place_holder, className)}></div>
+			<Layout.Header className={cls(styles.app_header, className)}>
 				<MenuFoldOutlined className={styles.icon} onClick={handleToggleMenu} />
 			</Layout.Header>
 		</>

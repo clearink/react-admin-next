@@ -3,3 +3,4 @@ type ArrowFunction = (...args: any[]) => any;
 
 
 declare module 'lodash/merge'
+declare module 'lodash/get'

@@ -4,7 +4,7 @@ import { TableSearchProps } from "./interface";
 import styles from "./style.module.scss";
 import { useDebounceCallback } from "@/hooks/state/use-debounce";
 
-import classNames from "classnames";
+import cls from "classnames";
 import { ProTableContext } from "../../utils";
 import { useCallback } from "react";
 
@@ -45,7 +45,7 @@ function TableSearch<RT extends object = any>(props: TableSearchProps<RT>) {
 	}, [rest.form]);
 	const DOM = useMemo(() => {
 		return (
-			<div className={classNames(styles.search_form, { [styles.hidden]: !childCount })}>
+			<div className={cls(styles.search_form, !childCount && styles.hidden)}>
 				<FilterForm
 					{...rest}
 					loading={fetchLoading}

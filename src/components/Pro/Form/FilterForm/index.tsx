@@ -1,7 +1,7 @@
 import React, { Children, cloneElement, ReactNode, useMemo, useState } from "react";
 import { Col, Form } from "antd";
 import { UpOutlined } from "@ant-design/icons";
-import classNames from "classnames";
+import cls from "classnames";
 import useRefCallback from "@/hooks/state/use-ref-callback";
 import { valueRange } from "@/utils/Value";
 import ProForm from "../ProForm";
@@ -57,9 +57,10 @@ function FilterForm<Values = any>(props: FilterFormProps<Values>) {
 
 	const children = useMemo(() => {
 		return Children.map($children, (child, index) => {
-			const className = classNames(styles.filter_form__item, {
-				[styles.hidden]: index >= singleRowMaxChildCount,
-			});
+			const className = cls(
+				styles.filter_form__item,
+				index >= singleRowMaxChildCount && styles.hidden
+			);
 			return (
 				<Col span={rowSpan} className={className}>
 					{child}
@@ -71,14 +72,15 @@ function FilterForm<Values = any>(props: FilterFormProps<Values>) {
 	return (
 		<ProForm
 			{...rest}
-			className={classNames(rest.className, styles.filter_form)}
+			className={cls(rest.className, styles.filter_form)}
 			renderSubmitter={(dom, form) => {
 				let submitter: ReactNode = [dom[0], cloneElement(dom[1], { children: "查询" })];
 				if (renderSubmitter) submitter = renderSubmitter(dom, form);
-				const className = classNames(styles.collapsed_trigger, {
-					hidden: childCount <= singleRowMaxChildCount && collapsed,
-				});
-				const triggerClassName = classNames(styles.trigger_icon, { [styles.collapsed]: collapsed });
+				const className = cls(
+					styles.collapsed_trigger,
+					childCount <= singleRowMaxChildCount && collapsed && "hidden"
+				);
+				const triggerClassName = cls(styles.trigger_icon, collapsed && styles.collapsed);
 				/* TODO: 可以自定义以下内容 */
 				/* 子组件的数量 小于等于 最大能够容纳的数量 且此时处于收起状态时将隐藏指示器 */
 				return (

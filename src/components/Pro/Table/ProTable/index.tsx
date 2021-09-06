@@ -8,7 +8,7 @@ import React, {
 	useState,
 } from "react";
 import { Table, Form } from "antd";
-import classNames from "classnames";
+import cls from "classnames";
 import useRefCallback from "@/hooks/state/use-ref-callback";
 import { GetValue } from "@/utils/Value";
 import withDefaultProps from "@/hocs/withDefaultProps";
@@ -150,7 +150,7 @@ function ProTable<RecordType extends object = any>(
 
 	return (
 		<ProTableContext.Provider value={tableAction}>
-			<div className={classNames(styles.pro_table_wrap, className)}>
+			<div className={cls(styles.pro_table_wrap, className)}>
 				{/* 筛选表单 false 时 */}
 				{renderFilterForm !== false && (
 					<TableSearch<RecordType>

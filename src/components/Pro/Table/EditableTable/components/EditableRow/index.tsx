@@ -4,6 +4,7 @@ import { FieldData } from "rc-field-form/lib/interface";
 import { useDebounceCallback } from "@/hooks/state/use-debounce";
 import ErrorEventBus from "../ErrorEventBus";
 import { EditableRowProps } from "./interface";
+
 // 提供 form 以及 save 方法
 export const EditableRowForm = createContext<FormInstance | null>(null);
 function EditableRow(props: EditableRowProps) {
@@ -12,7 +13,8 @@ function EditableRow(props: EditableRowProps) {
 	const handleFieldsChange = useDebounceCallback(100, (changeFields: FieldData[]) => {
 		for (const field of changeFields) {
 			if (!field.touched) continue;
-			ErrorEventBus.emit(field.name, field.errors);
+			const eventType = JSON.stringify(field.name); // 保留类型
+			ErrorEventBus.emit(eventType, field.errors);
 		}
 	});
 	return (

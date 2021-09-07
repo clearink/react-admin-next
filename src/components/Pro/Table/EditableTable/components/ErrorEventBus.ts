@@ -1,5 +1,3 @@
-import { Key } from "react";
-
 // 用于处理编辑模式下的错误提示的发布订阅模式
 class ErrorEventBus {
 	// 存放订阅的事件
@@ -10,21 +8,19 @@ class ErrorEventBus {
 
 	// 添加订阅事件
 	public on(type: string, event: Function) {
-		const eventType = ([] as Key[]).concat(type).toString();
-		if (!this.eventMap.has(eventType)) {
+		if (!this.eventMap.has(type)) {
 			// 没有该类型的事件
-			this.eventMap.set(eventType, [event]);
+			this.eventMap.set(type, [event]);
 		} else {
-			const eventList = this.eventMap.get(eventType)!;
-			this.eventMap.set(eventType, eventList?.concat(event));
+			const eventList = this.eventMap.get(type)!;
+			this.eventMap.set(type, eventList?.concat(event));
 		}
 		return this;
 	}
 	// 发布事件
 	public emit<T extends any = any>(type: string, ...params: T[]) {
-		const eventType = ([] as Key[]).concat(type).toString();
-		if (!this.eventMap.has(eventType)) return;
-		const eventList = this.eventMap.get(eventType)!;
+		if (!this.eventMap.has(type)) return;
+		const eventList = this.eventMap.get(type)!;
 		for (let event of eventList) {
 			event(...params);
 		}
@@ -33,17 +29,15 @@ class ErrorEventBus {
 
 	// 删除事件
 	public off(type: string, event: Function) {
-		const eventType = ([] as Key[]).concat(type).toString();
-		if (!this.eventMap.has(eventType)) return;
-		const errorList = this.eventMap.get(eventType)!.filter((cb) => cb !== event);
-		this.eventMap.set(eventType, errorList);
+		if (!this.eventMap.has(type)) return;
+		const errorList = this.eventMap.get(type)!.filter((cb) => cb !== event);
+		this.eventMap.set(type, errorList);
 		return this;
 	}
 
 	// 是否有该类型的事件
 	public has(type: string) {
-		const eventType = ([] as Key[]).concat(type).toString();
-		const eventList = this.eventMap.get(eventType) ?? [];
+		const eventList = this.eventMap.get(type) ?? [];
 		return eventList.length > 0;
 	}
 }

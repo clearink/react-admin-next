@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import PageHeaderWrap from "@/components/PageHeaderWrap";
-import { Button, Popconfirm, Select } from "antd";
+import { Button, Popconfirm, Select, Form, Input } from "antd";
 
 import EditableTable from "@/components/Pro/Table/EditableTable";
 import {
@@ -15,7 +15,7 @@ import LinkButton from "@/components/Company/LinkButton";
 const __columns: EditableColumnsType<any> = [
 	{
 		title: { title: "name", tip: "name-tip" },
-		dataIndex: ["name", 0],
+		dataIndex: ["name", 0], // dataIndex 需要唯一 否则 cell 编辑时错误提示会异常
 		width: "30%",
 		edit: <ProFormInput rules={[{ required: true, message: "请输入name" }, { type: "email" }]} />,
 	},
@@ -106,6 +106,14 @@ export default function List() {
 						return true;
 					}}
 				/>
+				<Form>
+					<Form.Item name={["title", "1"]} rules={[{ required: true }, { type: "email" }]}>
+						<Input />
+					</Form.Item>
+					<Form.Item name={["title", 1]} rules={[{ required: true }, { type: "email" }]}>
+						<Input />
+					</Form.Item>
+				</Form>
 			</main>
 		</div>
 	);

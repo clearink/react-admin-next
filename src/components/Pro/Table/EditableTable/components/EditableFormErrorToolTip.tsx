@@ -1,46 +1,78 @@
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Tooltip } from "antd";
-import { useDebounceState } from "@/hooks/state/use-debounce";
-import { useCallback } from "react";
 
 export interface EditableFormErrorTooltipProps {
 	children?: ReactNode;
-	errors: string[];
+	errors?: JSX.Element;
+	touched: boolean;
+	validating: boolean;
 }
 export default function EditableFormErrorTooltip(props: EditableFormErrorTooltipProps) {
-	const { children, errors } = props;
-	const [errorList, setErrorList] = useDebounceState(150, () => errors); // fix: tooltip瞬间的空白
+	const { children, errors, touched, validating } = props;
 	const [visible, setVisible] = useState(false); // 是否隐藏
 
 	useEffect(() => {
-		setErrorList(errors);
-		setVisible(!!errors.length);
-	}, [errors, setErrorList]);
+		if (!touched) return;
+		if (!validating) {
+			setVisible(!!errors);
+		}
+	}, [touched, errors, validating]);
 
-	const title = useMemo(() => {
-		return errorList.map((error) => (
-			<span key={error} className='inline-block text-center'>
-				{error}
-			</span>
-		));
-	}, [errorList]);
-	const handleVisibleChange = useCallback(
-		(v: boolean) => {
-			if (errorList.length && !visible) {
-				setVisible(v);
-			}
-		},
-		[errorList.length, visible]
-	);
 	return (
-		<Tooltip
-			title={title}
-			trigger='click'
-			color='#ff4d4f'
-			visible={errorList.length > 0 && visible}
-			onVisibleChange={handleVisibleChange}
-		>
+		<Tooltip title={errors} trigger='focus' color='#ff4d4f' visible={visible}>
 			{children}
 		</Tooltip>
 	);
 }
+/**
+ * <Form.Item
+      style={FIX_INLINE_STYLE}
+      preserve={false}
+      name={name}
+      validateFirst={false}
+      rules={rules}
+      // @ts-ignore
+      _internalItemRender={{
+        mark: 'pro_table_render',
+        render: (
+          inputProps: FormItemProps & {
+            errors: any[];
+          },
+          {
+            input,
+            extra,
+          }: {
+            input: JSX.Element;
+            errorList: JSX.Element;
+            extra: JSX.Element;
+          },
+        ) => {
+          return (
+            <Popover
+              trigger={popoverProps?.trigger || 'focus'}
+              placement={popoverProps?.placement}
+              visible={visible}
+              content={
+                <Content
+                  fieldError={fieldError}
+                  value={value}
+                  isValidating={isValidating}
+                  isTouched={isTouched}
+                  rules={rules}
+                  progressProps={progressProps}
+                />
+              }
+            >
+              <div>
+                {input}
+                {extra}
+              </div>
+            </Popover>
+          );
+        },
+      }}
+      {...rest}
+    >
+      {children}
+    </Form.Item>
+ */

@@ -13,7 +13,7 @@ function EditableRow(props: EditableRowProps) {
 	const handleFieldsChange = useDebounceCallback(100, (changeFields: FieldData[]) => {
 		for (const field of changeFields) {
 			if (!field.touched) continue;
-			const eventType = JSON.stringify(field.name); // 保留类型
+			const eventType = field.name.toString(); // 保留类型
 			ErrorEventBus.emit(eventType, field.errors);
 		}
 	});

@@ -7,7 +7,7 @@ import { StepFormContainer } from "../../utils";
 import { StepFormProps, StepFormType } from "./interface";
 
 function StepForm<V = any>(props: StepFormProps<V>) {
-	const { children, renderSubmitter, loading, isFirst, isLast, stepProps, ...rest } = props;
+	const { children, renderSubmitter, loading, isFirst, isLast, stepProps, title, ...rest } = props;
 	const { handleNextStep, handlePreStep } = StepFormContainer.useContainer();
 
 	type TypeRender = Required<ProFormProps>["renderSubmitter"];
@@ -22,7 +22,7 @@ function StepForm<V = any>(props: StepFormProps<V>) {
 		];
 		const fieldProps = { handleNextStep, handlePreStep, loading };
 		if (renderSubmitter) return renderSubmitter(DOM, form, fieldProps);
-		return <Space size={4}>{dom}</Space>;
+		return <Space size={4}>{DOM}</Space>;
 	});
 	return (
 		<ProForm {...rest} renderSubmitter={submitter}>

@@ -2,6 +2,7 @@ import PageHeaderWrap from "@/components/PageHeaderWrap";
 import { Input, InputNumber, Result } from "antd";
 import StepsForm from "@/components/Pro/Form/StepsForm";
 import { sleep } from "@/utils/Test";
+import { ProFormInput } from "@/components/Pro/FormItem";
 export default function StepFormPage() {
 	return (
 		<div className='flex flex-col min-h-full'>
@@ -9,41 +10,28 @@ export default function StepFormPage() {
 			<main className='bg-white flex-auto p-6 mt-10'>
 				<StepsForm
 					onFinish={async (values, info) => {
+						console.log(values, info);
 						await sleep(1000);
 						return true;
 					}}
 				>
-					<StepsForm.Step
-						name='ss1'
-						stepProps={{
-							title: "第一步",
-						}}
-					>
-						<StepsForm.Item name='name'>
-							<Input />
-						</StepsForm.Item>
+					<StepsForm.Step name='ss1' title='第一步'>
+						<ProFormInput name='name' />
 					</StepsForm.Step>
-					<StepsForm.Step
-						name='ss2'
-						stepProps={{
-							title: "第二步",
-						}}
-					>
+					<StepsForm.Step name='ss2' title='第二步'>
+						<ProFormInput name='name' />
+					</StepsForm.Step>
+					<StepsForm.Step name='ss3' title='第3步'>
 						<StepsForm.Item name='age'>
 							<InputNumber />
 						</StepsForm.Item>
 					</StepsForm.Step>
-					<StepsForm.Step name='ss3'>
+					<StepsForm.Step name='ss4' title='第4步'>
 						<StepsForm.Item name='age'>
 							<InputNumber />
 						</StepsForm.Item>
 					</StepsForm.Step>
-					<StepsForm.Step name='ss4'>
-						<StepsForm.Item name='age'>
-							<InputNumber />
-						</StepsForm.Item>
-					</StepsForm.Step>
-					<StepsForm.Step name='ss5'>
+					<StepsForm.Step name='ss5' title='完成'>
 						<Result status='success' />
 					</StepsForm.Step>
 				</StepsForm>

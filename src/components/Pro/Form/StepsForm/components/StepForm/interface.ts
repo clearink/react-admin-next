@@ -1,5 +1,5 @@
 import { ButtonProps, FormInstance, StepProps } from "antd";
-import { ComponentType, ReactElement } from "react";
+import { ComponentType, ReactElement, ReactNode } from "react";
 import { ProFormProps } from "../../../ProForm/interface";
 
 type TRenderSubmitter = (
@@ -11,7 +11,9 @@ type TRenderSubmitter = (
 		handleNextStep: () => void;
 	}
 ) => JSX.Element;
-export interface StepFormProps<Values = any> extends Omit<ProFormProps<Values>, "renderSubmitter"> {
+export interface StepFormProps<Values = any>
+	extends Omit<ProFormProps<Values>, "renderSubmitter" | "title"> {
+	title?: StepProps["title"];
 	name: string;
 	loading?: ButtonProps["loading"];
 	/** 不在 StepForm中起作用 */

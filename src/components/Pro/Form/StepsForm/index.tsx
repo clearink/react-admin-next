@@ -35,8 +35,8 @@ function StepsForm<V = any>(props: StepsFormProps<V>) {
 		const stepsChildren: JSX.Element[] = [];
 		Children.forEach(children as ReturnType<StepFormType>[], (child, index) => {
 			if (!child.type.StepForm) return;
-			const { stepProps, name } = child.props;
-			stepsChildren.push(<Steps.Step key={name ?? index} {...stepProps} />);
+			const { stepProps, name, title } = child.props;
+			stepsChildren.push(<Steps.Step key={name ?? index} title={title} {...stepProps} />);
 			formChildren.push(cloneElement(child, { key: name ?? index }));
 		});
 		formChildren = (formChildren as ReturnType<StepFormType>[]).map((child, index, arr) => {
@@ -51,7 +51,8 @@ function StepsForm<V = any>(props: StepsFormProps<V>) {
 		async (name, { values, forms }) => {
 			// 如果是最后一个form 调用onFinish
 			// 如何判断是否是最后一个 form呢?
-			const nameList = Object.keys(forms);
+			const nameList = Object.keys(forms); // Object.keys 并不能保证form name 的顺序 所以这里时有问题的
+			// 那么要如何判断呢
 			const isLast = nameList[nameList.length - 1] === name;
 			try {
 				setLoading({ delay: 50 });

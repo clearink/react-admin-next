@@ -16,4 +16,6 @@ export interface WithFormItemProps<P> extends FormItemProps {
 	width?: ProFormItemSize;
 	/** 传入组件内部的属性 例如 placeholder */
 	field?: P;
+	/** 透传placeholder */
+	placeholder?: string;
 }

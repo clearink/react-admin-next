@@ -115,7 +115,7 @@ export function CreateModalForm<P = {}, V = any>(
 
 		// 缓存值
 		const okButtonProps = useMemo(
-			() => merge(rest.okButtonProps, { loading }),
+			() => merge({}, rest.okButtonProps, { loading }),
 			[rest.okButtonProps, loading]
 		);
 

@@ -46,7 +46,7 @@ function EditableCell(props: EditableCellProps) {
 	const handleBlur = useCallback(async () => {
 		try {
 			await form.validateFields();
-			actions?.current?.edit(merge(record, form.getFieldsValue()));
+			actions?.current?.edit(merge({}, record, form.getFieldsValue()));
 			setEditing(false);
 		} catch (errors: any) {
 			type ErrorType = { errors: string[]; name: Key[] | Key };

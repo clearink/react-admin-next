@@ -7,8 +7,7 @@ import merge from "lodash/merge";
 // P 是例如 ProFormInputProps之类的类型
 export default function withFormItem<P>(Field: React.ComponentType<P>, defaultProps?: Partial<P>) {
 	return function FormItem(props: WithFormItemProps<P>) {
-		const { width, field, ...rest } = props;
-
+		const { width, field, placeholder, ...rest } = props;
 		/** 计算width */
 		const [itemProps, itemWidth] = getProFormItemStyle(width);
 
@@ -21,9 +20,9 @@ export default function withFormItem<P>(Field: React.ComponentType<P>, defaultPr
 
 		/** 解决 Field 报错的问题 */
 
-		const formItemProps = merge(itemProps, { style: { width: itemWidth } }, rest);
-		const fieldProps = merge(defaultProps, field);
-
+		const formItemProps = merge({}, itemProps, { style: { width: itemWidth } }, rest);
+		const fieldProps = merge({}, defaultProps, { placeholder }, field);
+		console.log("fieldProps", fieldProps);
 		return (
 			<Form.Item {...formItemProps}>
 				<Field {...fieldProps} />

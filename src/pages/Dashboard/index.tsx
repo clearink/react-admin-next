@@ -4,8 +4,8 @@ import { ProTable } from "@/components/Pro/Table";
 import { ProColumnsType } from "@/components/Pro/Table/ProTable/interface";
 import http from "@/http";
 import { sleep } from "@/utils/Test";
-import useDrawerForm from "@/hooks/action/use-drawer-form";
 import LinkButton from "@/components/Company/LinkButton";
+import useModalForm from "@/hooks/action/use-modal-form";
 // import "@/components/Pro/utils/merge-value";
 interface Item {
 	id: string | number;
@@ -28,7 +28,7 @@ function ComponentA(props: { a: number; c: string; name: string }) {
 
 // 重写 复制与省略的功能 现有的性能太差了
 export default function DashBoard() {
-	const [FormModal, handleOpen] = useDrawerForm(ComponentA);
+	const [FormModal, handleOpen] = useModalForm(ComponentA);
 
 	const columns: ProColumnsType<Item> = [
 		{
@@ -37,19 +37,17 @@ export default function DashBoard() {
 				tip: "标题过长会收缩",
 			},
 			dataIndex: "title",
-			search: <ProFormInput required label="标题" />,
-			// ellipsis: true,
-			// copyable: true,
+			search: <ProFormInput required label='标题' placeholder='请输入标题' />,
 		},
 		{
 			title: "状态",
 			dataIndex: "state",
-			search: <ProFormInput label={false} />,
+			search: <ProFormInput />,
 		},
 		{
 			title: "标签",
 			dataIndex: "labels",
-			search: <ProFormInput label={false} />,
+			search: <ProFormInput />,
 			render: () => {
 				return <div>123</div>;
 			},

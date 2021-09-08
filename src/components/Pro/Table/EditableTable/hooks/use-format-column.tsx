@@ -24,7 +24,6 @@ export default function useFormatColumn<T extends object = any>(
 	actions: MutableRefObject<EditableTableRef<T> | undefined>,
 	editType: EditType = "modal" // 编辑模式 默认 弹窗
 ) {
-	console.log("	actions: MutableRefObject<EditableTableRef<T> | undefined>", actions);
 	// 获得 title
 	const getTitle = useCallback((title: EditableColumnType<T>["title"]) => {
 		if (isValidElement(title)) return title;

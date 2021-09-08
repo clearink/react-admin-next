@@ -6,18 +6,18 @@ import {
 	Key,
 	cloneElement,
 	useCallback,
-	useMemo,
 } from "react";
-import { Form } from "antd";
+import useDeepEffect from "@/hooks/state/use-deep-effect";
 import get from "lodash/get";
+import merge from "lodash/merge";
 import { EditableRowForm } from "../EditableRow";
+import ErrorEventBus from "../ErrorEventBus";
 import EditableFormErrorTooltip from "../EditableFormErrorToolTip";
-import { EditableCellProps, ItemRenderType } from "./interface";
+import { EditableCellProps } from "./interface";
 import "./style.scss";
 
 function EditableCell(props: EditableCellProps) {
 	const { children, edit, record, actions, dataIndex, ...rest } = props;
-	// console.log("EditableCell props", props);
 	const [editing, setEditing] = useState(false); // 是否处于编辑状态
 	const [errorList, setErrorList] = useState<string[]>([]); // 错误列表
 	const form = useContext(EditableRowForm)!;
@@ -28,43 +28,33 @@ function EditableCell(props: EditableCellProps) {
 		form.setFields([{ name: dataIndex, value: get(record, dataIndex) }]);
 	}, [dataIndex, editing, form, record]);
 
-	// Form.Item 自身的render方法
-	const _internalItemRender = useMemo<ItemRenderType>(() => {
-		return {
-			mark: "pro_table_render",
-			render: (inputProps, { input, errorList, extra }) => {
-				console.log("inputProps, { input, errorList, extra }", inputProps, {
-					input,
-					errorList,
-					extra,
-				});
-				return (
-					<EditableFormErrorTooltip
-						touched={inputProps.touched}
-						validating={inputProps.validating}
-						errors={errorList}
-					>
-						{input}
-						{extra}
-					</EditableFormErrorTooltip>
-				);
-			},
+	// 是否需要显示错误值
+	useDeepEffect(() => {
+		if (!dataIndex) return;
+		const eventType = JSON.stringify(([] as Key[]).concat(dataIndex));
+		if (ErrorEventBus.has(eventType)) return;
+		const event = (errorList?: string[]) => {
+			setErrorList(errorList!);
 		};
-	}, []);
+		ErrorEventBus.on(eventType, event);
+		return () => {
+			ErrorEventBus.off(eventType, event);
+		};
+	}, [dataIndex]);
 
 	// 自动保存数据
-	const handleBlur = useCallback(
-		async (...args: any[]) => {
-			edit?.props.onBlur?.(...args);
-			try {
-				await form.validateFields();
-				actions?.current?.edit(record, form.getFieldsValue());
-			} catch (errors) {
-				console.log(errors);
-			}
-		},
-		[actions, edit?.props, form, record]
-	);
+	const handleBlur = useCallback(async () => {
+		try {
+			await form.validateFields();
+			actions?.current?.edit(merge(record, form.getFieldsValue()));
+			setEditing(false);
+		} catch (errors: any) {
+			type ErrorType = { errors: string[]; name: Key[] | Key };
+			errors?.errorFields?.forEach((error: ErrorType) => {
+				ErrorEventBus.emit(JSON.stringify(error.name), error.errors);
+			});
+		}
+	}, [actions, form, record]);
 
 	let element = children;
 	if (isValidElement(edit) && !editing) {
@@ -74,9 +64,13 @@ function EditableCell(props: EditableCellProps) {
 			</div>
 		);
 	} else if (isValidElement(edit) && editing) {
-		element = cloneElement(edit, { onBlur: handleBlur, _internalItemRender });
+		element = <EditableFormErrorTooltip errors={errorList}>{edit}</EditableFormErrorTooltip>;
 	}
 
-	return <td {...rest}>{element}</td>;
+	return (
+		<td {...rest} onBlur={handleBlur}>
+			{element}
+		</td>
+	);
 }
 export default EditableCell;

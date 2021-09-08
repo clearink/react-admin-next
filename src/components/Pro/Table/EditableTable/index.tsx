@@ -21,7 +21,6 @@ import {
 } from "./interface";
 
 import EditableTableForm, { EditableTableFormRef } from "./components/EditableTableForm";
-import { useEffect } from "react";
 import EditableRow from "./components/EditableRow";
 import EditableCell from "./components/EditableCell";
 
@@ -63,20 +62,17 @@ function EditableTable<RT extends object = any>(
 		[onDataChange]
 	);
 
-	// 开始新增数据
-	const handleCreate2 = () => {};
-	// 开始编辑数据
-	const handleEdit2 = () => {};
-
 	// 新增数据
-	const handleCreate = useRefCallback(async (props?: any, values?: any, form?: FormInstance) => {
-		const record = { [rowKey!]: Date.now(), ...values! };
-		await handleChange(dataSource.concat(record), record, "add");
-		return true;
-	});
+	const handleCreateSubmit = useRefCallback(
+		async (props?: any, values?: any, form?: FormInstance) => {
+			const record = { [rowKey!]: Date.now(), ...values! };
+			await handleChange(dataSource.concat(record), record, "add");
+			return true;
+		}
+	);
 
 	// 修改数据
-	const handleEdit = useRefCallback(async ($record?: any, values?: any) => {
+	const handleEditSubmit = useRefCallback(async ($record?: any, values?: any) => {
 		const record = merge($record, values);
 		const newData = dataSource.map((item) => {
 			if (isUndefined(rowKey) || record[rowKey] !== item[rowKey]) return item;
@@ -91,24 +87,41 @@ function EditableTable<RT extends object = any>(
 		const newData = dataSource.filter((item) => record[rowKey!] !== item[rowKey!]);
 		handleChange(newData, record, "delete");
 	});
+	// 开始新增数据
+	const handleCreate = useCallback(
+		async (record?: any, values?: any) => {
+			// 如果不是单元格编辑
+			if (editType !== "cell") {
+				addRef.current?.(record);
+			} else {
+				await handleCreateSubmit(record, values);
+			}
+		},
+		[editType, handleCreateSubmit]
+	);
+	// 开始编辑数据
+	const handleEdit = useCallback(
+		async (record: RT) => {
+			// 如果不是单元格编辑
+			if (editType !== "cell") {
+				editRef.current?.(record);
+			} else {
+				await handleEditSubmit(record);
+			}
+		},
+		[editType, handleEditSubmit]
+	);
 	/* ---------------------------------方法 end ---------------------------------------- */
 	/* ----------------------------------暴露的方法 start--------------------------------------- */
 
 	// 暴露的方法
-	useEffect(() => {
-		actionRef.current = {
-			add: addRef.current!,
-			edit: editRef.current!,
-			delete: handleDelete,
-		};
-	}, [handleDelete]);
-
+	actionRef.current = {
+		add: handleCreate,
+		edit: handleEdit,
+		delete: handleDelete,
+	};
 	// 暴露的事件
-	useImperativeHandle(
-		ref,
-		() => ({ add: addRef.current!, edit: editRef.current!, delete: handleDelete }),
-		[handleDelete]
-	);
+	useImperativeHandle(ref, () => actionRef.current!);
 
 	const tableLayout = useMemo(() => {
 		if (props.tableLayout) return props.tableLayout;
@@ -138,7 +151,7 @@ function EditableTable<RT extends object = any>(
 				ref={addRef}
 				title={addTitle}
 				formProps={{ name: `add-${addTitle}`, ...editFormProps }}
-				onOk={handleCreate}
+				onOk={handleCreateSubmit}
 			>
 				{editCol}
 			</EditableTableForm>
@@ -148,10 +161,11 @@ function EditableTable<RT extends object = any>(
 				ref={editRef}
 				title={editTitle}
 				onOpen={(record: any, form) => {
+					console.log("record", record);
 					form.setFieldsValue(record);
 					return Promise.resolve(true);
 				}}
-				onOk={handleEdit}
+				onOk={handleEditSubmit}
 				formProps={{ name: `edit-${editTitle}`, ...editFormProps }}
 			>
 				{editCol}

@@ -21,11 +21,10 @@ export default function FormPage(props: any) {
 					<ProFormInput label='age' name='age' width='m' required />
 					<ProFormCaptcha
 						label='验证码'
-						name="captcha"
+						name='captcha'
 						field={{
 							phoneName: "age",
 							onGetCaptcha: async (value) => {
-								console.log(value);
 								await sleep(1000);
 								return true;
 							},

@@ -102,7 +102,6 @@ export default function DashBoard() {
 			/>
 			<FormModal
 				onCancel={async () => {
-					console.log("onCancel");
 					await sleep(1000);
 					return true;
 				}}

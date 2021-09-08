@@ -19,7 +19,6 @@ export default function FormEdit(props: any) {
 					title={{ title: "modal form", tip: "modal form" }}
 					onFinish={async (values) => {
 						await sleep(1000);
-						console.log(values);
 						return true;
 					}}
 					trigger={<Button>submit</Button>}

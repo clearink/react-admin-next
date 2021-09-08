@@ -46,7 +46,7 @@ export type DatChangeType = "add" | "edit" | "delete";
 // 暴露的方法
 export interface EditableTableRef<RT = any> {
 	add: (record?: RT) => void;
-	edit: (record: RT, extra?: Partial<RT>) => void;
+	edit: (record: RT) => void;
 	delete: (record: RT) => void;
 }
 

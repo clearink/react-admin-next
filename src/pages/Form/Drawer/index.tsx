@@ -14,11 +14,9 @@ export default function FormAdd(props: any) {
 					title={{ title: "drawer form", tip: "drawer form" }}
 					onFinish={async (values) => {
 						await sleep(1000);
-						console.log(values);
 						return true;
 					}}
 					trigger={<Button>submit</Button>}
-					
 				>
 					<DrawerForm.Item name='name'>
 						<Input />

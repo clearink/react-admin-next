@@ -13,12 +13,17 @@ function EditableRow(props: EditableRowProps) {
 	const handleFieldsChange = useDebounceCallback(100, (changeFields: FieldData[]) => {
 		for (const field of changeFields) {
 			if (!field.touched) continue;
-			const eventType = field.name.toString(); // 保留类型
+			const eventType = JSON.stringify(field.name); // 保留类型
 			ErrorEventBus.emit(eventType, field.errors);
 		}
 	});
 	return (
-		<Form form={form} component={false} onFieldsChange={handleFieldsChange}>
+		<Form
+			form={form}
+			validateTrigger='onBlur'
+			component={false}
+			onFieldsChange={handleFieldsChange}
+		>
 			<EditableRowForm.Provider value={form}>
 				<tr {...props} />
 			</EditableRowForm.Provider>

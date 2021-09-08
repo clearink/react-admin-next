@@ -50,7 +50,13 @@ const __columns: EditableColumnsType<any> = [
 		render: (dom, record, index, actions) => {
 			return (
 				<>
-					<LinkButton onClick={() => actions.edit(record)}>编辑</LinkButton>
+					<LinkButton
+						onClick={() => {
+							actions.edit(record);
+						}}
+					>
+						编辑
+					</LinkButton>
 					<Popconfirm title='确定删除吗?' onConfirm={() => actions.delete(record)}>
 						<LinkButton danger>删除</LinkButton>
 					</Popconfirm>
@@ -72,7 +78,6 @@ export default function List() {
 			address: "London, Park Lane no. 0",
 		}))
 	);
-
 	return (
 		<div className={styles.list_page_wrap}>
 			<PageHeaderWrap title='EditableTable介绍' className={styles.page_title} />
@@ -101,7 +106,6 @@ export default function List() {
 					ref={ref}
 					pagination={{ pageSize: 10 }}
 					onDataChange={(records) => {
-						console.log("onDataChange");
 						setData(records);
 						return true;
 					}}

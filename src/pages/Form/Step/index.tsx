@@ -9,13 +9,20 @@ export default function StepFormPage() {
 			<PageHeaderWrap title='steps Form' />
 			<main className='bg-white flex-auto p-6 mt-10'>
 				<StepsForm
+					// 仅负责最后的 finish
 					onFinish={async (values, info) => {
 						console.log(values, info);
 						await sleep(1000);
 						return true;
 					}}
 				>
-					<StepsForm.Step name='ss1' title='第一步'>
+					<StepsForm.Step
+						name='ss1'
+						title='第一步'
+						onFinish={async (values) => {
+							console.log('第一步',values);
+						}}
+					>
 						<ProFormInput name='name' />
 					</StepsForm.Step>
 					<StepsForm.Step name='ss2' title='第二步'>

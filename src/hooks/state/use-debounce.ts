@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import useMountRef from "./use-mount-ref";
 import useRefCallback from "./use-ref-callback";
 
 // 防抖 函数
@@ -22,7 +23,12 @@ export function useDebounceCallback<Fn extends Function>(delay: number, fn: Fn) 
 export function useDebounceValue<Value = any>(delay: number, value: Value) {
 	// 不能使用 useRef 因为 useRef 视图不会自动变更
 	const [state, setState] = useState(value);
-	const callback = useDebounceCallback(delay, () => setState(value));
+	// 是否已经被卸载
+	const ref = useMountRef();
+	const callback = useDebounceCallback(delay, () => {
+		if (!ref.current) return value;
+		return setState(value);
+	});
 	useEffect(() => {
 		callback();
 	}, [callback, value]);

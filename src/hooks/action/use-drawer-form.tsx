@@ -141,7 +141,7 @@ export function CreateDrawerForm<P = {}, V = any>(
 					{children}
 					{WrappedMemorized}
 				</Drawer>
-				<button key='submit-btn' type='submit' hidden></button>
+				<button type='submit' hidden></button>
 			</Form>
 		);
 

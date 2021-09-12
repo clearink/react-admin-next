@@ -22,7 +22,6 @@ export default function withFormItem<P>(Field: React.ComponentType<P>, defaultPr
 
 		const formItemProps = merge({}, itemProps, { style: { width: itemWidth } }, rest);
 		const fieldProps = merge({}, defaultProps, { placeholder }, field);
-		console.log("fieldProps", fieldProps);
 		return (
 			<Form.Item {...formItemProps}>
 				<Field {...fieldProps} />

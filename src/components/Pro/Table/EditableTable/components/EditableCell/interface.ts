@@ -1,5 +1,5 @@
 import { ReactNode, Key, ReactElement, MutableRefObject } from "react";
-import { FormItemProps } from "antd";
+import { ValidateStatus } from "antd/lib/form/FormItem";
 import { EditableTableRef } from "../../interface";
 
 export interface EditableCellProps<T extends object = any> {
@@ -11,9 +11,13 @@ export interface EditableCellProps<T extends object = any> {
 }
 
 export interface ItemRenderType {
-	mark: string;
+	mark: "pro_table_render";
 	render: (
-		inputProps: FormItemProps & Record<string, any>,
+		inputProps: {
+			errors: Key[];
+			touched: boolean;
+			validateStatus: ValidateStatus;
+		},
 		element: {
 			input: JSX.Element;
 			errorList: JSX.Element;

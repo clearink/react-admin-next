@@ -110,8 +110,9 @@ export function CreateModalForm<P = {}, V = any>(
 
 		// 完全关闭后才设置 handleLock = false 避免重复触发
 		const handleAfterClose = useCallback(() => {
+			rest.afterClose?.();
 			handleLock = false;
-		}, []);
+		}, [rest]);
 
 		// 缓存值
 		const okButtonProps = useMemo(
@@ -141,7 +142,7 @@ export function CreateModalForm<P = {}, V = any>(
 					{children}
 					{WrappedMemorized}
 				</Modal>
-				<button key='submit-btn' type='submit' hidden></button>
+				<button type='submit' hidden></button>
 			</Form>
 		);
 

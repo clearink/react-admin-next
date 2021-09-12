@@ -24,6 +24,8 @@ export interface WrapperModalFormProps<P = {}, V = any>
 	onOpen?: (props: Partial<P>, form: FormInstance<V>) => Promise<boolean | Partial<P>>;
 	onOk?: (props: Partial<P>, values?: V, form?: FormInstance<V>) => Promise<boolean>;
 	onCancel?: (props?: Partial<P>) => Promise<boolean>;
+	/** 渲染提交按钮 待完成 */
+	renderSubmitter?: () => ReactNode;
 }
 export interface WrapperModalActionProps<P = {}> extends Omit<ModalProps, "onOk" | "onCancel"> {
 	fieldProps?: Partial<P>;
@@ -54,6 +56,8 @@ export interface WrapperDrawerFormProps<P = {}, V = any> extends Omit<DrawerProp
 	onOpen?: (props: Partial<P>, form: FormInstance<V>) => Promise<boolean | Partial<P>>;
 	onOk?: (props: Partial<P>, values?: V, form?: FormInstance<V>) => Promise<boolean>;
 	onCancel?: (props?: Partial<P>) => Promise<boolean>;
+	/** 渲染提交按钮 待完成 */
+	renderSubmitter?: () => ReactNode;
 }
 export interface WrapperDrawerActionProps<P = {}> extends Omit<DrawerProps, "onOk" | "onCancel"> {
 	fieldProps?: Partial<P>;

@@ -20,6 +20,12 @@ const __columns: EditableColumnsType<any> = [
 		edit: <ProFormInput rules={[{ required: true, message: "请输入name" }, { type: "email" }]} />,
 	},
 	{
+		title: { title: "name", tip: "name-tip" },
+		dataIndex: ["name", "0"], // dataIndex 需要唯一 否则 cell 编辑时错误提示会异常
+		width: "30%",
+		edit: <ProFormInput rules={[{ type: "email" }]} />,
+	},
+	{
 		title: "age",
 		dataIndex: "age",
 		width: "30%",

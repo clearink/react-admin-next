@@ -4,7 +4,7 @@ import PageHeaderWrap from "@/components/PageHeaderWrap";
 import { ProFormInput } from "@/components/Pro/FormItem";
 import { ProTable } from "@/components/Pro/Table";
 import { ProColumnsType } from "@/components/Pro/Table/ProTable/interface";
-import useModalForm, { CreateModalForm } from "@/hooks/action/use-modal-form";
+import { CreateModalForm } from "@/hooks/action/use-modal-form";
 
 interface Item {
 	id: string | number;

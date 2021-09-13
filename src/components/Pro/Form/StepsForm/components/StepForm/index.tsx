@@ -7,7 +7,7 @@ import { StepFormContainer } from "../../utils";
 import { StepFormProps, StepFormType } from "./interface";
 
 function StepForm<V = any>(props: StepFormProps<V>) {
-	const { children, renderSubmitter, loading, isFirst, isLast, stepProps, title, ...rest } = props;
+	const { children, renderSubmitter, loading, isFirst, isLast, title, ...rest } = props;
 	const { handleNextStep, handlePreStep } = StepFormContainer.useContainer();
 
 	type TypeRender = Required<ProFormProps>["renderSubmitter"];

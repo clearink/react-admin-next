@@ -1,5 +1,5 @@
 import PageHeaderWrap from "@/components/PageHeaderWrap";
-import { Input, InputNumber, Result } from "antd";
+import { InputNumber, Result } from "antd";
 import StepsForm from "@/components/Pro/Form/StepsForm";
 import { sleep } from "@/utils/Test";
 import { ProFormInput } from "@/components/Pro/FormItem";
@@ -16,13 +16,7 @@ export default function StepFormPage() {
 						return true;
 					}}
 				>
-					<StepsForm.Step
-						name='ss1'
-						title='第一步'
-						onFinish={async (values) => {
-							console.log('第一步',values);
-						}}
-					>
+					<StepsForm.Step name='ss1' title='第一步'>
 						<ProFormInput name='name' />
 					</StepsForm.Step>
 					<StepsForm.Step name='ss2' title='第二步'>

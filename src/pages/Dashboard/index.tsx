@@ -81,7 +81,6 @@ export default function DashBoard() {
 	];
 
 	const handleRequest = useCallback(async (params, filters, sorters) => {
-		console.log("params,filters, sorters", params, filters, sorters);
 		const result = await http.get("https://proapi.azurewebsites.net/github/issues", {
 			current: params.current,
 			pageSize: params.pageSize,
@@ -105,7 +104,6 @@ export default function DashBoard() {
 				}}
 				title='测试 FormModalA'
 			/>
-			<button onClick={() => handleOpen()}>open</button>
 		</div>
 	);
 }

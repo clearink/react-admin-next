@@ -161,7 +161,6 @@ function EditableTable<RT extends object = any>(
 				ref={editRef}
 				title={editTitle}
 				onOpen={(record: any, form) => {
-					console.log("record", record);
 					form.setFieldsValue(record);
 					return Promise.resolve(true);
 				}}

@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { REQUEST_TYPE_CONST } from "@/configs/constant/request-type";
 import PageHeaderWrap from "@/components/PageHeaderWrap";
-import { FieldStatus, FieldText } from "@/components/Pro/Field";
+import { FieldStatus } from "@/components/Pro/Field";
 import { ProFormInput, ProFormSelect, ProFormSwitch } from "@/components/Pro/FormItem";
 import { EditableTable } from "@/components/Pro/Table";
 import {

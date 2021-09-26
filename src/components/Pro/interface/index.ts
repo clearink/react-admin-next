@@ -12,9 +12,10 @@ export interface ValueEnum {
 	color?: string;
 }
 /** 组件数据请求函数 */
+type ParamsKey = string | any[] | null;
 export interface ProComponentRequest {
 	valueEnum?: ValueEnum[];
-	params?: string | any[];
+	params?: ParamsKey | (() => ParamsKey);
 	/** 一定要设置 params 哦 否则不会发起请求的 */
 	request?: (...args: any) => Promise<ValueEnum[] | undefined>;
 }

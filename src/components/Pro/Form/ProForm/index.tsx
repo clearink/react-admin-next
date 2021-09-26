@@ -21,7 +21,7 @@ function ProForm<Values = any>(props: ProFormProps<Values>) {
 	const [form] = Form.useForm($form);
 
 	const [_loading, setLoading] = useState<ButtonProps["loading"]>(false);
-	const usePropLoading = !!props.hasOwnProperty("loading");
+	const usePropLoading = $loading !== undefined;
 	const loading = usePropLoading ? $loading : _loading;
 
 	const handleFinish = useRefCallback(async (values: Values) => {

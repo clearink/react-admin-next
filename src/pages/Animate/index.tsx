@@ -1,22 +1,25 @@
-import { FieldStatus } from "@/components/Pro/Field";
-import useRequest from "@/components/Pro/hooks/use-request";
+import { ProFormSelect } from "@/components/Pro/FormItem";
 import http from "@/http";
-import { useState } from "react";
-import useSWR from "swr";
-
+import { mutate } from "swr";
 export default function AnimatePage() {
-	const [a, setA] = useState(1);
-	const { data } = useSWR('undefined', () =>
-		http.get("https://proapi.azurewebsites.net/github/issues")
-	);
-	console.log(data);
 	return (
 		<div>
 			21312
-			<button onClick={() => setA((p) => p + 1)}>add</button>
-			{/* <FieldStatus request={async()=>{
-				await http.get
-			}} /> */}
+			<button
+				onClick={() => {
+					mutate("fetchIssueError");
+				}}
+			>
+				add
+			</button>
+			<ProFormSelect
+				placeholder='212121'
+				params='fetchIssueError'
+				request={async () => {
+					const { data } = await http.get("https://proapi.azurewebsites.net/github/issues");
+					return data?.map((item: any) => ({ label: item.title, value: item.id }));
+				}}
+			/>
 		</div>
 	);
 }

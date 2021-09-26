@@ -19,7 +19,7 @@ export default function useRequest<Data = any, Error = any>(
 ): SWRResponse<Data, Error> {
 	const ret = useSWR<Data, Error>(params!, useProp ? defaultFetcher : request, {
 		revalidateOnFocus: false,
-		dedupingInterval: 3600000, // 缓存数据时间 1h
+		dedupingInterval: 1800000, // 缓存数据时间 30min
 		use: [serializeParams],
 	});
 	if (ret.error) console.error(ret.error);

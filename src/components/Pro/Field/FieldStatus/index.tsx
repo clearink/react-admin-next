@@ -20,7 +20,7 @@ function FieldStatus(props: FieldStatusProps) {
 		...rest
 	} = props;
 
-	const useProp = props.hasOwnProperty("valueEnum");
+	const useProp = $valueEnum !== undefined;
 	const { data: _valueEnum } = useRequest(params, request, useProp);
 	const valueEnum = useProp ? $valueEnum : _valueEnum;
 

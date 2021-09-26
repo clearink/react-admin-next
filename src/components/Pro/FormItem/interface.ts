@@ -1,4 +1,5 @@
 import { ColProps, FormItemProps } from "antd";
+import { ProComponentRequest } from "../interface";
 
 export type ProFormItemSize =
 	| number
@@ -11,7 +12,7 @@ export type ProFormItemSize =
 	| [ColProps, ColProps]
 	| [ColProps];
 
-export interface WithFormItemProps<P> extends FormItemProps {
+export interface WithFormItemProps<P> extends FormItemProps, ProComponentRequest {
 	/** 组件宽度 可被覆盖 */
 	width?: ProFormItemSize;
 	/** 传入组件内部的属性 例如 placeholder */

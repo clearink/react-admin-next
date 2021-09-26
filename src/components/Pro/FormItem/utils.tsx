@@ -5,9 +5,9 @@ import { ProFormItemSize } from "./interface";
 import { WIDTH_SIZE_ENUM } from "../utils/constant";
 
 // 跟 required 去得到相应的 rule[]
-export function getRequiredRule(name?: ReactNode) {
-	if (!name) return [{ required: true }];
-	return [{ required: true, message: <>请输入{name}</> }] as Rule[];
+export function getRequiredRule(label?: ReactNode) {
+	if (!label) return [{ required: true }];
+	return [{ required: true, message: <>请输入{label}</> }] as Rule[];
 }
 
 // formItem 的宽度计算

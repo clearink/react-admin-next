@@ -18,8 +18,18 @@ export default function withFormItem<P>(Field: React.ComponentType<P>, defaultPr
 		// 计算 width
 		rest.style = { width: itemWidth, ...rest.style };
 
+		const injectProps: Record<string, any> = { placeholder };
+		/** fix: ts报错 */
+		if (props.hasOwnProperty("valueEnum")) {
+			injectProps.valueEnum = valueEnum;
+		}
+		if (props.hasOwnProperty("params")) {
+			injectProps.params = params;
+		}
+		if (props.hasOwnProperty("request")) {
+			injectProps.request = request;
+		}
 		/** 解决 Field 报错的问题 */
-		const injectProps = { placeholder, valueEnum, params, request };
 		const fieldProps = { ...defaultProps, ...injectProps, ...field } as unknown as P;
 		return (
 			<Form.Item {...itemProps} {...rest}>

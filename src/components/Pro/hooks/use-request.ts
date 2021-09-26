@@ -1,14 +1,6 @@
-import useSWR, { Middleware, Fetcher, SWRResponse, Key } from "swr";
+import useSWR, { Fetcher, SWRResponse, Key } from "swr";
 
 export const defaultFetcher = () => undefined!;
-
-// 序列化key
-const serializeParams: Middleware = (next) => {
-	return (key, fetcher, config) => {
-		const keys = Array.isArray(key) ? JSON.stringify(key) : key;
-		return next(keys, fetcher, config);
-	};
-};
 
 export default function useRequest<Data = any, Error = any>(
 	params?: Key,
@@ -20,7 +12,6 @@ export default function useRequest<Data = any, Error = any>(
 	const ret = useSWR<Data, Error>(params!, useProp ? defaultFetcher : request, {
 		revalidateOnFocus: false,
 		dedupingInterval: 1800000, // 缓存数据时间 30min
-		use: [serializeParams],
 	});
 	if (ret.error) console.error(ret.error);
 	return ret;

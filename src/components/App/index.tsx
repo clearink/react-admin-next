@@ -1,5 +1,5 @@
 import React from "react";
-import { SWRConfig, Middleware } from "swr";
+import { Middleware, SWRConfig } from "swr";
 import { ConfigProvider } from "antd";
 import { BrowserRouter as Router, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
@@ -11,11 +11,13 @@ import useRenderRoutes from "./hooks/use-render-routes";
 import ErrorBoundary from "../ErrorBoundary";
 import { statusColorContainer } from "../Pro/Field/FieldStatus/utils";
 
-// 序列化 key
-const serializeParams: Middleware = (next) => {
+const serialize: Middleware = (useSWRNext) => {
 	return (key, fetcher, config) => {
-		const keys = Array.isArray(key) ? JSON.stringify(key) : key;
-		return next(keys, fetcher, config);
+		// 序列化 key。
+		const serializedKey = Array.isArray(key) ? JSON.stringify(key) : key;
+
+		// 传递序列化的 key，并在 fetcher 中将其反序列化。
+		return useSWRNext(serializedKey, (k) => fetcher!(...JSON.parse(k)), config);
 	};
 };
 
@@ -25,7 +27,7 @@ function App() {
 		<ErrorBoundary>
 			<Provider store={store}>
 				<ConfigProvider locale={zhCN}>
-					<SWRConfig value={{ errorRetryCount: 0, use: [serializeParams] }}>
+					<SWRConfig value={{ errorRetryCount: 0, use: [serialize] }}>
 						<statusColorContainer.Provider>
 							<Router>
 								<Routes>{element}</Routes>

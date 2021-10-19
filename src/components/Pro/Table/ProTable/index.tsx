@@ -70,7 +70,7 @@ function ProTable<RecordType extends object = any>(
 	const [state, dispatch] = useReducer(reducer, initState, getInitState);
 
 	// 是否使用外部的 dataSource
-	const usePropData = props.hasOwnProperty("dataSource");
+	const usePropData = $dataSource !== undefined;
 	const [_dataSource, setDataSource] = useState<RecordType[]>([]);
 	const dataSource = usePropData ? $dataSource : _dataSource;
 
@@ -134,7 +134,7 @@ function ProTable<RecordType extends object = any>(
 
 	/**----------------------- UI相关 --------------------------- */
 
-	const usePropLoading = props.hasOwnProperty("loading");
+	const usePropLoading = $loading !== undefined;
 	const loading = usePropLoading ? $loading : _loading;
 
 	// 如果 dataSource 是外部受控 则不会 干预 current 与 pageSize

@@ -33,7 +33,7 @@ function FilterForm<Values = any>(props: FilterFormProps<Values>) {
 	const rowSpan = useBreakpoint(colSpan) || FULL_SCREEN_SPAN;
 
 	// 为了与外部同步
-	const useProp = props.hasOwnProperty("collapsed");
+	const useProp = $collapsed !== undefined;
 	const collapsed = useProp ? $collapsed : __collapsed;
 
 	const handleCollapsed = useRefCallback(() => {

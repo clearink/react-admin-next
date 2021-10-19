@@ -11,7 +11,7 @@ function ProFormSelect<VT extends SelectValue = SelectValue>(
 ) {
 	const { params, request, render, valueEnum: $valueEnum, ...rest } = props;
 
-	const useProp = props.hasOwnProperty("valueEnum");
+	const useProp = $valueEnum !== undefined;
 	const { data: _valueEnum, isValidating } = useRequest(params, request, useProp);
 	const valueEnum = useProp ? $valueEnum : _valueEnum;
 

@@ -1,24 +1,27 @@
-import { FieldStatus } from "@/components/Pro/Field";
-import useRequest from "@/components/Pro/hooks/use-request";
+import { ProFormSelect } from "@/components/Pro/FormItem";
 import http from "@/http";
-import { useState } from "react";
-import useSWR from "swr";
-
+import { useMemo, useState } from "react";
 export default function AnimatePage() {
-	const { data } = useSWR("key", () =>
-		http.get("http://localhost:4000/v2/pet/findByTags", {
-			photoUrls: [1, 2, 3],
-			name: 12,
-			tags: [{ a: 1 }, { b: 3 }],
-		})
-	);
-	console.log(data);
+	const [a, setA] = useState(0);
+	// const params = useMemo(() => , [a]);
 	return (
 		<div>
 			21312
-			{/* <FieldStatus request={async()=>{
-				await http.get
-			}} /> */}
+			<button
+				onClick={() => {
+					setA((p) => (p + 1) % 2);
+				}}
+			>
+				add
+			</button>
+			<ProFormSelect
+				placeholder='212121'
+				params={["fetchIssueError", { current: a + 1, pageSize: 10 }]}
+				request={async (key, params) => {
+					const { data } = await http.get(`https://proapi.azurewebsites.net/github/issues`, params);
+					return data?.map((item: any) => ({ label: item.title, value: item.id }));
+				}}
+			/>
 		</div>
 	);
 }

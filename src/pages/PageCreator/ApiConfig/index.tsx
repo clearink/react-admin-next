@@ -36,8 +36,8 @@ const columns: EditableColumnsType<ApiItem> = [
 	{
 		title: "请求类型",
 		dataIndex: "type",
-		read: <FieldStatus valueEnum={REQUEST_TYPE_CONST.list} type='tag' />,
-		edit: <ProFormSelect field={{ valueEnum: REQUEST_TYPE_CONST.list }} />,
+		read: <FieldStatus valueEnum={REQUEST_TYPE_CONST._list} type='tag' />,
+		edit: <ProFormSelect field={{ valueEnum: REQUEST_TYPE_CONST._list }} />,
 	},
 	{
 		title: "地址",

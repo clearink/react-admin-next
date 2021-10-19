@@ -1,10 +1,7 @@
-import Constant, { ValueEnum } from "./utils";
+import Constant from "./utils";
 
-interface SexItem extends ValueEnum {
-	value: "male" | "female";
-}
-
-export const SEX_CONST = new Constant<SexItem>(
+const SEX_LIST = [
 	{ value: "male", label: "男", color: "red" },
-	{ value: "female", label: "女", color: "blue" }
-).toArray(([k, v]) => v);
+	{ value: "female", label: "女", color: "blue" },
+] as const;
+export const SEX_CONST = new Constant(SEX_LIST);

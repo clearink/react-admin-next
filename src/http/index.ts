@@ -40,9 +40,9 @@ class Http {
 	// 请求拦截器
 	private requestIntercept(axios: AxiosInstance) {
 		axios.interceptors.request.use(async (requestConfig: AxiosRequestConfig) => {
-			const token = LoginUtil.getToken();
+			// const token = LoginUtil.getToken();
 			// 有token 时在请求头上加上 token
-			if (token) requestConfig.headers[config.TOKEN] = token;
+			// if (token) requestConfig.headers[config.TOKEN] = token;
 			return requestConfig;
 		}, Promise.reject);
 	}

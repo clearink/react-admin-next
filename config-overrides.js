@@ -53,5 +53,5 @@ module.exports = {
 		}
 	),
 	// 开发服务器代理
-	devServer: overrideDevServer((config) => ({ ...config, proxy })),
+	// devServer: overrideDevServer((config) => ({ ...config, proxy })),
 };

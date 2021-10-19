@@ -13,7 +13,6 @@ export default {
 	REDIRECT_CODE: 9999,
 	// 请求基地址
 	// post 请求过滤空值
-	BASE_URL: "http://app.peplife.net/backend",
+	BASE_URL: "http://localhost:4000",
 	TIMEOUT: 20000,
-	TOKEN: "X-Access-Token",
 };

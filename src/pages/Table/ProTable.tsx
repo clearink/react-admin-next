@@ -33,7 +33,7 @@ const columns: ProColumnsType<any> = [
 	{
 		title: "性别",
 		dataIndex: "gender",
-		read: <FieldStatus valueEnum={SEX_CONST.list} />,
+		read: <FieldStatus valueEnum={SEX_CONST._list} />,
 	},
 	{
 		title: "联系电话",

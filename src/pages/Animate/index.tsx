@@ -5,15 +5,17 @@ import { useState } from "react";
 import useSWR from "swr";
 
 export default function AnimatePage() {
-	const [a, setA] = useState(1);
-	const { data } = useSWR('undefined', () =>
-		http.get("https://proapi.azurewebsites.net/github/issues")
+	const { data } = useSWR("key", () =>
+		http.get("http://localhost:4000/v2/pet/findByTags", {
+			photoUrls: [1, 2, 3],
+			name: 12,
+			tags: [{ a: 1 }, { b: 3 }],
+		})
 	);
 	console.log(data);
 	return (
 		<div>
 			21312
-			<button onClick={() => setA((p) => p + 1)}>add</button>
 			{/* <FieldStatus request={async()=>{
 				await http.get
 			}} /> */}

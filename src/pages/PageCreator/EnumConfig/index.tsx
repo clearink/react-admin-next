@@ -34,7 +34,7 @@ const columns: EditableColumnsType<ApiItem> = [
 		title: "enum-list",
 		dataIndex: "list",
 		hideInTable: true,
-		edit: <ProFormSelect field={{ valueEnum: REQUEST_TYPE_CONST.list }} />,
+		edit: <ProFormSelect field={{ valueEnum: REQUEST_TYPE_CONST._list }} />,
 	},
 	{
 		title: "操作",

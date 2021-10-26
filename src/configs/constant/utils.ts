@@ -19,6 +19,8 @@ type ListCallback<V extends ConstantItem, R> = (
     array: V[]
 ) => R;
 
+type ExtendCallback<C extends Constant<any>, R> = (constant: C) => R
+
 export default class Constant<
     V extends PartialExcludeKey<ConstantItem, 'value' | 'name'>
     > {
@@ -38,10 +40,11 @@ export default class Constant<
                 this.keyMap.set(item.key, item);
             }
         }
+
     }
 
     public get keys () {
-        return Array.from(this.valueMap.keys());
+        return Array.from(this.keyMap.keys());
     }
 
     public get values () {
@@ -49,27 +52,27 @@ export default class Constant<
     }
 
     // 属性扩展
-    public extend<T = object> (value: T) {
-        return Object.assign(this, value);
+    public extend<R extends object> (fn: ExtendCallback<this, R>) {
+        return Object.assign(this, fn(this));
     }
 
     // 匹配
     public match<T extends 'key' | 'value', Value = any> (
         property: T,
-        value: T extends 'key' ? V['key'] : Value
+        value: T extends 'key' ? V['key'] : Value,
     ): V & Record<string, any> | undefined {
-		// 无法自动推断自定义的类型
         // eslint-disable-next-line curly
         if (property === 'key') return this.keyMap.get(value as V['key']);
         return this.valueMap.get(value);
     }
 
     // 当满足条件 以 key 做标识是为了更好的可读性
-    public when<T = any> (value: T, content: V['key'][]) {
-        for (const key of content) {
+    public when<T = any> (value: T, content: V['key'] | V['key'][], attribute = 'value') {
+        const contentList = ([] as V['key'][]).concat(content);
+        for (const key of contentList) {
             const item = this.keyMap.get(key);
             // eslint-disable-next-line curly
-            if (value === item?.value) return true;
+            if (item && value === item[attribute]) return true;
         }
         return false;
     }

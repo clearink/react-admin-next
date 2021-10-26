@@ -30,7 +30,7 @@ export default class Constant<
     // 默认的list 用于 选择项
     public _list: V[] = [];
 
-    public constructor (list: Readonly<V[]>) {
+    public constructor(list: Readonly<V[]>) {
         this._list = list.concat();
         // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < list.length; i++) {
@@ -43,31 +43,35 @@ export default class Constant<
 
     }
 
-    public get keys () {
+    public get keys() {
         return Array.from(this.keyMap.keys());
     }
 
-    public get values () {
+    public get values() {
         return Array.from(this.valueMap.values());
     }
 
     // 属性扩展
-    public extend<R extends object> (fn: ExtendCallback<this, R>) {
+    public extend<R extends object>(fn: ExtendCallback<this, R>) {
         return Object.assign(this, fn(this));
     }
 
     // 匹配
-    public match<T extends 'key' | 'value', Value = any> (
+    public match<T extends 'key' | 'value', Value = any>(
         property: T,
         value: T extends 'key' ? V['key'] : Value,
+        defaultKey?: V["key"]
     ): V & Record<string, any> | undefined {
         // eslint-disable-next-line curly
-        if (property === 'key') return this.keyMap.get(value as V['key']);
-        return this.valueMap.get(value);
+        let matchItem = undefined;
+        if (property === 'key') matchItem = this.keyMap.get(value as V['key']);
+        else matchItem = this.valueMap.get(value);
+        if (matchItem) return matchItem;
+        return this.keyMap.get(defaultKey);
     }
 
     // 当满足条件 以 key 做标识是为了更好的可读性
-    public when<T = any> (value: T, content: V['key'] | V['key'][], attribute = 'value') {
+    public when<T = any>(value: T, content: V['key'] | V['key'][], attribute = 'value') {
         const contentList = ([] as V['key'][]).concat(content);
         for (const key of contentList) {
             const item = this.keyMap.get(key);
@@ -78,7 +82,7 @@ export default class Constant<
     }
 
     // 转换成数组
-    public toArray<R> (fn: ListCallback<Readonly<V>, R>) {
+    public toArray<R>(fn: ListCallback<Readonly<V>, R>) {
         const list = this.values.map<R>(fn);
         return Object.assign(this, { list });
     }

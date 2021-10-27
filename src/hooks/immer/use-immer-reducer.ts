@@ -16,8 +16,7 @@ export default function useImmerReducer<S>(
   const dispatch = useCallback(
     (action: ReducerAction) => {
       produce(reducer);
-      setState((preState) => produce(reducer)(preState as any, action));
-      // setState(reducer(produce, action));
+      setState((preState) => produce(reducer)(preState as any, action) as any);
     },
     [reducer]
   );

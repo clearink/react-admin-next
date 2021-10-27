@@ -27,14 +27,6 @@ function AppSiderMenu() {
 		else setOpenKeys([]);
 	}, [selectedKeys, collapsed]);
 
-	// // 防止子菜单意外出现在别的位置 antd 4.9.3
-	// // 和 collapsed 的更新不在同一个事件循环
-	// 注意 antd 4.13.0 已经不需要此操作
-	// const [collapsedMenu, setCollapsedMenu] = useState(false); // 是否收起菜单
-	// useEffect(() => {
-	//   setCollapsedMenu(collapsed);
-	// }, [collapsed]);
-
 	const dispatch = useAppDispatch();
 	const handleToggleMenu = (flag: boolean) => {
 		dispatch(actions.setCollapsed(flag));

@@ -1,9 +1,8 @@
 import React, { Ref } from "react";
 import { FormInstance, StepsProps } from "antd";
-
 interface FormFinishInfo {
 	name: string;
-	forms: FormInstance[];
+	forms: Record<string, FormInstance>;
 }
 export interface StepsFormProps<V = any> extends StepsProps {
 	children?: React.ReactNode;

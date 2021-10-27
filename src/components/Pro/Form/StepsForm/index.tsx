@@ -61,7 +61,7 @@ function StepsForm<V = any>(props: StepsFormProps<V>) {
 			const isLast = nameList[nameList.length - 1] === name;
 			try {
 				setLoading({ delay: 50 });
-				const shouldNext = await onFinish?.(formatFormValue(values), { forms, name });
+				const shouldNext = await onFinish?.(formatFormValue(values), { name, forms: forms as any });
 				if (!isLast && shouldNext) handleNextStep();
 			} finally {
 				setLoading(false);

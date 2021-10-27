@@ -5,11 +5,13 @@ import { BrowserRouter as Router, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
 import zhCN from "antd/lib/locale/zh_CN";
 import "dayjs/locale/zh-cn";
+import dayjs from 'dayjs';
 import routes from "@/routes";
 import store from "@/store";
 import useRenderRoutes from "./hooks/use-render-routes";
 import ErrorBoundary from "../ErrorBoundary";
 import { statusColorContainer } from "../Pro/Field/FieldStatus/utils";
+dayjs.locale('zh-cn')
 
 const serialize: Middleware = (useSWRNext) => {
 	return (key, fetcher, config) => {

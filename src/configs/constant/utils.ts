@@ -1,7 +1,7 @@
 // 常量定义辅助函数
 interface ConstantItem {
     /** 名称 */
-    name: string;
+    label: string;
     /** 值 */
     value: any;
     color?: string;
@@ -22,7 +22,7 @@ type ListCallback<V extends ConstantItem, R> = (
 type ExtendCallback<C extends Constant<any>, R> = (constant: C) => R
 
 export default class Constant<
-    V extends PartialExcludeKey<ConstantItem, 'value' | 'name'>
+    V extends PartialExcludeKey<ConstantItem, 'value' | 'label'>
     > {
     public valueMap: Map<V['value'], V> = new Map();
     public keyMap: Map<V['key'], V> = new Map();
@@ -67,7 +67,7 @@ export default class Constant<
         if (property === 'key') matchItem = this.keyMap.get(value as V['key']);
         else matchItem = this.valueMap.get(value);
         if (matchItem) return matchItem;
-        return this.keyMap.get(defaultKey);
+        return this.keyMap.get(defaultKey!);
     }
 
     // 当满足条件 以 key 做标识是为了更好的可读性

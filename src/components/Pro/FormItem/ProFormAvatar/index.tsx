@@ -1,3 +1,4 @@
+import React from 'react';
 import { Upload } from "antd";
 import { ProFormAvatarProps } from "./interface";
 

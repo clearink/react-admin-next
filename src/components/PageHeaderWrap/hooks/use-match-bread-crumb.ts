@@ -1,7 +1,6 @@
 import { useMemo } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, matchPath } from "react-router-dom";
 import useTypedSelector from "@/hooks/redux/use-typed-selector";
-import { matchPath } from "react-router-dom";
 import { MenuItemProps } from "@/@types/menu";
 import Unique from "@/utils/Unique";
 

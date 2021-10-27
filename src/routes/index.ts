@@ -17,31 +17,31 @@ const routes: RouteItemConfig[] = [
 		component: withLazyLoad(() => import("@/layouts/AuthLayout")),
 		routes: [
 			{
-				path: "/",
+				path: "",
 				icon: "icon-computer",
 				title: "管理首页",
 				component: withLazyLoad(() => import("@/pages/Home")),
 			},
 			{
-				path: "/blog",
+				path: "blog",
 				icon: "icon-computer",
 				title: "博客管理",
 				component: withLazyLoad(() => import("@/layouts/BlankLayout")),
 				routes: [
 					{
-						path: "/",
+						path: "",
 						icon: "icon-heart",
 						title: "博客列表",
 						component: withLazyLoad(() => import("@/pages/Blog")),
 					},
 					{
-						path: "/add",
+						path: "add",
 						icon: "icon-heart",
 						title: "新增博客",
 						component: withLazyLoad(() => import("@/pages/Blog/Add")),
 					},
 					{
-						path: "/edit/:id",
+						path: "edit/:id",
 						icon: "icon-heart",
 						title: "编辑博客",
 						hide: true,
@@ -50,37 +50,37 @@ const routes: RouteItemConfig[] = [
 				],
 			},
 			{
-				path: "/form",
+				path: "form",
 				icon: "icon-computer",
 				title: "表单管理",
 				component: withLazyLoad(() => import("@/layouts/BlankLayout")),
 				routes: [
 					{
-						path: "/",
+						path: "",
 						icon: "icon-heart",
 						title: "基础表单",
 						component: withLazyLoad(() => import("@/pages/Form")),
 					},
 					{
-						path: "/drawer",
+						path: "drawer",
 						icon: "icon-lung",
 						title: "drawer 表单",
 						component: withLazyLoad(() => import("@/pages/Form/Drawer")),
 					},
 					{
-						path: "/modal",
+						path: "modal",
 						icon: "icon-heart",
 						title: "modal 表单",
 						component: withLazyLoad(() => import("@/pages/Form/Modal")),
 					},
 					{
-						path: "/step",
+						path: "step",
 						icon: "icon-heart",
 						title: "分布表单",
 						component: withLazyLoad(() => import("@/pages/Form/Step")),
 					},
 					{
-						path: "/filter",
+						path: "filter",
 						icon: "icon-heart",
 						title: "筛选表单",
 						component: withLazyLoad(() => import("@/pages/Form/Filter")),
@@ -88,25 +88,25 @@ const routes: RouteItemConfig[] = [
 				],
 			},
 			{
-				path: "/table",
+				path: "table",
 				title: "表格管理",
 				icon: "icon-heart",
 				component: withLazyLoad(() => import("@/layouts/BlankLayout")),
 				routes: [
 					{
-						path: "/",
+						path: "",
 						icon: "icon-computer",
 						title: "基础表格",
 						component: withLazyLoad(() => import("@/pages/Table")),
 					},
 					{
-						path: "/edit-table",
+						path: "edit-table",
 						icon: "icon-computer",
 						title: "可编辑表格",
 						component: withLazyLoad(() => import("@/pages/Table/EditableTable")),
 					},
 					{
-						path: "/pro-table",
+						path: "pro-table",
 						icon: "icon-computer",
 						title: "增强表格",
 						component: withLazyLoad(() => import("@/pages/Table/ProTable")),
@@ -114,19 +114,19 @@ const routes: RouteItemConfig[] = [
 				],
 			},
 			{
-				path: "/list",
+				path: "list",
 				title: "列表管理",
 				icon: "icon-heart",
 				component: withLazyLoad(() => import("@/layouts/BlankLayout")),
 				routes: [
 					{
-						path: "/",
+						path: "",
 						title: "基础列表",
 						icon: "icon-heart",
 						component: withLazyLoad(() => import("@/pages/List")),
 					},
 					{
-						path: "/virtual-list",
+						path: "virtual-list",
 						title: "虚拟列表",
 						icon: "icon-heart",
 						component: withLazyLoad(() => import("@/pages/List/VirtualList")),
@@ -134,19 +134,19 @@ const routes: RouteItemConfig[] = [
 				],
 			},
 			{
-				path: "/other",
+				path: "other",
 				title: "其他",
 				icon: "icon-heart",
 				component: withLazyLoad(() => import("@/layouts/BlankLayout")),
 				routes: [
 					{
-						path: "/scroll-load",
+						path: "scroll-load",
 						title: "滚动加载",
 						icon: "icon-computer",
 						component: withLazyLoad(() => import("@/pages/Scroll")),
 					},
 					{
-						path: "/collapse",
+						path: "collapse",
 						title: "折叠面板",
 						icon: "icon-computer",
 						component: withLazyLoad(() => import("@/pages/Collapse")),
@@ -154,31 +154,31 @@ const routes: RouteItemConfig[] = [
 				],
 			},
 			{
-				path: "/dash-board",
+				path: "dash-board",
 				title: "控制台",
 				icon: "icon-computer",
 				component: withLazyLoad(() => import("@/pages/Dashboard")),
 			},
 			{
-				path: "/page-creator",
+				path: "page-creator",
 				title: "页面生成器",
 				icon: "icon-computer",
 				component: withLazyLoad(() => import("@/layouts/BlankLayout")),
 				routes: [
 					{
-						path: "/",
+						path: "",
 						title: "模板生成器",
 						icon: "icon-computer",
 						component: withLazyLoad(() => import("@/pages/PageCreator/CreatorCore")),
 					},
 					{
-						path: "/api",
+						path: "api",
 						title: "api生成器",
 						icon: "icon-computer",
 						component: withLazyLoad(() => import("@/pages/PageCreator/ApiConfig")),
 					},
 					{
-						path: "/enum",
+						path: "enum",
 						title: "enum生成器",
 						icon: "icon-computer",
 						component: withLazyLoad(() => import("@/pages/PageCreator/EnumConfig")),
@@ -186,7 +186,7 @@ const routes: RouteItemConfig[] = [
 				],
 			},
 			{
-				path: "/animate",
+				path: "animate",
 				title: "framer-motion",
 				icon: "icon-computer",
 				component: withLazyLoad(() => import("@/pages/Animate")),

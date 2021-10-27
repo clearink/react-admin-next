@@ -6,6 +6,6 @@
 		"paths": {
 			"@/*": ["./src/*"]
 		},
-		"suppressImplicitAnyIndexErrors": true // 忽略 string 不能当索引
+		"suppressImplicitAnyIndexErrors": true, // 忽略 string 不能当索引
 	}
 }

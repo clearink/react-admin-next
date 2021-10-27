@@ -41,7 +41,9 @@ export function formatRoutesMenuData(
   if (!isArray(routes)) throw new Error("routes must array");
   return routes.map((route) => {
     //  menu key
-    const path = `${parentKeys}${route.path}`;
+    const separator = /^\//.test(route.path) ? '' : '/';
+    const path = `${parentKeys}${separator}${route.path}`;
+  
     return {
       ...FilterValue(route, ["component", "path"]),
       path,

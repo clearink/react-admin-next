@@ -60,14 +60,12 @@ export default class Constant<
     public match<T extends 'key' | 'value', Value = any>(
         property: T,
         value: T extends 'key' ? V['key'] : Value,
-        defaultKey?: V["key"]
+        // 预防某些以 undefined 作为 key 的情况
+        defaultKey: V['key'] | symbol = Symbol('defaultKey')
     ): V & Record<string, any> | undefined {
-        // eslint-disable-next-line curly
-        let matchItem = undefined;
-        if (property === 'key') matchItem = this.keyMap.get(value as V['key']);
-        else matchItem = this.valueMap.get(value);
-        if (matchItem) return matchItem;
-        return this.keyMap.get(defaultKey!);
+        const attribute = property === 'key' ? 'keyMap' : 'valueMap';
+        const matchItem = this[attribute].get(value as V['key']);
+        return matchItem ?? this.keyMap.get(defaultKey);
     }
 
     // 当满足条件 以 key 做标识是为了更好的可读性

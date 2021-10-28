@@ -1,5 +1,7 @@
 import { RouteItemConfig } from "@/@types/route";
 import withLazyLoad from "@/hocs/withLazyLoad";
+
+
 /**
  * 注意: react route 6.0 采用的是 集中式注册
  * 子路由只需要写相对父级路由的不同即可

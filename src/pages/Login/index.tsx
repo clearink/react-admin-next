@@ -5,6 +5,7 @@ import { GetCaptcha, UserLogin } from "@/http/api/user";
 import LoginUtil from "@/utils/LoginUtil";
 import { cloneElement } from "react";
 import "./style.module.scss";
+
 export default function Login(props: any) {
 	const handleSubmit = async (values: any) => {
 		console.log(values);

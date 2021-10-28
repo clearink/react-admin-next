@@ -10,8 +10,9 @@ import {
 } from "@/components/Pro/Table/EditableTable/interface";
 import { ProFormInput, ProFormSelect } from "@/components/Pro/FormItem";
 import { FieldStatus } from "@/components/Pro/Field";
-import styles from "./style.module.scss";
 import LinkButton from "@/components/Company/LinkButton";
+import styles from "./style.module.scss";
+
 const __columns: EditableColumnsType<any> = [
 	{
 		title: { title: "name", tip: "name-tip" },

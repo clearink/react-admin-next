@@ -7,6 +7,7 @@ import { isBoolean, isObject } from "@/utils/ValidateType";
 import withDefaultProps from "@/hocs/withDefaultProps";
 import { UseDrawerActionProps, WrapperDrawerActionProps } from "./interface";
 import styles from "./style.module.scss";
+
 export function CreateDrawerAction<P = {}>(
 	WrappedComponent: ComponentType<P>,
 	$config?: Pick<UseDrawerActionProps, "resetOnClose">

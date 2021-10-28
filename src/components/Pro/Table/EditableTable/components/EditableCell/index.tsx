@@ -4,7 +4,7 @@ import merge from "lodash/merge";
 import { EditableRowForm } from "../EditableRow";
 import _internalItemRender from "./_internalItemRender";
 import { EditableCellProps } from "./interface";
-import "./style.scss";
+// import "./style.scss";
 
 function EditableCell(props: EditableCellProps) {
 	const { children, edit, record, actions, dataIndex, ...rest } = props;

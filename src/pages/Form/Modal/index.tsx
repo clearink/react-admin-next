@@ -1,10 +1,11 @@
 import React from "react";
 import PageHeaderWrap from "@/components/PageHeaderWrap";
-import styles from "./style.module.scss";
 import { sleep } from "@/utils/Test";
 import { Button, DatePicker, Input, Modal } from "antd";
 import ModalForm from "@/components/Pro/Form/ModalForm";
 import { useToggle } from "@/hooks/state/use-boolean";
+import styles from "./style.module.scss";
+
 export default function FormEdit(props: any) {
 	const [visible, toggle] = useToggle();
 	return (

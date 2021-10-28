@@ -4,7 +4,6 @@ const WebpackBar = require("webpackbar");
 const CracoAntDesignPlugin = require("craco-antd");
 const AntdDayjsWebpackPlugin = require("antd-dayjs-webpack-plugin");
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
-const WindiCssPlugin = require("windicss-webpack-plugin").default;
 
 module.exports = {
 	webpack: {
@@ -16,9 +15,6 @@ module.exports = {
 			new WebpackBar({ profile: true }),
 			// 时间转换工具采取day替换moment
 			new AntdDayjsWebpackPlugin(),
-			new WindiCssPlugin({
-				virtualModulePath: 'src'
-			}),
 			...when(
 				process.env.ANALYZE === "true",
 				() => [
@@ -58,5 +54,10 @@ module.exports = {
 				},
 			},
 		},
-	]
+	],
+	style: {
+		postcss: {
+			plugins: [require("tailwindcss"), require("autoprefixer")],
+		},
+	},
 };

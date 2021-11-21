@@ -1,5 +1,5 @@
 import Axios, { Canceler, AxiosInstance } from "axios";
-import { ProAxiosRequestConfig } from "../interface";
+import { ProAxiosRequestConfig as ProConfig } from "../config";
 
 /**
  * 提供请求取消功能
@@ -8,10 +8,10 @@ import { ProAxiosRequestConfig } from "../interface";
  * 最好将该 plugin 第一个注册
  * */
 export default class FetchCancelPlugin {
-	private map = new Map<string, { cancel: Canceler; config: ProAxiosRequestConfig }>();
+	private map = new Map<string, { cancel: Canceler; config: ProConfig }>();
 
 	public constructor(axios: AxiosInstance) {
-		axios.interceptors.request.use((config: ProAxiosRequestConfig) => {
+		axios.interceptors.request.use((config: ProConfig) => {
 			this.addFetchCancel(config);
 			return config;
 		});
@@ -30,7 +30,7 @@ export default class FetchCancelPlugin {
 		this.handleClearFetch();
 	}
 
-	private addFetchCancel(config: ProAxiosRequestConfig) {
+	private addFetchCancel(config: ProConfig) {
 		const { needCancel = true, url, params, data } = config;
 		// 不需要取消 或者 选择自行取消
 		if (!needCancel || config.cancelToken) return;

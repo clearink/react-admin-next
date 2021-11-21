@@ -1,4 +1,4 @@
-import { phonePattern } from "@/configs/constant/pattern";
+import { phonePattern } from "@/assets/constant/pattern";
 import { ProForm } from "@/components/Pro/Form";
 import { ProFormCaptcha, ProFormInput } from "@/components/Pro/FormItem";
 import { GetCaptcha, UserLogin } from "@/http/api/user";

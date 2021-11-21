@@ -1,10 +1,9 @@
 // Axios 二次封装
 import Axios, { AxiosRequestConfig, AxiosError, AxiosResponse, AxiosInstance } from "axios";
 import { message } from "antd";
-import type { ProAxiosRequestConfig as ProConfig } from "./interface";
 import HttpFetchCancelPlugin from "./plugin/fetch_cancel";
-import config from "./config";
-import LoginUtil from "@/utils/LoginUtil";
+import NormalizeDataPlugin from "./plugin/normalize_data";
+import config, { CommonServerData, ProAxiosRequestConfig as ProConfig } from "./config";
 
 class Http {
 	private axios = Axios.create();
@@ -30,18 +29,14 @@ class Http {
 
 	// 注册默认值
 	private defaultConfig(axios: AxiosInstance) {
-		axios.defaults.timeout = config.TIMEOUT;
+		axios.defaults.timeout = config.TIME_OUT;
 		axios.defaults.baseURL = config.BASE_URL;
-		axios.defaults.headers = {
-			"Content-Type": "application/json;charset=utf-8",
-		};
 	}
 
 	// 请求拦截器
 	private requestIntercept(axios: AxiosInstance) {
 		axios.interceptors.request.use(async (requestConfig: AxiosRequestConfig) => {
-			// const token = LoginUtil.getToken();
-			// 有token 时在请求头上加上 token
+			// const token = LoginUtil.getToken();		// 有token 时在请求头上加上 token
 			// if (token) requestConfig.headers[config.TOKEN] = token;
 			return requestConfig;
 		}, Promise.reject);
@@ -146,4 +141,4 @@ function httpErrorMap(httpCode: number | string) {
 	return STATUS_MAP[httpCode];
 }
 
-export default new Http().use(HttpFetchCancelPlugin);
+export default new Http().use(HttpFetchCancelPlugin, NormalizeDataPlugin);

@@ -5,9 +5,3 @@ export function createFetcher<F extends Function>(key: string, fetcher: F) {
 	};
 	return Object.assign(fetcher, { key });
 }
-
-/**
- * 返回什么呢?
- * 1. valueOf 是 fetcher
- * 2. toString 和 ret.name 是 url
- * */

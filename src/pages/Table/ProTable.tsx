@@ -1,4 +1,4 @@
-import { SEX_CONST } from "@/configs/constant/sex";
+import { SEX_CONST } from "@/assets/constant/sex";
 import PageHeaderWrap from "@/components/PageHeaderWrap";
 import { FieldAvatar, FieldStatus, FieldText } from "@/components/Pro/Field";
 import { ProFormInput, ProFormSelect } from "@/components/Pro/FormItem";

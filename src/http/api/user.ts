@@ -1,5 +1,5 @@
 import http from "..";
-import { createFetcher } from "../utils";
+import { createFetcher } from "./utils";
 
 export const GetCaptcha = (params: any) => http.get("/orgmgt/sendCaptchaOrg", params);
 export const UserLogin = (data: any) => http.post("/orgmgt/login", data);

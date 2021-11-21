@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { REQUEST_TYPE_CONST } from "@/configs/constant/request-type";
+import { REQUEST_TYPE_CONST } from "@/assets/constant/request-type";
 import PageHeaderWrap from "@/components/PageHeaderWrap";
 import { FieldText } from "@/components/Pro/Field";
 import { ProFormInput, ProFormSelect } from "@/components/Pro/FormItem";

@@ -12,8 +12,6 @@ interface ConstantItem {
 // 可选中排除一些必选项
 type PartialExcludeKey<T, K extends keyof T> = Partial<T> & { [P in K]-?: T[P] };
 
-type ListCallback<V extends ConstantItem, R> = (value: V, index: number, array: V[]) => R;
-
 type ExtendCallback<C extends Constant<any>, R> = (constant: C) => R;
 
 export default class Constant<V extends PartialExcludeKey<ConstantItem, "value" | "label">> {
@@ -40,23 +38,27 @@ export default class Constant<V extends PartialExcludeKey<ConstantItem, "value" 
 		return Object.assign(this, fn(this));
 	}
 
-	// 以 key 匹配
-	public matchKey(
-		value: V["key"],
+	// 匹配
+	public match<T extends 'key' | 'value', Value = any>(
+		property: T,
+		value: T extends 'key' ? V['key'] : Value,
 		// 预防某些以 undefined 作为 key 的情况
-		defaultKey: V["key"] | symbol = Symbol("defaultKey")
-	): (V & Record<string, any>) | undefined {
+		dk: V['key'] | symbol = Symbol('dk')
+	): V & Record<string, any> | undefined {
+		const attribute = property === 'key' ? 'keyMap' : 'valueMap';
+		const matchItem = this[attribute].get(value as V['key']);
+		return matchItem ?? this.keyMap.get(dk);
+	}
+
+	// 以 key 匹配
+	public findByKey(value: V["key"], dk: V["key"] | symbol = Symbol("dk")): (V & Record<string, any>) | undefined {
 		const matchItem = this.keyMap.get(value);
-		return matchItem ?? this.keyMap.get(defaultKey);
+		return matchItem ?? this.keyMap.get(dk);
 	}
 	// 以 value 匹配
-	public matchValue<Value = any>(
-		value: Value,
-		// 预防某些以 undefined 作为 key 的情况
-		defaultKey: V["key"] | symbol = Symbol("defaultKey")
-	): (V & Record<string, any>) | undefined {
+	public findByValue<Value = any>(value: Value, dk: V["key"] | symbol = Symbol("dk")): (V & Record<string, any>) | undefined {
 		const matchItem = this.valueMap.get(value);
-		return matchItem ?? this.keyMap.get(defaultKey);
+		return matchItem ?? this.keyMap.get(dk);
 	}
 
 	// 当满足条件 以 key 做标识是为了更好的可读性

@@ -1,2 +1,2 @@
-const Copy = 1;
-export default Copy;
+const Co123py = 1;
+export default Co123py;
